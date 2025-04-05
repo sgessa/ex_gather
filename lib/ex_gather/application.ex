@@ -14,8 +14,8 @@ defmodule ExGather.Application do
       {Phoenix.PubSub, name: ExGather.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: ExGather.Finch},
-      # Start a worker by calling: ExGather.Worker.start_link(arg)
-      # {ExGather.Worker, arg},
+      # Presence
+      ExGatherWeb.Presence,
       # Start to serve requests, typically the last entry
       ExGatherWeb.Endpoint
     ]

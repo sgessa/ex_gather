@@ -34,9 +34,14 @@ defmodule ExGatherWeb.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   @impl true
-  def connect(_params, socket, _connect_info) do
-    # TODO: Authjenticate user
-    {:ok, assign(socket, :user_id, 1)}
+  def connect(%{"token" => token}, socket, _connect_info) do
+    case Phoenix.Token.verify(socket, "user", token, max_age: 300) do
+      {:ok, user_info} ->
+        {:ok, assign(socket, :user, user_info)}
+
+      {:error, _} ->
+        :error
+    end
   end
 
   # Socket IDs are topics that allow you to identify all sockets for a given user:
@@ -50,5 +55,5 @@ defmodule ExGatherWeb.UserSocket do
   #
   # Returning `nil` makes this socket anonymous.
   @impl true
-  def id(_socket), do: nil
+  def id(socket), do: "user_socket:#{socket.assigns.user.id}"
 end

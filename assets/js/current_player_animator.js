@@ -1,9 +1,14 @@
 export default class CurrentPlayerAnimator {
-  constructor(scene, player) {
+  constructor(scene, currentPlayer) {
     this.scene = scene;
-    this.player = player;
+    this.sprite = currentPlayer.sprite;
+    this.channel = currentPlayer.channel;
     this.anims = scene.anims;
     this.cursors = scene.input.keyboard.createCursorKeys();
+    this.lastPosition = { x: this.sprite.x, y: this.sprite.y };
+    this.lastUpdate = 0;
+    this.state = 'idle';
+    this.direction = 'down';
   }
 
   handleCreate() {
@@ -72,7 +77,7 @@ export default class CurrentPlayerAnimator {
     });
 
     // Default: Idle (facing down)
-    this.player.play("idle_down");
+    this.sprite.play("idle_down");
   }
 
   handleUpdate() {
@@ -80,33 +85,78 @@ export default class CurrentPlayerAnimator {
   	const speed = 160;
 
   	// Reset velocity
-  	this.player.setVelocity(0);
+  	this.sprite.setVelocity(0);
+
+    // Movement logic
+    let moved = false;
+    let newState = this.state;
+    let newDirection = this.direction;
 
   	if (left.isDown) {
-    	this.player.setVelocityX(-speed);
-    	this.player.play("walk_left", true); // Play left animation
+    	this.sprite.setVelocityX(-speed);
+    	this.sprite.play("walk_left", true); // Play left animation
+    	moved = true;
+    	newDirection = 'left';
+      newState = 'walk';
   	}	else if (right.isDown) {
-    	this.player.setVelocityX(speed);
-    	this.player.play("walk_right", true); // Play right animation
+    	this.sprite.setVelocityX(speed);
+    	this.sprite.play("walk_right", true); // Play right animation
+    	moved = true;
+    	newDirection = 'right';
+      newState = 'walk';
   	}
 
   	// --- Vertical Movement ---
   	if (up.isDown) {
-    	this.player.setVelocityY(-speed);
-    	this.player.play("walk_up", true); // Play up animation
+    	this.sprite.setVelocityY(-speed);
+    	this.sprite.play("walk_up", true); // Play up animation
+    	moved = true;
+    	newDirection = 'up';
+      newState = 'walk';
   	}	else if (down.isDown) {
-    	this.player.setVelocityY(speed);
-    	this.player.play("walk_down", true); // Play down animation
+    	this.sprite.setVelocityY(speed);
+    	this.sprite.play("walk_down", true); // Play down animation
+    	moved = true;
+    	newDirection = 'down';
+      newState = 'walk';
   	}
 
   	// --- Return to Idle When No Keys Pressed ---
-  	if (!left.isDown && !right.isDown && !up.isDown && !down.isDown) {
+  	if (!moved) {
     	// Keep last direction (e.g., idle_down if last moved down)
-    	const currentAnim = this.player.anims.currentAnim.key;
-
-    	if (currentAnim.startsWith("walk_")) {
-      	this.player.play(`idle_${currentAnim.split("_")[1]}`, true);
+    	if (this.state == 'walk') {
+      	this.sprite.play(`idle_${newDirection}`, true);
     	}
   	}
+
+    // Only send updates if:
+    // 1. Player moved significantly (>5px)
+    // 2. Animation/direction changed
+    // 3. Throttled to 50ms
+    const now = Date.now();
+
+    const distanceMoved = Phaser.Math.Distance.Between(
+      this.sprite.x, this.sprite.y,
+      this.lastPosition.x, this.lastPosition.y
+    );
+
+    if ((moved && distanceMoved > 5) ||
+        newState !== this.state ||
+        newDirection !== this.direction) {
+
+      if (now - this.lastUpdate > 50) {
+        this.channel.push("player_move", {
+          x: this.sprite.x,
+          y: this.sprite.y,
+          dir: newDirection,
+          state: newState
+        });
+
+        this.lastPosition = { x: this.sprite.x, y: this.sprite.y };
+        this.state = newState;
+        this.direction = newDirection;
+        this.lastUpdate = now;
+      }
+    }
   }
 }

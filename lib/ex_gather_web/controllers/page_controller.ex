@@ -4,6 +4,11 @@ defmodule ExGatherWeb.PageController do
   def home(conn, _params) do
     # The home page is often custom made,
     # so skip the default app layout.
-    render(conn, :home, layout: false)
+    data = Map.take(conn.assigns.current_user, [:id, :username])
+    token = Phoenix.Token.sign(ExGatherWeb.Endpoint, "user", data)
+
+    conn
+    |> assign(:token, token)
+    |> render(:home, layout: false)
   end
 end

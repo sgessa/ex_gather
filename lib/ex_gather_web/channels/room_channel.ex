@@ -6,19 +6,27 @@ defmodule ExGatherWeb.RoomChannel do
   @impl true
   def join("room:lobby", payload, socket) do
     if authorized?(payload) do
-      # TODO: Get user info
-      user_info = %{id: socket.assigns.user_id, name: "John Doe"}
-      send(self(), {:after_join, user_info})
+      user =
+        socket.assigns.user
+        |> Map.put(:x, payload["x"])
+        |> Map.put(:y, payload["y"])
+        |> Map.put(:dir, payload["dir"])
+        |> Map.put(:state, payload["state"])
 
-      {:ok, %{player: user_info, presence_state: Presence.list(socket)}, socket}
+      socket = assign(socket, :user, user)
+
+      send(self(), :after_join)
+
+      {:ok, %{player: user, presence_state: Presence.list(socket)}, socket}
     else
       {:error, %{reason: "unauthorized"}}
     end
   end
 
   @impl true
-  def handle_info({:after_join, user_info}, socket) do
-    {:ok, _} = Presence.track(socket, socket.assigns.user_id, user_info)
+  def handle_info(:after_join, socket) do
+    user = socket.assigns.user
+    {:ok, _} = Presence.track(socket, user.id, user)
     {:noreply, socket}
   end
 
@@ -27,10 +35,20 @@ defmodule ExGatherWeb.RoomChannel do
     {:reply, {:ok, payload}, socket}
   end
 
-  @impl true
-  def handle_in("shout", payload, socket) do
-    broadcast(socket, "shout", payload)
-    {:noreply, socket}
+  def handle_in("player_move", movement, socket) do
+    user =
+      socket.assigns.user
+      |> Map.put(:x, movement["x"])
+      |> Map.put(:y, movement["y"])
+      |> Map.put(:dir, movement["dir"])
+      |> Map.put(:state, movement["state"])
+
+    # Presence.update(socket, user.id, user)
+
+    # Broadcast to all other players in the room
+    broadcast_from!(socket, "player_moved", Map.take(user, [:id, :x, :y, :dir, :state]))
+
+    {:noreply, assign(socket, :user, user)}
   end
 
   # Add authorization logic here as required.

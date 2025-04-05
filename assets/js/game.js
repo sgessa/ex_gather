@@ -1,6 +1,7 @@
 import {Socket, Presence} from "phoenix"
 import Phaser from "phaser";
 import CurrentPlayer from "./current_player";
+import RemotePlayer from "./remote_player";
 
 class GameScene extends Phaser.Scene {
   preload() {
@@ -19,11 +20,34 @@ class GameScene extends Phaser.Scene {
       this.handlePresenceDiff(diff);
     });
 
+    // Listen for movement updates
+    channel.on("player_moved", payload => {
+      const { id, x, y, dir, state } = payload;
+      const player = this.players[id];
+
+      if (player) {
+        // Apply tween for smooth movement
+        this.tweens.add({
+          targets: player.sprite,
+          x: x,
+          y: y,
+          duration: 100, // Matches network update rate
+          ease: 'Linear'
+        });
+
+        // Update animation
+        if (player.state !== state || player.direction !== dir) {
+          player.sprite.play(`${state}_${dir}`);
+        }
+
+        player.direction = dir;
+        player.state = state;
+      }
+    });
+
     channel.join().
       receive("ok", data => {
         this.currentPlayer = new CurrentPlayer(this, channel, data.player);
-
-        console.log("Initial players:", data.presence_state);
         this.spawnPlayers(data.presence_state); // Render existing players
       });
   }
@@ -31,6 +55,10 @@ class GameScene extends Phaser.Scene {
   update() {
     if (this.currentPlayer) {
       this.currentPlayer.handleUpdate();
+    }
+
+    for (const player of Object.values(this.players)) {
+      player.handleUpdate();
     }
 	}
 
@@ -44,23 +72,18 @@ class GameScene extends Phaser.Scene {
   }
 
   // Add/update a player's avatar and name label
-  addPlayer(player) {
-    console.log("Adding player", player);
-    const { id, name, x, y } = player;
+  addPlayer(playerInfo) {
+    const { id, username, x, y, dir, state } = playerInfo;
 
     // Create sprite (if not exists)
     if (!this.players[id]) {
-      this.players[id] = this.add.sprite(x, y, "/images/player_spritesheet.png");
-
-      this.players[id].name = this.add.text(x, y - 20, name, {
-        fontSize: "16px",
-        color: "#FFFFFF"
-      });
+      this.players[id] = new RemotePlayer(this, username, x, y, dir, state);
     }
 
     // Update position
-    this.players[id].setPosition(x, y);
-    this.players[id].name.setPosition(x, y - 20);
+    let player = this.players[id];
+    player.sprite.setPosition(x, y);
+    player.name.setPosition(x, y - 20);
   }
 
   // Handle presence changes (joins/leaves/updates)
@@ -73,20 +96,18 @@ class GameScene extends Phaser.Scene {
 
     // Players who left
     for (const id of Object.keys(diff.leaves)) {
-      if (id != this.currentPlayer.userId) {  // Skip self
-        this.players[id]?.destroy(); // Remove sprite
-        this.players[id]?.name?.destroy(); // Remove label
-        delete this.players[id];
-      }
+      this.players[id]?.destroy();
+      delete this.players[id];
     }
   }
 }
 
-let socket = new Socket("/socket", { params: { token: "ABCE" } });
+token = document.querySelector("meta[name='auth-token']").getAttribute("content");
+socket = new Socket("/socket", { params: { token: token } });
 socket.connect();
 
-let channel = socket.channel("room:lobby", {});
-let presence = new Presence(channel)
+let channel = socket.channel("room:lobby", {x: 100, y: 100, dir: "down", state: "idle"});
+presence = new Presence(channel)
 
 window.addEventListener("beforeunload", () => {
   channel.leave();
@@ -100,4 +121,9 @@ const config = {
   scene: GameScene,
 };
 
-new Phaser.Game(config);
+document.addEventListener("DOMContentLoaded", () => {
+  if (document.getElementById("game-container")) {
+    console.log("Game container found, starting game...");
+    new Phaser.Game(config);
+  }
+});

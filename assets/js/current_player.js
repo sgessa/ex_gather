@@ -6,9 +6,9 @@ export default class CurrentPlayer {
     this.scene = scene;
     this.channel = channel;
 
-    this.player = this.scene.physics.add.sprite(100, 100, "player");
-    this.setName(userInfo.name);
-    this.animator = new CurrentPlayerAnimator(this.scene, this.player);
+    this.sprite = this.scene.physics.add.sprite(100, 100, "player");
+    this.setName(userInfo.username);
+    this.animator = new CurrentPlayerAnimator(this.scene, this);
 
     this.animator.handleCreate();
   }
@@ -17,14 +17,14 @@ export default class CurrentPlayer {
     this.animator.handleUpdate();
 
     // Sync the label's position with the player
-    this.name.setPosition(this.player.x, this.player.y - 20);
+    this.name.setPosition(this.sprite.x, this.sprite.y - 20);
   }
 
   setName(userName) {
     // Create a text object to display the player's name
     this.name = this.scene.add.text(
-      this.player.x,
-      this.player.y - 20, // Adjust for vertical offset
+      this.sprite.x,
+      this.sprite.y - 20, // Adjust for vertical offset
       userName,
       {
         fontFamily: "Arial",

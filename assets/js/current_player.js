@@ -7,8 +7,12 @@ export default class CurrentPlayer {
     this.channel = channel;
 
     this.sprite = this.scene.physics.add.sprite(100, 100, "player");
+    this.sprite.setScale(64 / 350, 48 / 350);
+
     this.setName(userInfo.username);
     this.animator = new CurrentPlayerAnimator(this.scene, this);
+
+    this.scene.cameras.main.startFollow(this.sprite);
 
     this.animator.handleCreate();
   }

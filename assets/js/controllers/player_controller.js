@@ -1,6 +1,6 @@
-import CurrentPlayerAnimator from "./current_player_animator.js"
+import AnimController from "./anim_controller.js"
 
-export default class CurrentPlayer {
+export default class PlayerController {
   constructor(scene, channel, userInfo) {
     this.userId = userInfo.id;
     this.scene = scene;
@@ -10,7 +10,7 @@ export default class CurrentPlayer {
     this.sprite.setScale(64 / 350, 48 / 350);
 
     this.setName(userInfo.username);
-    this.animator = new CurrentPlayerAnimator(this.scene, this);
+    this.animator = new AnimController(this.scene, this);
 
     this.scene.cameras.main.startFollow(this.sprite);
 

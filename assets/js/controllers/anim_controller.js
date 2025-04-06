@@ -1,4 +1,4 @@
-export default class CurrentPlayerAnimator {
+export default class AnimController {
   constructor(scene, currentPlayer) {
     this.scene = scene;
     this.sprite = currentPlayer.sprite;
@@ -44,56 +44,56 @@ export default class CurrentPlayerAnimator {
   }
 
   handleUpdate() {
-  	const { left, right, up, down } = this.cursors;
-  	const speed = 160;
+    const { left, right, up, down } = this.cursors;
+    const speed = 160;
 
-  	// Reset velocity
-  	this.sprite.setVelocity(0);
+    // Reset velocity
+    this.sprite.setVelocity(0);
 
     // Movement logic
     let moved = false;
     let newState = this.state;
     let newDirection = this.direction;
 
-  	if (left.isDown) {
-    	moved = true;
-    	newDirection = 'left';
+    if (left.isDown) {
+      moved = true;
+      newDirection = 'left';
       newState = 'walk';
 
-    	this.sprite.flipX = false;
-    	this.sprite.setVelocityX(-speed);
-  	}	else if (right.isDown) {
-    	moved = true;
-    	newDirection = 'right';
+      this.sprite.flipX = false;
+      this.sprite.setVelocityX(-speed);
+    } else if (right.isDown) {
+      moved = true;
+      newDirection = 'right';
       newState = 'walk';
 
-    	this.sprite.flipX = true;
-    	this.sprite.setVelocityX(speed);
-  	} else if (up.isDown) {
-    	moved = true;
-    	newDirection = 'up';
+      this.sprite.flipX = true;
+      this.sprite.setVelocityX(speed);
+    } else if (up.isDown) {
+      moved = true;
+      newDirection = 'up';
       newState = 'walk';
 
-    	this.sprite.setVelocityY(-speed);
-  	}	else if (down.isDown) {
-    	moved = true;
-    	newDirection = 'down';
+      this.sprite.setVelocityY(-speed);
+    } else if (down.isDown) {
+      moved = true;
+      newDirection = 'down';
       newState = 'walk';
 
-    	this.sprite.setVelocityY(speed);
-  	}
+      this.sprite.setVelocityY(speed);
+    }
 
-  	if (moved) {
-  	  let anim = newDirection === 'up' ? "walk_up" : "walk_down";
-    	this.sprite.play(anim, true); // Play up animation
-  	} else {
-    	// Keep last direction (e.g., idle_down if last moved down)
-    	if (this.state == 'walk') {
-  	    let anim = newDirection === 'up' ? "idle_up" : "idle_down";
-    	  newState = 'idle';
-      	this.sprite.play(anim, true);
-    	}
-  	}
+    if (moved) {
+      let anim = newDirection === 'up' ? "walk_up" : "walk_down";
+      this.sprite.play(anim, true); // Play up animation
+    } else {
+      // Keep last direction (e.g., idle_down if last moved down)
+      if (this.state == 'walk') {
+        let anim = newDirection === 'up' ? "idle_up" : "idle_down";
+        newState = 'idle';
+        this.sprite.play(anim, true);
+      }
+    }
 
     // Only send updates if:
     // 1. Player moved significantly (>5px)
@@ -107,11 +107,11 @@ export default class CurrentPlayerAnimator {
     );
 
     if ((moved && distanceMoved > 5) ||
-        newState !== this.state ||
-        newDirection !== this.direction) {
+      newState !== this.state ||
+      newDirection !== this.direction) {
 
       if (now - this.lastUpdate > 50) {
-        this.channel.push("player_move", {
+        this.scene.socketManager.channel.push("player_move", {
           x: this.sprite.x,
           y: this.sprite.y,
           dir: newDirection,

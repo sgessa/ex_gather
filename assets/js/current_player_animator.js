@@ -12,71 +12,34 @@ export default class CurrentPlayerAnimator {
   }
 
   handleCreate() {
-    // Idle: Single frame (frame 1 = standing up)
-    this.anims.create({
-      key: "idle_up",
-      frames: [{ key: "player", frame: 10 }],
-      frameRate: 5,
-      repeat: -1
-    });
-
-    // Idle: Single frame (frame 1 = standing down)
     this.anims.create({
       key: "idle_down",
-      frames: [{ key: "player", frame: 1 }],
-      frameRate: 5,
+      frames: this.anims.generateFrameNumbers("player_front", { start: 0, end: 1 }),
+      frameRate: 8,
       repeat: -1
     });
 
-    // Idle: Single frame (frame 1 = standing left)
     this.anims.create({
-      key: "idle_left",
-      frames: [{ key: "player", frame: 4 }],
+      key: "idle_up",
+      frames: this.anims.generateFrameNumbers("player_back", { start: 0, end: 1 }),
       frameRate: 5,
       repeat: -1
     });
 
-    // Idle: Single frame (frame 1 = standing right)
-    this.anims.create({
-    key: "idle_right",
-      frames: [{ key: "player", frame: 7 }],
-      frameRate: 5,
-      repeat: -1
-    });
-
-    // Walk Down: Frames 0, 1, 2 (loop)
     this.anims.create({
       key: "walk_down",
-      frames: this.anims.generateFrameNumbers("player", { start: 0, end: 2 }),
+      frames: this.anims.generateFrameNumbers("player_front", { start: 9, end: 12 }),
       frameRate: 8,
       repeat: -1
     });
 
-    // Walk Left: Frames 3, 4, 5 (loop)
-    this.anims.create({
-      key: "walk_left",
-      frames: this.anims.generateFrameNumbers("player", { start: 3, end: 5 }),
-      frameRate: 8,
-      repeat: -1
-    });
-
-    // Walk Right: Frames 6, 7, 8 (loop)
-    this.anims.create({
-      key: "walk_right",
-      frames: this.anims.generateFrameNumbers("player", { start: 6, end: 8 }),
-      frameRate: 8,
-      repeat: -1
-    });
-
-    // Walk Up: Frames 9, 10, 11 (loop)
     this.anims.create({
       key: "walk_up",
-      frames: this.anims.generateFrameNumbers("player", { start: 9, end: 11 }),
+      frames: this.anims.generateFrameNumbers("player_back", { start: 5, end: 8 }),
       frameRate: 8,
       repeat: -1
     });
 
-    // Default: Idle (facing down)
     this.sprite.play("idle_down");
   }
 
@@ -93,40 +56,42 @@ export default class CurrentPlayerAnimator {
     let newDirection = this.direction;
 
   	if (left.isDown) {
-    	this.sprite.setVelocityX(-speed);
-    	this.sprite.play("walk_left", true); // Play left animation
     	moved = true;
     	newDirection = 'left';
       newState = 'walk';
+
+    	this.sprite.flipX = false;
+    	this.sprite.setVelocityX(-speed);
   	}	else if (right.isDown) {
-    	this.sprite.setVelocityX(speed);
-    	this.sprite.play("walk_right", true); // Play right animation
     	moved = true;
     	newDirection = 'right';
       newState = 'walk';
-  	}
 
-  	// --- Vertical Movement ---
-  	if (up.isDown) {
-    	this.sprite.setVelocityY(-speed);
-    	this.sprite.play("walk_up", true); // Play up animation
+    	this.sprite.flipX = true;
+    	this.sprite.setVelocityX(speed);
+  	} else if (up.isDown) {
     	moved = true;
     	newDirection = 'up';
       newState = 'walk';
+
+    	this.sprite.setVelocityY(-speed);
   	}	else if (down.isDown) {
-    	this.sprite.setVelocityY(speed);
-    	this.sprite.play("walk_down", true); // Play down animation
     	moved = true;
     	newDirection = 'down';
       newState = 'walk';
+
+    	this.sprite.setVelocityY(speed);
   	}
 
-  	// --- Return to Idle When No Keys Pressed ---
-  	if (!moved) {
+  	if (moved) {
+  	  let anim = newDirection === 'up' ? "walk_up" : "walk_down";
+    	this.sprite.play(anim, true); // Play up animation
+  	} else {
     	// Keep last direction (e.g., idle_down if last moved down)
     	if (this.state == 'walk') {
+  	    let anim = newDirection === 'up' ? "idle_up" : "idle_down";
     	  newState = 'idle';
-      	this.sprite.play(`idle_${newDirection}`, true);
+      	this.sprite.play(anim, true);
     	}
   	}
 

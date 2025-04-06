@@ -2,17 +2,33 @@ import {Socket, Presence} from "phoenix"
 import Phaser from "phaser";
 import CurrentPlayer from "./current_player";
 import RemotePlayer from "./remote_player";
+import WorldMap from "./world_map";
 
 class GameScene extends Phaser.Scene {
+  constructor() {
+    super({ key: "GameScene" });
+
+    this.players = {};
+    this.currentPlayer = null;
+    this.map = new WorldMap(this);
+  }
+
   preload() {
-    this.load.spritesheet("player", "/images/player_spritesheet.png", {
-      frameWidth: 32,  // Width of ONE frame in pixels
-      frameHeight: 32, // Height of ONE frame in pixels
+    this.map.preload();
+
+    this.load.spritesheet("player_front", "/images/frog_front_spritesheet.png", {
+      frameWidth: 350,  // Width of ONE frame in pixels
+      frameHeight: 350, // Height of ONE frame in pixels
+    });
+
+    this.load.spritesheet("player_back", "/images/frog_back_spritesheet.png", {
+      frameWidth: 350,  // Width of ONE frame in pixels
+      frameHeight: 350, // Height of ONE frame in pixels
     });
   }
 
   create() {
-    this.players = {};
+    this.map.create();
 
     // Listen for presence events
     channel.on("room_state", data => {
@@ -45,7 +61,15 @@ class GameScene extends Phaser.Scene {
 
         // Update animation
         if (player.state !== state || player.direction !== dir) {
-          player.sprite.play(`${state}_${dir}`);
+          player.sprite.flipX = dir !== "left";
+
+          if (state === "walk") {
+            let anim = dir == "up" ? "walk_up" : "walk_down";
+            player.sprite.play(anim);
+          } else {
+            let anim = dir == "up" ? "idle_up" : "idle_down";
+            player.sprite.play(anim);
+          }
         }
 
         player.direction = dir;
@@ -113,7 +137,6 @@ const config = {
 
 document.addEventListener("DOMContentLoaded", () => {
   if (document.getElementById("game-container")) {
-    console.log("Game container found, starting game...");
     new Phaser.Game(config);
   }
 });

@@ -1,7 +1,11 @@
 export default class RemotePlayer {
   constructor(scene, username, x, y, dir, state) {
-    this.sprite = scene.physics.add.sprite(x, y, "player");
+    let anim = dir == "up" ? "player_back" : "player_front";
+    this.sprite = scene.physics.add.sprite(x, y, anim);
+
     this.sprite.body.setImmovable(true);
+    this.sprite.setScale(64 / 350, 48 / 350);
+
     this.direction = dir;
     this.state = state;
 

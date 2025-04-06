@@ -17,8 +17,8 @@ export default class GameScene extends Phaser.Scene {
     this.mapManager = new MapManager(this);
     this.actorsManager = new ActorsManager(this);
     this.spritesManager = new SpritesManager(this);
+    this.rtcManager = new RTCManager(this);
     this.socketManager = new SocketManager();
-    this.rtcManager = new RTCManager();
   }
 
   preload() {
@@ -58,6 +58,15 @@ export default class GameScene extends Phaser.Scene {
     // Listen for movement updates
     this.socketManager.channel.on("player_moved", data => {
       this.actorsManager.move(data.id, data);
+    });
+
+    // Listen for RTC negotiation
+    this.socketManager.channel.on("answer", data => {
+      this.rtcManager.handleAnswer(data);
+    });
+
+    this.socketManager.channel.on("ice", data => {
+      this.rtcManager.handleIceCandidate(data);
     });
   }
 }

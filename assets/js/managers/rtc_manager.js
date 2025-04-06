@@ -1,3 +1,4 @@
+import "webrtc-adapter"
 export default class RTCManager {
   constructor(scene) {
     this.scene = scene;
@@ -12,7 +13,11 @@ export default class RTCManager {
       ]
     });
 
-    pc.onicecandidate = event => {
+    this.pc.ontrack = event => {
+      document.querySelector("#video-player").srcObject = event.streams[0];
+    };
+
+    this.pc.onicecandidate = event => {
       if (event.candidate === null) return;
 
       console.log("Sent ICE candidate:", event.candidate);
@@ -26,5 +31,15 @@ export default class RTCManager {
 
     console.log("Sent SDP offer:", offer)
     this.scene.socketManager.channel.push("offer", offer);
+  }
+
+  async handleAnswer(answer) {
+    await this.pc.setRemoteDescription(answer);
+    console.log("Received SDP answer:", answer);
+  }
+
+  async handleIceCandidate(ice) {
+    await this.pc.addIceCandidate(ice);
+    console.log("Received ICE candidate:", ice);
   }
 }

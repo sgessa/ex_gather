@@ -2,34 +2,25 @@ defmodule ExGatherWeb.RoomChannel do
   use ExGatherWeb, :channel
 
   @impl true
-  def join("room:" <> _room = room_name, payload, socket) do
-    if authorized?(payload) do
-      user =
-        socket.assigns.user
-        |> Map.put(:x, payload["x"])
-        |> Map.put(:y, payload["y"])
-        |> Map.put(:dir, payload["dir"])
-        |> Map.put(:state, payload["state"])
+  def join("room:" <> _room = room_name, _payload, socket) do
+    player = socket.assigns.player
+    socket = socket
+      |> assign(:player, player)
+      |> assign(:room_server, :"#{room_name}")
 
-      room_server = String.to_existing_atom(room_name)
-      socket = socket |> assign(:user, user) |> assign(:room_server, room_server)
+    send(self(), :after_join)
 
-      send(self(), :after_join)
-
-      {:ok, %{player: user}, socket}
-    else
-      {:error, %{reason: "unauthorized"}}
-    end
+    {:ok, %{player: player}, socket}
   end
 
   @impl true
   def handle_info(:after_join, socket) do
-    user = socket.assigns.user
+    player = socket.assigns.player
     room_server = socket.assigns.room_server
-    {:ok, players} = GenServer.call(room_server, {:join, user})
+    {:ok, player, players} = GenServer.call(room_server, {:join, player})
 
-    push(socket, "room_state", %{players: players})
-    broadcast_from!(socket, "player_join", user)
+    push(socket, "room_state", %{players: players, player: player})
+    broadcast_from!(socket, "player_join", player)
 
     {:noreply, socket}
   end
@@ -40,35 +31,24 @@ defmodule ExGatherWeb.RoomChannel do
   end
 
   def handle_in("player_move", movement, socket) do
-    user =
-      socket.assigns.user
-      |> Map.put(:x, movement["x"])
-      |> Map.put(:y, movement["y"])
-      |> Map.put(:dir, movement["dir"])
-      |> Map.put(:state, movement["state"])
-
+    player = socket.assigns.player
     room_server = socket.assigns.room_server
-    GenServer.cast(room_server, {:update_player, user})
+    GenServer.cast(room_server, {:update_player, player.id, movement})
 
     # Broadcast to all other players in the room
-    broadcast_from!(socket, "player_moved", Map.take(user, [:id, :x, :y, :dir, :state]))
+    broadcast_from!(socket, "player_moved", Map.put(movement, "id", player.id))
 
-    {:noreply, assign(socket, :user, user)}
+    {:noreply, assign(socket, :player, player)}
   end
 
   @impl true
   def terminate(_reason, socket) do
-    user = socket.assigns.user
+    player = socket.assigns.player
     room_server = socket.assigns.room_server
-    :ok = GenServer.call(room_server, {:leave, user})
+    :ok = GenServer.call(room_server, {:leave, player})
 
     # Automatically called on disconnect
-    broadcast_from!(socket, "player_left", %{id: socket.assigns.user.id})
+    broadcast_from!(socket, "player_left", %{id: socket.assigns.player.id})
     :ok
-  end
-
-  # Add authorization logic here as required.
-  defp authorized?(_payload) do
-    true
   end
 end

@@ -2,7 +2,7 @@ defmodule ExGatherWeb.UserRegistrationController do
   use ExGatherWeb, :controller
 
   alias ExGather.Users
-  alias ExGather.Users.User
+  alias ExGather.Schemas.User
   alias ExGatherWeb.UserAuth
 
   def new(conn, _params) do

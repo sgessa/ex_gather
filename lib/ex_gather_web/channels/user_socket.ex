@@ -37,7 +37,7 @@ defmodule ExGatherWeb.UserSocket do
   def connect(%{"token" => token}, socket, _connect_info) do
     case Phoenix.Token.verify(socket, "user", token, max_age: 300) do
       {:ok, user_info} ->
-        {:ok, assign(socket, :user, user_info)}
+        {:ok, assign(socket, :player, user_info)}
 
       {:error, _} ->
         :error
@@ -55,5 +55,5 @@ defmodule ExGatherWeb.UserSocket do
   #
   # Returning `nil` makes this socket anonymous.
   @impl true
-  def id(socket), do: "user_socket:#{socket.assigns.user.id}"
+  def id(socket), do: "user_socket:#{socket.assigns.player.id}"
 end

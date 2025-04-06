@@ -15,7 +15,7 @@ defmodule ExGather.Application do
       # Start the Finch HTTP client for sending emails
       {Finch, name: ExGather.Finch},
       # Lobby GenServer
-      {ExGather.Room, name: :"room:lobby"},
+      {ExGather.Room.Server, name: :"room:lobby"},
       # Start to serve requests, typically the last entry
       ExGatherWeb.Endpoint
     ]

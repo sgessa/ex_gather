@@ -10,40 +10,46 @@ defmodule ExGather.Room.Server do
   end
 
   def handle_call({:join, player, rtc}, _from, state) do
-    player = Map.merge(player, %{x: 0, y: 0, dir: 0, state: "idle", rtc: rtc})
-    players = Map.put(state.players, player.id, player)
-
-    # Enum.each(state.players, fn {_id, p} ->
-    #   ExWebRTC.PeerConnection.add_track(p.rtc.pid, player.rtc.track)
-    # end)
-
+    player = init_player_state(player, rtc)
+    players = Map.put(state.players, player["id"], player)
     {:reply, {:ok, player, state.players}, %{state | players: players}}
   end
 
-  def handle_call({:leave, player}, _from, state) do
-    players = Map.delete(state.players, player.id)
+  def handle_call({:leave, player_id}, _from, state) do
+    players = Map.delete(state.players, player_id)
     {:reply, :ok, %{state | players: players}}
   end
 
   def handle_cast({:update_player, id, attrs}, state) do
-    player = Map.get(state.players, id) |> Map.merge(attrs)
+    player = state.players |> Map.get(id) |> Map.merge(attrs)
     players = Map.put(state.players, id, player)
     {:noreply, %{state | players: players}}
   end
 
   def handle_cast({:rtc, from, packet}, state) do
     state.players
-    |> Enum.reject(fn {_, p} -> p.rtc.pid == from.pid end)
+    |> Enum.reject(fn {_, p} -> p["rtc"].pid == from.pid end)
     |> Enum.each(fn {_id, p} ->
-      #ExWebRTC.PeerConnection.add_track(p.rtc.pid, from.track)
-
       ExWebRTC.PeerConnection.send_rtp(
-        p.rtc.pid,
-        p.rtc.track.id,
+        p["rtc"].pid,
+        p["rtc"].track.id,
         packet
       )
     end)
 
     {:noreply, state}
+  end
+
+  defp init_player_state(player, rtc) do
+    %{
+      "id" => player.id,
+      "username" => player.username,
+      "x" => 100,
+      "y" => 100,
+      "dir_x" => "left",
+      "dir_y" => "down",
+      "state" => "idle",
+      "rtc" => rtc
+    }
   end
 end

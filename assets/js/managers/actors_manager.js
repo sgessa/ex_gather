@@ -8,7 +8,6 @@ export default class ActorsManager {
 
   init(actors) {
     for (const [id, actor] of Object.entries(actors)) {
-      console.log("Spawning actor:", actor);
       this.spawn(actor);
     }
   }

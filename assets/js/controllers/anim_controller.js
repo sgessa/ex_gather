@@ -8,7 +8,8 @@ export default class AnimController {
     this.lastPosition = { x: this.sprite.x, y: this.sprite.y };
     this.lastUpdate = 0;
     this.state = 'idle';
-    this.direction = 'down';
+    this.dirX = 'left';
+    this.dirY = 'down';
   }
 
   handleCreate() {
@@ -53,45 +54,47 @@ export default class AnimController {
     // Movement logic
     let moved = false;
     let newState = this.state;
-    let newDirection = this.direction;
+    let newDirX = this.dirX;
+    let newDirY = this.dirY;
 
     if (left.isDown) {
       moved = true;
-      newDirection = 'left';
+      newDirX = 'left';
       newState = 'walk';
 
       this.sprite.flipX = false;
       this.sprite.setVelocityX(-speed);
     } else if (right.isDown) {
       moved = true;
-      newDirection = 'right';
+      newDirX = 'right';
       newState = 'walk';
 
       this.sprite.flipX = true;
       this.sprite.setVelocityX(speed);
-    } else if (up.isDown) {
+    }
+
+    if (up.isDown) {
       moved = true;
-      newDirection = 'up';
+      newDirY = 'up';
       newState = 'walk';
 
       this.sprite.setVelocityY(-speed);
     } else if (down.isDown) {
       moved = true;
-      newDirection = 'down';
+      newDirY = 'down';
       newState = 'walk';
 
       this.sprite.setVelocityY(speed);
     }
 
     if (moved) {
-      let anim = newDirection === 'up' ? "walk_up" : "walk_down";
-      this.sprite.play(anim, true); // Play up animation
+      this.sprite.play(`walk_${newDirY}`, true);
     } else {
+      newState = "idle";
+
       // Keep last direction (e.g., idle_down if last moved down)
-      if (this.state == 'walk') {
-        let anim = newDirection === 'up' ? "idle_up" : "idle_down";
-        newState = 'idle';
-        this.sprite.play(anim, true);
+      if (this.state === "walk") {
+        this.sprite.play(`idle_${newDirY}`, true);
       }
     }
 
@@ -108,19 +111,22 @@ export default class AnimController {
 
     if ((moved && distanceMoved > 5) ||
       newState !== this.state ||
-      newDirection !== this.direction) {
+      newDirX !== this.dirX ||
+      newDirY !== this.dirY) {
 
       if (now - this.lastUpdate > 50) {
         this.scene.socketManager.channel.push("player_move", {
           x: this.sprite.x,
           y: this.sprite.y,
-          dir: newDirection,
+          dir_x: newDirX,
+          dir_y: newDirY,
           state: newState
         });
 
         this.lastPosition = { x: this.sprite.x, y: this.sprite.y };
         this.state = newState;
-        this.direction = newDirection;
+        this.dirX = newDirX;
+        this.dirY = newDirY;
         this.lastUpdate = now;
       }
     }

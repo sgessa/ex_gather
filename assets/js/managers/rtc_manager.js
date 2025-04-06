@@ -20,7 +20,6 @@ export default class RTCManager {
     this.pc.onicecandidate = event => {
       if (event.candidate === null) return;
 
-      console.log("Sent ICE candidate:", event.candidate);
       this.scene.socketManager.channel.push("ice", event.candidate);
     };
 
@@ -29,17 +28,14 @@ export default class RTCManager {
     const offer = await this.pc.createOffer();
     await this.pc.setLocalDescription(offer);
 
-    console.log("Sent SDP offer:", offer)
     this.scene.socketManager.channel.push("offer", offer);
   }
 
   async handleAnswer(answer) {
     await this.pc.setRemoteDescription(answer);
-    console.log("Received SDP answer:", answer);
   }
 
   async handleIceCandidate(ice) {
     await this.pc.addIceCandidate(ice);
-    console.log("Received ICE candidate:", ice);
   }
 }

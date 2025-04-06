@@ -6,7 +6,7 @@ export default class PlayerController {
     this.scene = scene;
     this.channel = channel;
 
-    this.sprite = this.scene.physics.add.sprite(100, 100, "player");
+    this.sprite = this.scene.physics.add.sprite(100, 100, "player_front");
     this.sprite.setScale(64 / 350, 48 / 350);
 
     this.setName(userInfo.username);

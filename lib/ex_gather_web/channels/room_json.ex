@@ -10,6 +10,7 @@ defmodule ExGatherWeb.RoomJSON do
     for {_, p} <- players, do: player(p)
   end
 
-  def player(player),
-    do: Map.take(player, [:id, :x, :y, :dir, :state, :username])
+  def player(player) do
+    Map.take(player, ["id", "x", "y", "dir_x", "dir_y", "state", "username"])
+  end
 end

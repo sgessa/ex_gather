@@ -125,6 +125,7 @@ export default class CurrentPlayerAnimator {
   	if (!moved) {
     	// Keep last direction (e.g., idle_down if last moved down)
     	if (this.state == 'walk') {
+    	  newState = 'idle';
       	this.sprite.play(`idle_${newDirection}`, true);
     	}
   	}

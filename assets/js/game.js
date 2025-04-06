@@ -15,9 +15,17 @@ class GameScene extends Phaser.Scene {
     this.players = {};
 
     // Listen for presence events
-    channel.on("presence_diff", diff => {
-      console.log("Presence diff:", diff);
-      this.handlePresenceDiff(diff);
+    channel.on("room_state", data => {
+      this.spawnPlayers(data.players);
+    });
+
+    channel.on("player_join", player => {
+      this.addPlayer(player);
+    });
+
+    channel.on("player_left", player => {
+      this.players[player.id]?.destroy();
+      delete this.players[player.id];
     });
 
     // Listen for movement updates
@@ -48,7 +56,6 @@ class GameScene extends Phaser.Scene {
     channel.join().
       receive("ok", data => {
         this.currentPlayer = new CurrentPlayer(this, channel, data.player);
-        this.spawnPlayers(data.presence_state); // Render existing players
       });
   }
 
@@ -64,10 +71,9 @@ class GameScene extends Phaser.Scene {
 
   // Spawn all players (including the current user)
   spawnPlayers(players) {
-    for (const [id, {metas: [player]}] of Object.entries(players)) {
-      if (id != this.currentPlayer.userId) {  // Skip self
-        this.addPlayer(player);
-      }
+    for (const [id, player] of Object.entries(players)) {
+      console.log("Spawning player:", player);
+      this.addPlayer(player);
     }
   }
 
@@ -85,21 +91,6 @@ class GameScene extends Phaser.Scene {
     player.sprite.setPosition(x, y);
     player.name.setPosition(x, y - 20);
   }
-
-  // Handle presence changes (joins/leaves/updates)
-  handlePresenceDiff(diff) {
-    for (const [id, {metas: [player]}] of Object.entries(diff.joins)) {
-      if (id != this.currentPlayer.userId) {  // Skip self
-        this.addPlayer(player);
-      }
-    }
-
-    // Players who left
-    for (const id of Object.keys(diff.leaves)) {
-      this.players[id]?.destroy();
-      delete this.players[id];
-    }
-  }
 }
 
 token = document.querySelector("meta[name='auth-token']").getAttribute("content");
@@ -107,7 +98,6 @@ socket = new Socket("/socket", { params: { token: token } });
 socket.connect();
 
 let channel = socket.channel("room:lobby", {x: 100, y: 100, dir: "down", state: "idle"});
-presence = new Presence(channel)
 
 window.addEventListener("beforeunload", () => {
   channel.leave();

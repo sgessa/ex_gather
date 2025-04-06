@@ -14,8 +14,8 @@ defmodule ExGather.Application do
       {Phoenix.PubSub, name: ExGather.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: ExGather.Finch},
-      # Presence
-      ExGatherWeb.Presence,
+      # Lobby GenServer
+      {ExGather.Room, name: :"room:lobby"},
       # Start to serve requests, typically the last entry
       ExGatherWeb.Endpoint
     ]

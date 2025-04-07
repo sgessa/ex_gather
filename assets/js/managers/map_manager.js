@@ -23,6 +23,6 @@ export default class MapManager {
     const layer4 = this.map.createLayer('Tile Layer 4', [tileset1, tileset2]);
     const layer5 = this.map.createLayer('Tile Layer 5', [tileset1, tileset2]);
 
-    this.scene.cameras.main.setZoom(5);
+    this.scene.cameras.main.setZoom(1.5);
   }
 }

@@ -24,7 +24,7 @@ defmodule ExGather.Room.RTC do
   # Start client
   #
 
-  def start() do
+  def start_link() do
     try do
       {:ok, pc} =
         PeerConnection.start_link(

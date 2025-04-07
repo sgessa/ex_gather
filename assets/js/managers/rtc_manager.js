@@ -21,7 +21,7 @@ export default class RTCManager {
     this.pc.onicecandidate = event => {
       if (event.candidate === null) return;
 
-      this.scene.socketManager.channel.push("ice", event.candidate);
+      this.scene.socketManager.channel.push("webrtc_ice", event.candidate);
     };
 
     this.pc.addTrack(stream.getAudioTracks()[0]);
@@ -29,7 +29,7 @@ export default class RTCManager {
     const offer = await this.pc.createOffer();
     await this.pc.setLocalDescription(offer);
 
-    this.scene.socketManager.channel.push("offer", offer);
+    this.scene.socketManager.channel.push("webrtc_offer", offer);
   }
 
   async handleAnswer(answer) {

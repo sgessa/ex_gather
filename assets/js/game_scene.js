@@ -61,11 +61,11 @@ export default class GameScene extends Phaser.Scene {
     });
 
     // Listen for RTC negotiation
-    this.socketManager.channel.on("answer", data => {
+    this.socketManager.channel.on("webrtc_answer", data => {
       this.rtcManager.handleAnswer(data);
     });
 
-    this.socketManager.channel.on("ice", data => {
+    this.socketManager.channel.on("webrtc_ice", data => {
       this.rtcManager.handleIceCandidate(data);
     });
   }

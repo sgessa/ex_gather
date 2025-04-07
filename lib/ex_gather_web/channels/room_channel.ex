@@ -20,7 +20,7 @@ defmodule ExGatherWeb.RoomChannel do
 
   @impl true
   def handle_info(:after_join, socket) do
-    {:ok, rtc} = RTC.start()
+    {:ok, rtc} = RTC.start_link()
 
     %{player: player, room_server: room_server} = socket.assigns
     {:ok, player, players} = GenServer.call(room_server, {:join, player, rtc})
@@ -53,17 +53,17 @@ defmodule ExGatherWeb.RoomChannel do
     {:noreply, assign(socket, :player, player)}
   end
 
-  def handle_in("offer", data, socket) do
+  def handle_in("webrtc_offer", data, socket) do
     rtc = socket.assigns.rtc
 
     with {:ok, answer} <- RTC.handle_offer(data, rtc.pid) do
-      push(socket, "answer", answer)
+      push(socket, "webrtc_answer", answer)
     end
 
     {:noreply, socket}
   end
 
-  def handle_in("ice", data, socket) do
+  def handle_in("webrtc_ice", data, socket) do
     rtc = socket.assigns.rtc
 
     RTC.handle_ice(data, rtc.pid)
@@ -76,7 +76,7 @@ defmodule ExGatherWeb.RoomChannel do
 
   defp handle_rtc({:ice_candidate, candidate}, socket) do
     candidate = ExWebRTC.ICECandidate.to_json(candidate)
-    push(socket, "ice", candidate)
+    push(socket, "webrtc_ice", candidate)
   end
 
   defp handle_rtc({:rtp, _id, nil, packet}, socket) do

@@ -1,5 +1,4 @@
 import ActorController from "../controllers/actor_controller";
-
 export default class ActorsManager {
   constructor(scene) {
     this.scene = scene;
@@ -17,7 +16,7 @@ export default class ActorsManager {
 
     // Create sprite (if not exists)
     if (!this.actors[id]) {
-      this.actors[id] = new ActorController(this.scene, username, x, y, dir, state);
+      this.actors[id] = new ActorController(this.scene, id, username, x, y, dir, state);
     }
 
     // Update position

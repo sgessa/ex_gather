@@ -1,7 +1,6 @@
 defmodule ExGatherWeb.RoomChannel do
   use ExGatherWeb, :channel
 
-  alias ExGather.Room.RTC
   alias ExGatherWeb.RoomJSON
 
   @impl true
@@ -20,19 +19,17 @@ defmodule ExGatherWeb.RoomChannel do
 
   @impl true
   def handle_info(:after_join, socket) do
-    {:ok, rtc} = RTC.start_link()
-
     %{player: player, room_server: room_server} = socket.assigns
-    {:ok, player, players} = GenServer.call(room_server, {:join, player, rtc})
+    {:ok, player, players} = GenServer.call(room_server, {:join, player})
 
     push(socket, "room_state", RoomJSON.room_state(players, player))
     broadcast_from!(socket, "player_join", RoomJSON.player(player))
 
-    {:noreply, assign(socket, :rtc, rtc)}
+    {:noreply, socket}
   end
 
-  def handle_info({:ex_webrtc, _from, packet}, socket) do
-    handle_rtc(packet, socket)
+  def handle_info({:push, event, data}, socket) do
+    push(socket, event, data)
     {:noreply, socket}
   end
 
@@ -53,40 +50,42 @@ defmodule ExGatherWeb.RoomChannel do
     {:noreply, assign(socket, :player, player)}
   end
 
-  def handle_in("webrtc_offer", data, socket) do
-    rtc = socket.assigns.rtc
-
-    with {:ok, answer} <- RTC.handle_offer(data, rtc.pid) do
-      push(socket, "webrtc_answer", answer)
-    end
-
-    {:noreply, socket}
-  end
-
-  def handle_in("webrtc_ice", data, socket) do
-    rtc = socket.assigns.rtc
-
-    RTC.handle_ice(data, rtc.pid)
-    {:noreply, socket}
-  end
-
-  #
-  # Handle WebRTC messages
-  #
-
-  defp handle_rtc({:ice_candidate, candidate}, socket) do
-    candidate = ExWebRTC.ICECandidate.to_json(candidate)
-    push(socket, "webrtc_ice", candidate)
-  end
-
-  defp handle_rtc({:rtp, _id, nil, packet}, socket) do
-    rtc = socket.assigns.rtc
+  def handle_in("webrtc_offer", %{"offer" => offer, "player_id" => rctp_id}, socket) do
+    sender = socket.assigns.player
     room_server = socket.assigns.room_server
 
-    GenServer.cast(room_server, {:rtc, rtc, packet})
+    GenServer.cast(
+      room_server,
+      {:push_to, rctp_id, "webrtc_offer", %{"player_id" => sender.id, "offer" => offer}}
+    )
+
+    {:noreply, socket}
   end
 
-  defp handle_rtc(_msg, _socket), do: :ok
+  def handle_in("webrtc_answer", %{"player_id" => recpt_id, "answer" => answer}, socket) do
+    sender = socket.assigns.player
+    room_server = socket.assigns.room_server
+
+    GenServer.cast(
+      room_server,
+      {:push_to, recpt_id, "webrtc_answer", %{"player_id" => sender.id, "answer" => answer}}
+    )
+
+    {:noreply, socket}
+  end
+
+  def handle_in("webrtc_candidate", %{"player_id" => recpt_id, "candidate" => candidate}, socket) do
+    sender = socket.assigns.player
+    room_server = socket.assigns.room_server
+
+    GenServer.cast(
+      room_server,
+      {:push_to, recpt_id, "webrtc_candidate",
+       %{"player_id" => sender.id, "candidate" => candidate}}
+    )
+
+    {:noreply, socket}
+  end
 
   @impl true
   def terminate(_reason, socket) do

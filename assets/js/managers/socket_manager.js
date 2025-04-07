@@ -10,7 +10,6 @@ export default class SocketManager {
     this.socket = new Socket("/socket", { params: { token: this.getToken() } });
     this.socket.connect();
 
-    // x: 100, y: 100, dir: "down", state: "idle" 
     this.channel = this.socket.channel("room:lobby", {});
 
     this.channel.join().
@@ -22,6 +21,10 @@ export default class SocketManager {
       this.channel.leave();
       this.socket.disconnect();
     });
+  }
+
+  push(event, data) {
+    return this.channel.push(event, data);
   }
 
   getToken() {

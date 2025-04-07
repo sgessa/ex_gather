@@ -3,3 +3,23 @@
 @import "tailwindcss/utilities";
 
 /* This file is for your main application CSS */
+#video-container {
+  position: absolute;
+  top: 0;
+  display: flex;
+  padding: 30px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+
+#video-container .video-element {
+  border-radius: 40px;
+  max-width: 250px;
+  margin-right: 15px;
+}
+
+#video-container .video-element.hidden {
+  display: none;
+  visibility: hidden;
+}

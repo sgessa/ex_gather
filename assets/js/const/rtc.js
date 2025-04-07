@@ -1,0 +1,1 @@
+export default TALK_RADIUS = 100;

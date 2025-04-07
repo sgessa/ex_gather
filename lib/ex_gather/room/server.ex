@@ -9,8 +9,8 @@ defmodule ExGather.Room.Server do
     {:ok, %{players: %{}}}
   end
 
-  def handle_call({:join, player, rtc}, _from, state) do
-    player = init_player_state(player, rtc)
+  def handle_call({:join, player}, {from_pid, _ref} = _from, state) do
+    player = init_player_state(player, from_pid)
     players = Map.put(state.players, player["id"], player)
     {:reply, {:ok, player, state.players}, %{state | players: players}}
   end
@@ -26,21 +26,15 @@ defmodule ExGather.Room.Server do
     {:noreply, %{state | players: players}}
   end
 
-  def handle_cast({:rtc, from, packet}, state) do
-    state.players
-    |> Enum.reject(fn {_, p} -> p["rtc"].pid == from.pid end)
-    |> Enum.each(fn {_id, p} ->
-      ExWebRTC.PeerConnection.send_rtp(
-        p["rtc"].pid,
-        p["rtc"].track.id,
-        packet
-      )
-    end)
+  def handle_cast({:push_to, id, event, data}, state) do
+    with %{"socket_pid" => socket_pid} <- state.players[id] do
+      send(socket_pid, {:push, event, data})
+    end
 
     {:noreply, state}
   end
 
-  defp init_player_state(player, rtc) do
+  defp init_player_state(player, socket_pid) do
     %{
       "id" => player.id,
       "username" => player.username,
@@ -49,7 +43,7 @@ defmodule ExGather.Room.Server do
       "dir_x" => "left",
       "dir_y" => "down",
       "state" => "idle",
-      "rtc" => rtc
+      "socket_pid" => socket_pid
     }
   end
 end

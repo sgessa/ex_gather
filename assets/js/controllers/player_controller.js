@@ -1,8 +1,9 @@
 import AnimController from "./anim_controller.js"
+import TALK_RADIUS from "../const/rtc";
 
 export default class PlayerController {
   constructor(scene, channel, userInfo) {
-    this.userId = userInfo.id;
+    this.id = userInfo.id;
     this.scene = scene;
     this.channel = channel;
 
@@ -12,8 +13,15 @@ export default class PlayerController {
     // Set the body size smaller than the sprite for better collision detection
     this.sprite.body.setSize(130, 320);
 
+    this.proximityCollider = this.scene.add.zone(this.sprite.x, this.sprite.y);
+    this.proximityCollider.player = this;
+    this.scene.physics.world.enable(this.proximityCollider);
+    this.proximityCollider.body.setCircle(TALK_RADIUS);
+    this.proximityCollider.setOrigin(TALK_RADIUS, TALK_RADIUS);
+    this.proximityCollider.body.setAllowGravity(false);
+
     // Visual debug
-    // this.scene.physics.world.createDebugGraphic();
+    this.scene.physics.world.createDebugGraphic();
 
     this.setName(userInfo.username);
     this.animator = new AnimController(this.scene, this);
@@ -25,6 +33,8 @@ export default class PlayerController {
 
   update() {
     this.animator.handleUpdate();
+
+    this.proximityCollider.setPosition(this.sprite.x, this.sprite.y);
 
     // Sync the label's position with the player
     this.name.setPosition(this.sprite.x, this.sprite.y - 20);

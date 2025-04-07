@@ -14,11 +14,11 @@ export default class GameScene extends Phaser.Scene {
 
     this.player = null;
 
+    this.socketManager = new SocketManager();
     this.mapManager = new MapManager(this);
     this.actorsManager = new ActorsManager(this);
     this.spritesManager = new SpritesManager(this);
     this.rtcManager = new RTCManager(this);
-    this.socketManager = new SocketManager();
   }
 
   preload() {
@@ -32,7 +32,6 @@ export default class GameScene extends Phaser.Scene {
     this.socketManager.init((data) => {
       this.player = new PlayerController(this, this.socketManager.channel, data.player);
       this.handlePackets();
-      this.rtcManager.init();
     });
   }
 
@@ -49,10 +48,12 @@ export default class GameScene extends Phaser.Scene {
 
     this.socketManager.channel.on("player_join", player => {
       this.actorsManager.spawn(player);
+      this.rtcManager.handleNewPeer(player.id);
     });
 
     this.socketManager.channel.on("player_left", player => {
       this.actorsManager.remove(player);
+      this.rtcManager.handleDisconnect(player.id);
     });
 
     // Listen for movement updates
@@ -61,12 +62,19 @@ export default class GameScene extends Phaser.Scene {
     });
 
     // Listen for RTC negotiation
-    this.socketManager.channel.on("webrtc_answer", data => {
-      this.rtcManager.handleAnswer(data);
+    this.socketManager.channel.on("webrtc_offer", data => {
+      let { player_id, offer } = data;
+      this.rtcManager.handleOffer(player_id, offer);
     });
 
-    this.socketManager.channel.on("webrtc_ice", data => {
-      this.rtcManager.handleIceCandidate(data);
+    this.socketManager.channel.on("webrtc_answer", data => {
+      let { player_id, answer } = data;
+      this.rtcManager.handleAnswer(player_id, answer);
+    });
+
+    this.socketManager.channel.on("webrtc_candidate", data => {
+      let { player_id, candidate } = data;
+      this.rtcManager.handleIceCandidate(player_id, candidate);
     });
   }
 }

@@ -1,5 +1,6 @@
+import TALK_RADIUS from "../const/rtc";
 export default class ActorController {
-  constructor(scene, username, x, y, dirX, dirY, state) {
+  constructor(scene, id, username, x, y, dirX, dirY, state) {
     this.scene = scene;
 
     let preset = dirY == "up" ? "player_back" : "player_front";
@@ -11,7 +12,18 @@ export default class ActorController {
 
     this.dirX = dirX;
     this.dirY = dirY;
+    this.id = id;
+    this.username = username;
     this.state = state;
+
+    // Initialize collisions with player
+    this.inProximity = false;
+    this.proximityCollider = this.scene.add.zone(x, y);
+    this.proximityCollider.actor = this;
+    this.scene.physics.world.enable(this.proximityCollider);
+    this.proximityCollider.body.setCircle(TALK_RADIUS);
+    this.proximityCollider.setOrigin(TALK_RADIUS, TALK_RADIUS);
+    this.proximityCollider.body.setAllowGravity(false);
 
     this.collider = this.scene.physics.add.collider(
       this.scene.player.sprite,
@@ -20,7 +32,6 @@ export default class ActorController {
       null,
       this
     );
-
 
     this.name = this.scene.add.text(x, y - 20, username, {
       fontSize: "16px",
@@ -34,8 +45,35 @@ export default class ActorController {
   }
 
   update() {
+    this.proximityCollider.setPosition(this.sprite.x, this.sprite.y);
+    this.updateProximityState();
+
     // Sync the label's position with the player
     this.name.setPosition(this.sprite.x, this.sprite.y - 20);
+  }
+
+  onProximityEnter() {
+    this.inProximity = true;
+    this.scene.rtcManager.toggleStream(this.id, true);
+  }
+
+  onProximityExit() {
+    this.inProximity = false;
+    this.scene.rtcManager.toggleStream(this.id, false);
+  }
+
+  updateProximityState() {
+    const wasInProximity = this.inProximity;
+    let inProximity = this.scene.physics.world.overlap(
+      this.scene.player.proximityCollider,
+      this.proximityCollider
+    );
+
+    if (wasInProximity && !inProximity) {
+      this.onProximityExit();
+    } else if (!wasInProximity && inProximity) {
+      this.onProximityEnter();
+    }
   }
 
   move(data) {
@@ -71,6 +109,7 @@ export default class ActorController {
   destroy() {
     this.sprite.destroy();
     this.collider.destroy();
+    this.proximityCollider.destroy();
     this.name.destroy();
   }
 }

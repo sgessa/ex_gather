@@ -40,7 +40,7 @@ defmodule ExGather.Schemas.User do
 
     if hash_password? && password && changeset.valid? do
       changeset
-      |> validate_length(:password, max: 72, count: :bytes)
+      |> validate_length(:password, min: 4, max: 72, count: :bytes)
       |> put_change(:hashed_password, Bcrypt.hash_pwd_salt(password))
       |> delete_change(:password)
     else

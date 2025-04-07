@@ -5,7 +5,8 @@ export default class ActorController {
     let preset = dirY == "up" ? "player_back" : "player_front";
     this.sprite = this.scene.physics.add.sprite(x, y, preset);
     this.sprite.body.setImmovable(true);
-    this.sprite.setScale(64 / 350, 48 / 350);
+    this.sprite.setScale(0.182, 0.137);
+    this.sprite.body.setSize(130, 320);
     this.sprite.setPosition(x, y);
 
     this.dirX = dirX;

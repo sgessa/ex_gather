@@ -7,7 +7,13 @@ export default class PlayerController {
     this.channel = channel;
 
     this.sprite = this.scene.physics.add.sprite(100, 100, "player_front");
-    this.sprite.setScale(64 / 350, 48 / 350);
+    this.sprite.setScale(0.182, 0.137);
+
+    // Set the body size smaller than the sprite for better collision detection
+    this.sprite.body.setSize(130, 320);
+
+    // Visual debug
+    // this.scene.physics.world.createDebugGraphic();
 
     this.setName(userInfo.username);
     this.animator = new AnimController(this.scene, this);

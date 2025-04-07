@@ -1,4 +1,5 @@
 import "webrtc-adapter"
+
 export default class RTCManager {
   constructor(scene) {
     this.scene = scene;

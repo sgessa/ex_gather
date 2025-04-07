@@ -42,6 +42,7 @@ defmodule ExGather.MixProject do
       {:phoenix_live_view, "~> 1.0"},
       {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8.3"},
+      {:tailwind, "~> 0.3", runtime: Mix.env() == :dev},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:swoosh, "~> 1.5"},
       {:finch, "~> 0.13"},
@@ -51,7 +52,7 @@ defmodule ExGather.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      {:ex_webrtc, "~> 0.12.0"},
+      {:ex_webrtc, "~> 0.12.0"}
     ]
   end
 
@@ -70,6 +71,7 @@ defmodule ExGather.MixProject do
       "assets.setup": ["esbuild.install --if-missing"],
       "assets.build": ["esbuild ex_gather"],
       "assets.deploy": [
+        "tailwind myproject --minify",
         "esbuild ex_gather --minify",
         "phx.digest"
       ]

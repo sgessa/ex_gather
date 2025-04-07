@@ -25,7 +25,8 @@ config :ex_gather, ExGatherWeb.Endpoint,
   debug_errors: true,
   secret_key_base: "frV1YiBG/zESKNfxY7UlYzOncFru0thjbZXRKzPfdoq0vNjJIBC8j5B8+0og9Xo9",
   watchers: [
-    esbuild: {Esbuild, :install_and_run, [:ex_gather, ~w(--sourcemap=inline --watch)]}
+    esbuild: {Esbuild, :install_and_run, [:ex_gather, ~w(--sourcemap=inline --watch)]},
+    tailwind: {Tailwind, :install_and_run, [:myproject, ~w(--watch)]}
   ]
 
 # ## SSL Support
@@ -82,3 +83,13 @@ config :phoenix_live_view,
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+config :tailwind,
+  version: "4.0.0",
+  myproject: [
+    args: ~w(
+      --input=assets/css/app.css
+      --output=priv/static/assets/css/app.css
+    ),
+    cd: Path.expand("..", __DIR__)
+  ]

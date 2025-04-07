@@ -37,7 +37,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   update() {
-    this.player?.handleUpdate();
+    this.player?.update();
     this.actorsManager?.update();
   }
 

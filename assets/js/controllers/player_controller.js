@@ -17,7 +17,7 @@ export default class PlayerController {
     this.animator.handleCreate();
   }
 
-  handleUpdate() {
+  update() {
     this.animator.handleUpdate();
 
     // Sync the label's position with the player

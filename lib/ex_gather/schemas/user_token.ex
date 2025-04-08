@@ -1,7 +1,7 @@
-defmodule ExGather.Users.UserToken do
+defmodule ExGather.Schemas.UserToken do
   use Ecto.Schema
   import Ecto.Query
-  alias ExGather.Users.UserToken
+  alias ExGather.Schemas.UserToken
 
   @hash_algorithm :sha256
   @rand_size 32
@@ -17,7 +17,7 @@ defmodule ExGather.Users.UserToken do
     field :token, :binary
     field :context, :string
     field :sent_to, :string
-    belongs_to :user, ExGather.Users.User
+    belongs_to :user, ExGather.Schemas.User
 
     timestamps(type: :utc_datetime, updated_at: false)
   end

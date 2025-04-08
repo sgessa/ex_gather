@@ -4,9 +4,11 @@ defmodule ExGather.Users do
   """
 
   import Ecto.Query, warn: false
-  alias ExGather.Repo
 
-  alias ExGather.Users.{User, UserToken, UserNotifier}
+  alias ExGather.Repo
+  alias ExGather.Users.UserNotifier
+  alias ExGather.Schemas.User
+  alias ExGather.Schemas.UserToken
 
   ## Database getters
 

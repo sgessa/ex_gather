@@ -1,2 +1,46 @@
-<div id="game-container">
+<div id="video-group" style="position: absolute; top: 0;"></div>
+<div id="game-container"></div>
+
+<div class="bottom-bar bg-white relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-between">
+  <div class="flex justify-start gap-4 px-4 sm:px-6 lg:px-8">
+    <a href="#" class="text-[0.8125rem] leading-6 text-zinc-900" id="mute-btn">
+      Mute
+    </a>
+
+    <a href="#" class="text-[0.8125rem] leading-6 text-zinc-900" id="screenshare-btn">
+      Share screen
+    </a>
+
+    <a href="#" class="text-[0.8125rem] leading-6 text-zinc-900 hidden" id="screenshare-stop-btn">
+      Stop sharing
+    </a>
+
+    <a href="#" class="text-[0.8125rem] leading-6 text-zinc-900 hidden" id="camera-btn">
+      Enable camera
+    </a>
+
+    <a href="#" class="text-[0.8125rem] leading-6 text-zinc-900" id="camera-stop-btn">
+      Disable camera
+    </a>
+  </div>
+
+  <div class="flex justify-end gap-4 px-4 sm:px-6 lg:px-8">
+    <div class="text-[0.8125rem] leading-6 text-zinc-900">
+      {@current_user.email} ({@current_user.id})
+    </div>
+
+    <.link
+      href={~p"/users/settings"}
+      class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+    >
+      Settings
+    </.link>
+    <.link
+      href={~p"/users/log_out"}
+      method="delete"
+      class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+    >
+      Log out
+    </.link>
+  </div>
 </div>

@@ -5,6 +5,7 @@ import ActorsManager from "./managers/actors_manager";
 import SocketManager from "./managers/socket_manager";
 import SpritesManager from "./managers/sprites_manager";
 import RTCManager from "./managers/rtc_manager";
+import VideoPlayersManager from "./managers/video_players_manager";
 import StreamController from "./controllers/stream_controller";
 import PlayerController from "./controllers/player_controller";
 
@@ -14,7 +15,6 @@ export default class GameScene extends Phaser.Scene {
 
     this.player = null;
 
-    this.streamController = new StreamController(this);
     this.socketManager = new SocketManager();
     this.mapManager = new MapManager(this);
     this.actorsManager = new ActorsManager(this);
@@ -37,6 +37,8 @@ export default class GameScene extends Phaser.Scene {
       this.handlePackets();
 
       // Initialize after connection network dependant managers
+      this.videoPlayersManager = new VideoPlayersManager(this);
+      this.streamController = new StreamController(this);
       this.rtcManager = new RTCManager(this);
     });
 

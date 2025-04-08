@@ -18,7 +18,6 @@ export default class GameScene extends Phaser.Scene {
     this.mapManager = new MapManager(this);
     this.actorsManager = new ActorsManager(this);
     this.spritesManager = new SpritesManager(this);
-    this.rtcManager = new RTCManager(this);
 
     this.lastClickTime = 0;
     this.doubleClickThreshold = 300; // ms
@@ -35,6 +34,9 @@ export default class GameScene extends Phaser.Scene {
     this.socketManager.init((data) => {
       this.player = new PlayerController(this, this.socketManager.channel, data.player);
       this.handlePackets();
+
+      // Initialize after connection network dependant managers
+      this.rtcManager = new RTCManager(this);
     });
 
     // Add this input handler:

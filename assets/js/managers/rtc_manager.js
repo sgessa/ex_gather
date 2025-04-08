@@ -1,4 +1,5 @@
 import "webrtc-adapter"
+import VideoPlayersManager from "./video_players_manager";
 
 export default class RTCManager {
   constructor(scene) {
@@ -11,6 +12,7 @@ export default class RTCManager {
     this.peers = {};
     this.candidateQueue = {};
     this.socketManager = this.scene.socketManager;
+    this.videoPlayersManager = new VideoPlayersManager(this.scene);
   }
 
   async createPeerConnection(actorId) {
@@ -20,15 +22,17 @@ export default class RTCManager {
     this.peers[actorId] = pc;
     this.candidateQueue[actorId] = [];
 
-    this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    this.addPlayerStream();
+    if (!this.stream) {
+      this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      this.videoPlayersManager.create(this.scene.player, this.stream);
+    }
 
     this.stream.getTracks((track) => pc.addTrack(track, this.stream));
     pc.addStream(this.stream);
 
     pc.ontrack = (event) => {
       if (event.track.kind != "video") return;
-      this.addRemoteStream(actorId, event.streams[0]);
+      this.videoPlayersManager.create(this.scene.actorsManager.actors[actorId], event.streams[0]);
     };
 
     // Handle ICE candidates
@@ -39,27 +43,6 @@ export default class RTCManager {
     };
 
     return pc;
-  }
-
-  addPlayerStream() {
-    const videoElement = document.createElement('video');
-    videoElement.id = `video-self`;
-    videoElement.classList = "video-element"
-    videoElement.autoplay = true;
-    videoElement.srcObject = this.stream;
-    videoElement.muted = true;
-
-    document.querySelector("#video-container").appendChild(videoElement);
-  }
-
-  addRemoteStream(actorId, stream) {
-    const videoElement = document.createElement('video');
-    videoElement.id = `video-${actorId}`;
-    videoElement.classList = "video-element"
-    videoElement.autoplay = true;
-    videoElement.srcObject = stream;
-
-    document.querySelector("#video-container").appendChild(videoElement);
   }
 
   async handleNewPeer(actorId) {
@@ -128,26 +111,5 @@ export default class RTCManager {
     if (video) video.remove();
     this.peers[actorId].close();
     delete this.peers[actorId];
-  }
-
-  toggleStream(actorId, toggled) {
-    const video = document.querySelector(`#video-${actorId}`);
-    if (!video) return;
-
-    video.muted = !toggled;
-
-    if (toggled) {
-      video.classList.remove('hidden');
-    } else {
-      video.classList.add('hidden');
-    }
-
-    // Disable player stream if no other streams nearby
-    let remoteVideos = Array.from(document.querySelectorAll('.video-element:not(#video-self)'));
-    if (remoteVideos.some((v) => !v.muted)) {
-      document.querySelector('#video-self').classList.remove('hidden');
-    } else {
-      document.querySelector('#video-self').classList.add('hidden');
-    }
   }
 }

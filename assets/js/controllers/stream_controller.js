@@ -81,6 +81,9 @@ export default class StreamController {
 
     if (toggled) {
       this.stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+      this.stream.getVideoTracks()[0].onended = () => {
+        this.toggleScreenshare(false);
+      };
 
       // Toggle screen sharing state
       document.querySelector("#screenshare-btn").classList.add("hidden");

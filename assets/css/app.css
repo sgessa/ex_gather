@@ -49,13 +49,13 @@
   justify-content: center;
 }
 
-#video-group .video-container.hidden {
-  display: none;
-  visibility: hidden;
-}
-
 .bottom-bar {
   position: absolute;
   bottom: 0;
   width: 100%;
+}
+
+.hidden {
+  display: none;
+  visibility: hidden;
 }

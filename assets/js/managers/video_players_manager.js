@@ -2,8 +2,6 @@ export default class VideoPlayersManager {
   constructor(scene) {
     this.scene = scene;
     this.videoPlayers = {};
-
-    this.videoGroup = document.querySelector("#video-group");
   }
 
   // Instantiates the video player
@@ -51,6 +49,7 @@ export default class VideoPlayersManager {
   // Disable player stream if no other streams nearby
   toggleSelf() {
     const selfVideo = this.videoPlayers[this.scene.player.id];
+    selfVideo.querySelector('.video-player').muted = true;
 
     const remoteVideos = Object.values(this.videoPlayers)
       .filter((p) => p != selfVideo)
@@ -61,5 +60,13 @@ export default class VideoPlayersManager {
     } else {
       selfVideo.classList.add('hidden');
     }
+  }
+
+  // Removes a player
+  delete(actorId) {
+    if (!this.videoPlayers[actorId]) return;
+
+    this.videoPlayers[actorId].remove();
+    delete this.videoPlayers[actorId];
   }
 }

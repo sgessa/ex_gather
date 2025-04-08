@@ -9,7 +9,7 @@ export default class AnimController {
     this.state = 'idle';
     this.dirX = 'left';
     this.dirY = 'down';
-    this.lastPos = { x: this.sprite.x, y: this.sprite.y };
+    this.lastPos = { x: this.sprite.x, y: this.sprite.y, state: this.state };
     // For click movements
     this.moveSpeed = 160;
     this.targetPosition = null; // For click movement
@@ -51,8 +51,6 @@ export default class AnimController {
   handleUpdate() {
     this.sprite.setVelocity(0);
 
-    let oldState = this.state;
-
     if (this.isKeyboardMoving()) {
       this.handleKeyboardMovement();
     } else if (this.targetPosition) {
@@ -61,7 +59,7 @@ export default class AnimController {
       this.setIdle();
     }
 
-    this.broadcastMovement(oldState);
+    this.broadcastMovement();
   }
 
   handleClickMovement() {
@@ -163,19 +161,13 @@ export default class AnimController {
     this.sprite.flipX = this.dirX === 'right';
   }
 
-  broadcastMovement(oldState, oldX, oldY) {
-    // Only send updates if:
-    // 2. State or direction changed
-    // 3. Throttled to 50ms
+  broadcastMovement() {
+    // Only send updates if state or direction changed
     const now = Date.now();
 
-    if (oldState !== this.state ||
+    if (this.lastPos.state !== this.state ||
       this.lastPos.x !== this.sprite.x ||
       this.lastPos.y !== this.sprite.y) {
-
-      if (now - this.lastUpdate > 50) {
-        console.log("Broadcasting movement");
-
         this.scene.socketManager.channel.push("player_move", {
           x: this.sprite.x,
           y: this.sprite.y,
@@ -183,15 +175,8 @@ export default class AnimController {
           dir_y: this.dirY,
           state: this.state
         });
-
-        this.lastUpdate = now;
-      } else {
-        console.log("Movement update skipped");
-      }
-    } else {
-      console.log("State unchanged");
     }
 
-    this.lastPos = { x: this.sprite.x, y: this.sprite.y };
+    this.lastPos = { x: this.sprite.x, y: this.sprite.y, state: this.state };
   }
 }

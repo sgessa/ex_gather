@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "easystarts": "^0.4.5",
     "phaser": "^3.60.0",
     "webrtc-adapter": "^9.0.1"
   }

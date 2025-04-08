@@ -4,7 +4,6 @@ export default class AnimController {
     this.sprite = currentPlayer.sprite;
     this.channel = currentPlayer.channel;
     this.anims = scene.anims;
-    this.cursors = scene.input.keyboard.createCursorKeys();
     this.lastUpdate = 0;
     this.state = 'idle';
     this.dirX = 'left';
@@ -48,19 +47,18 @@ export default class AnimController {
     this.sprite.play("idle_down");
   }
 
-  handleUpdate() {
-    this.sprite.setVelocity(0);
+  // handleUpdate() {
+  //   this.sprite.setVelocity(0);
+  //
+  //   if (this.targetPosition) {
+  //     this.handleClickMovement();
+  //   } else {
+  //     this.setIdle();
+  //   }
+  //
+  //   this.broadcastMovement();
+  // }
 
-    if (this.isKeyboardMoving()) {
-      this.handleKeyboardMovement();
-    } else if (this.targetPosition) {
-      this.handleClickMovement();
-    } else {
-      this.setIdle();
-    }
-
-    this.broadcastMovement();
-  }
 
   handleClickMovement() {
     const dx = this.targetPosition.x - this.sprite.x;
@@ -82,40 +80,6 @@ export default class AnimController {
       // Update animation directly without going through handleUpdate
       this.setMovementFromClick(dx, dy);
     }
-  }
-
-  handleKeyboardMovement() {
-    // Reset target position when using keyboard
-    this.targetPosition = null;
-
-    this.state = 'walk';
-
-    const { left, right, up, down } = this.cursors;
-
-    if (left.isDown) {
-      this.dirX = 'left';
-      this.sprite.flipX = false;
-      this.sprite.setVelocityX(-this.moveSpeed);
-    } else if (right.isDown) {
-      this.dirX = 'right';
-      this.sprite.flipX = true;
-      this.sprite.setVelocityX(this.moveSpeed);
-    }
-
-    if (up.isDown) {
-      this.dirY = 'up';
-      this.sprite.setVelocityY(-this.moveSpeed);
-    } else if (down.isDown) {
-      this.dirY = 'down';
-      this.sprite.setVelocityY(this.moveSpeed);
-    }
-
-    this.sprite.play(`walk_${this.dirY}`, true);
-  }
-
-  isKeyboardMoving() {
-    return this.cursors.left.isDown || this.cursors.right.isDown ||
-      this.cursors.up.isDown || this.cursors.down.isDown;
   }
 
   setMovementFromClick(dx, dy) {
@@ -168,13 +132,13 @@ export default class AnimController {
     if (this.lastPos.state !== this.state ||
       this.lastPos.x !== this.sprite.x ||
       this.lastPos.y !== this.sprite.y) {
-        this.scene.socketManager.channel.push("player_move", {
-          x: this.sprite.x,
-          y: this.sprite.y,
-          dir_x: this.dirX,
-          dir_y: this.dirY,
-          state: this.state
-        });
+      this.scene.socketManager.channel.push("player_move", {
+        x: this.sprite.x,
+        y: this.sprite.y,
+        dir_x: this.dirX,
+        dir_y: this.dirY,
+        state: this.state
+      });
     }
 
     this.lastPos = { x: this.sprite.x, y: this.sprite.y, state: this.state };

@@ -19,9 +19,6 @@ export default class GameScene extends Phaser.Scene {
     this.mapManager = new MapManager(this);
     this.actorsManager = new ActorsManager(this);
     this.spritesManager = new SpritesManager(this);
-
-    this.lastClickTime = 0;
-    this.doubleClickThreshold = 300; // ms
   }
 
   preload() {
@@ -39,21 +36,10 @@ export default class GameScene extends Phaser.Scene {
       // Initialize after connection network dependant managers
       this.rtcManager = new RTCManager(this);
     });
-
-    // Add this input handler:
-    this.input.on('pointerdown', (pointer) => {
-      const currentTime = new Date().getTime();
-
-      if (currentTime - this.lastClickTime < this.doubleClickThreshold) {
-        this.handleDoubleClick(pointer);
-      }
-
-      this.lastClickTime = currentTime;
-    });
   }
 
-  update() {
-    this.player?.update();
+  update(time, delta) {
+    this.player?.update(time, delta);
     this.actorsManager?.update();
   }
 
@@ -95,14 +81,6 @@ export default class GameScene extends Phaser.Scene {
     });
   }
 
-  handleDoubleClick(pointer) {
-    if (!this.player) return;
-
-    const worldPoint = this.cameras.main.getWorldPoint(pointer.x, pointer.y);
-    this.player.moveTo(worldPoint);
-
-    this.showClickMarker(worldPoint);
-  }
 
   showClickMarker(position) {
     // Remove previous marker if exists

@@ -23,7 +23,7 @@ export default class RTCManager {
     this.candidateQueue[actorId] = [];
 
     if (!this.stream) {
-      this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      this.stream = await this.scene.streamController.getStream();
       this.videoPlayersManager.create(this.scene.player, this.stream);
     }
 
@@ -31,6 +31,7 @@ export default class RTCManager {
     pc.addStream(this.stream);
 
     pc.ontrack = (event) => {
+      console.log(event.track.kind, 'recv track');
       if (event.track.kind != "video") return;
       this.videoPlayersManager.create(this.scene.actorsManager.actors[actorId], event.streams[0]);
     };
@@ -106,9 +107,7 @@ export default class RTCManager {
   handleDisconnect(actorId) {
     if (!this.peers[actorId]) return;
 
-    let video = document.querySelector(`#video-${actorId}`)
-
-    if (video) video.remove();
+    this.videoPlayersManager.delete(actorId);
     this.peers[actorId].close();
     delete this.peers[actorId];
   }

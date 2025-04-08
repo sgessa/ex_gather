@@ -54,11 +54,13 @@ export default class ActorController {
 
   onProximityEnter() {
     this.inProximity = true;
+    console.log("Proximity enter with Player", this.id);
     this.scene.rtcManager.toggleStream(this.id, true);
   }
 
   onProximityExit() {
     this.inProximity = false;
+    console.log("Proximity exit with Player", this.id);
     this.scene.rtcManager.toggleStream(this.id, false);
   }
 

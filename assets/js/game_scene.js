@@ -19,6 +19,9 @@ export default class GameScene extends Phaser.Scene {
     this.actorsManager = new ActorsManager(this);
     this.spritesManager = new SpritesManager(this);
     this.rtcManager = new RTCManager(this);
+
+    this.lastClickTime = 0;
+    this.doubleClickThreshold = 300; // ms
   }
 
   preload() {
@@ -32,6 +35,17 @@ export default class GameScene extends Phaser.Scene {
     this.socketManager.init((data) => {
       this.player = new PlayerController(this, this.socketManager.channel, data.player);
       this.handlePackets();
+    });
+
+    // Add this input handler:
+    this.input.on('pointerdown', (pointer) => {
+      const currentTime = new Date().getTime();
+
+      if (currentTime - this.lastClickTime < this.doubleClickThreshold) {
+        this.handleDoubleClick(pointer);
+      }
+
+      this.lastClickTime = currentTime;
     });
   }
 
@@ -75,6 +89,33 @@ export default class GameScene extends Phaser.Scene {
     this.socketManager.channel.on("webrtc_candidate", data => {
       let { player_id, candidate } = data;
       this.rtcManager.handleIceCandidate(player_id, candidate);
+    });
+  }
+
+  handleDoubleClick(pointer) {
+    if (!this.player) return;
+
+    const worldPoint = this.cameras.main.getWorldPoint(pointer.x, pointer.y);
+    this.player.moveTo(worldPoint);
+
+    this.showClickMarker(worldPoint);
+  }
+
+  showClickMarker(position) {
+    // Remove previous marker if exists
+    if (this.clickMarker) this.clickMarker.destroy();
+
+    // Create new marker (green circle with slight transparency)
+    this.clickMarker = this.add.graphics();
+    this.clickMarker.fillStyle(0x00ff00, 0.5);
+    this.clickMarker.fillCircle(position.x, position.y, 8);
+
+    // Fade out after 1 second
+    this.time.delayedCall(1000, () => {
+      if (this.clickMarker) {
+        this.clickMarker.destroy();
+        this.clickMarker = null;
+      }
     });
   }
 }

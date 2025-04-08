@@ -5,11 +5,15 @@ export default class AnimController {
     this.channel = currentPlayer.channel;
     this.anims = scene.anims;
     this.cursors = scene.input.keyboard.createCursorKeys();
-    this.lastPosition = { x: this.sprite.x, y: this.sprite.y };
     this.lastUpdate = 0;
     this.state = 'idle';
     this.dirX = 'left';
     this.dirY = 'down';
+    this.lastPos = { x: this.sprite.x, y: this.sprite.y };
+    // For click movements
+    this.moveSpeed = 160;
+    this.targetPosition = null; // For click movement
+    this.lastBroadcastTime = 0;
   }
 
   handleCreate() {
@@ -45,90 +49,149 @@ export default class AnimController {
   }
 
   handleUpdate() {
-    const { left, right, up, down } = this.cursors;
-    const speed = 160;
-
-    // Reset velocity
     this.sprite.setVelocity(0);
 
-    // Movement logic
-    let moved = false;
-    let newState = this.state;
-    let newDirX = this.dirX;
-    let newDirY = this.dirY;
+    let oldState = this.state;
+
+    if (this.isKeyboardMoving()) {
+      this.handleKeyboardMovement();
+    } else if (this.targetPosition) {
+      this.handleClickMovement();
+    } else {
+      this.setIdle();
+    }
+
+    this.broadcastMovement(oldState);
+  }
+
+  handleClickMovement() {
+    const dx = this.targetPosition.x - this.sprite.x;
+    const dy = this.targetPosition.y - this.sprite.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance < 5) {
+      // Reached target
+      this.targetPosition = null;
+      this.setIdle();
+    } else {
+      // Move toward target
+      const angle = Math.atan2(dy, dx);
+      this.sprite.setVelocity(
+        Math.cos(angle) * this.moveSpeed,
+        Math.sin(angle) * this.moveSpeed
+      );
+
+      // Update animation directly without going through handleUpdate
+      this.setMovementFromClick(dx, dy);
+    }
+  }
+
+  handleKeyboardMovement() {
+    // Reset target position when using keyboard
+    this.targetPosition = null;
+
+    this.state = 'walk';
+
+    const { left, right, up, down } = this.cursors;
 
     if (left.isDown) {
-      moved = true;
-      newDirX = 'left';
-      newState = 'walk';
-
+      this.dirX = 'left';
       this.sprite.flipX = false;
-      this.sprite.setVelocityX(-speed);
+      this.sprite.setVelocityX(-this.moveSpeed);
     } else if (right.isDown) {
-      moved = true;
-      newDirX = 'right';
-      newState = 'walk';
-
+      this.dirX = 'right';
       this.sprite.flipX = true;
-      this.sprite.setVelocityX(speed);
+      this.sprite.setVelocityX(this.moveSpeed);
     }
 
     if (up.isDown) {
-      moved = true;
-      newDirY = 'up';
-      newState = 'walk';
-
-      this.sprite.setVelocityY(-speed);
+      this.dirY = 'up';
+      this.sprite.setVelocityY(-this.moveSpeed);
     } else if (down.isDown) {
-      moved = true;
-      newDirY = 'down';
-      newState = 'walk';
-
-      this.sprite.setVelocityY(speed);
+      this.dirY = 'down';
+      this.sprite.setVelocityY(this.moveSpeed);
     }
 
-    if (moved) {
-      this.sprite.play(`walk_${newDirY}`, true);
-    } else {
-      newState = "idle";
+    this.sprite.play(`walk_${this.dirY}`, true);
+  }
 
-      // Keep last direction (e.g., idle_down if last moved down)
-      if (this.state === "walk") {
-        this.sprite.play(`idle_${newDirY}`, true);
+  isKeyboardMoving() {
+    return this.cursors.left.isDown || this.cursors.right.isDown ||
+      this.cursors.up.isDown || this.cursors.down.isDown;
+  }
+
+  setMovementFromClick(dx, dy) {
+    // Calculate the absolute values for comparison
+    const absDx = Math.abs(dx);
+    const absDy = Math.abs(dy);
+
+    // Determine if movement is more horizontal or vertical
+    const isPrimaryHorizontal = absDx > absDy * 1.5; // 1.5:1 ratio threshold
+    const isPrimaryVertical = absDy > absDx * 1.5;
+
+    if (isPrimaryHorizontal) {
+      // Clearly horizontal movement
+      this.dirX = dx > 0 ? 'right' : 'left';
+      this.dirY = 'down'; // Default vertical direction
+    } else if (isPrimaryVertical) {
+      // Clearly vertical movement
+      this.dirY = dy > 0 ? 'down' : 'up';
+      // Maintain current horizontal direction
+    } else {
+      // Diagonal movement - combine directions
+      this.dirX = dx > 0 ? 'right' : 'left';
+      this.dirY = dy > 0 ? 'down' : 'up';
+
+      // For diagonals, prioritize the more dominant axis
+      if (absDx > absDy) {
+        this.dirY = 'down'; // Flatten the diagonal slightly
       }
     }
 
+    this.state = 'walk';
+    this.updateAnimation();
+  }
+
+  setIdle() {
+    this.state = 'idle';
+    this.updateAnimation();
+  }
+
+  updateAnimation() {
+    const animKey = `${this.state}_${this.dirY}`;
+    this.sprite.play(animKey, true);
+    this.sprite.flipX = this.dirX === 'right';
+  }
+
+  broadcastMovement(oldState, oldX, oldY) {
     // Only send updates if:
-    // 1. Player moved significantly (>5px)
-    // 2. Animation/direction changed
+    // 2. State or direction changed
     // 3. Throttled to 50ms
     const now = Date.now();
 
-    const distanceMoved = Phaser.Math.Distance.Between(
-      this.sprite.x, this.sprite.y,
-      this.lastPosition.x, this.lastPosition.y
-    );
-
-    if ((moved && distanceMoved > 5) ||
-      newState !== this.state ||
-      newDirX !== this.dirX ||
-      newDirY !== this.dirY) {
+    if (oldState !== this.state ||
+      this.lastPos.x !== this.sprite.x ||
+      this.lastPos.y !== this.sprite.y) {
 
       if (now - this.lastUpdate > 50) {
+        console.log("Broadcasting movement");
+
         this.scene.socketManager.channel.push("player_move", {
           x: this.sprite.x,
           y: this.sprite.y,
-          dir_x: newDirX,
-          dir_y: newDirY,
-          state: newState
+          dir_x: this.dirX,
+          dir_y: this.dirY,
+          state: this.state
         });
 
-        this.lastPosition = { x: this.sprite.x, y: this.sprite.y };
-        this.state = newState;
-        this.dirX = newDirX;
-        this.dirY = newDirY;
         this.lastUpdate = now;
+      } else {
+        console.log("Movement update skipped");
       }
+    } else {
+      console.log("State unchanged");
     }
+
+    this.lastPos = { x: this.sprite.x, y: this.sprite.y };
   }
 }

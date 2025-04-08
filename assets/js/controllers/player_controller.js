@@ -32,12 +32,17 @@ export default class PlayerController {
   }
 
   update() {
-    this.animator.handleUpdate();
-
     this.proximityCollider.setPosition(this.sprite.x, this.sprite.y);
 
     // Sync the label's position with the player
     this.name.setPosition(this.sprite.x, this.sprite.y - 20);
+
+    // Sync movements
+    this.animator.handleUpdate();
+  }
+
+  moveTo(position) {
+    this.animator.targetPosition = position;
   }
 
   setName(userName) {

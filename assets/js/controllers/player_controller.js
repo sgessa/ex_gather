@@ -17,12 +17,12 @@ export default class PlayerController {
 
     this.proximityController = new PlayerProximityController(this);
     this.tagController = new PlayerTagController(this);
-    this.animController = new PlayerAnimController(this);
 
     this.scene.cameras.main.startFollow(this.sprite);
     this.movementController = new PlayerMovementController(this, startTile);
+    this.animController = new PlayerAnimController(this);
 
-    // this.animator.handleCreate();
+    this.animController.handleCreate();
   }
 
   createSprite(startTile) {
@@ -38,13 +38,15 @@ export default class PlayerController {
     // Set the body size smaller than the sprite for better collision detection
     sprite.body.setSize(130, 320);
 
+    const depthValue = sprite.y + this.mapManager.getDepth(startTile);
+    sprite.setDepth(depthValue);
+
     return sprite;
   }
 
   update(time, delta) {
-    // Sync movements
-    // this.animatorController.handleUpdate();
     this.movementController.handleUpdate(time, delta);
+    this.animController.handleUpdate();
     this.tagController.handleUpdate();
     this.proximityController.handleUpdate();
   }

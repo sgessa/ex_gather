@@ -13,9 +13,8 @@ export default class PlayerTagController {
     // Create a text object to display the player's name
     this.name = this.scene.add.text(0, 0, username, TAG_STYLE);
 
+    this.name.setDepth(2000);
     this.name.setOrigin(0.5, 1);
-    this.name.setDepth(this.player.sprite.depth);
-    this.handleUpdate();
   }
 
   handleUpdate() {

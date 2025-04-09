@@ -1,4 +1,4 @@
-import { TALK_RADIUS } from "../../const/player_const";
+import { TALK_RADIUS, PROXIMITY_OFFSET } from "../../const/player_const"
 
 export default class ActorProximityController {
   constructor(actor) {
@@ -16,20 +16,20 @@ export default class ActorProximityController {
     this.scene.physics.world.enable(proximityCollider);
 
     proximityCollider.body.setCircle(TALK_RADIUS);
-    proximityCollider.setOrigin(TALK_RADIUS, TALK_RADIUS);
+    proximityCollider.setOrigin(TALK_RADIUS - PROXIMITY_OFFSET, TALK_RADIUS + PROXIMITY_OFFSET);
     proximityCollider.body.setAllowGravity(false);
 
     return proximityCollider;
   }
 
   handleUpdate() {
-    if (!this.scene.player.proximityCollider || !this.proximityCollider) return;
+    if (!this.scene.player.proximityController || !this.proximityCollider) return;
 
     this.proximityCollider.setPosition(this.actor.sprite.x, this.actor.sprite.y);
 
     const wasInProximity = this.inProximity;
     let inProximity = this.scene.physics.world.overlap(
-      this.scene.player.proximityCollider,
+      this.scene.player.proximityController.proximityCollider,
       this.proximityCollider
     );
 
@@ -41,13 +41,15 @@ export default class ActorProximityController {
   }
 
   onProximityEnter() {
+    console.log("Proximity enter", this.actor);
     this.inProximity = true;
-    this.scene.rtcManager.videoPlayersManager.toggle(this);
+    this.scene.rtcManager.videoPlayersManager.toggle(this.actor);
   }
 
   onProximityExit() {
+    console.log("Proximity exit", this.actor);
     this.inProximity = false;
-    this.scene.rtcManager.videoPlayersManager.toggle(this);
+    this.scene.rtcManager.videoPlayersManager.toggle(this.actor);
   }
 
   destroy() {

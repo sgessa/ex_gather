@@ -1,4 +1,5 @@
 import { MOVE_UPDATE_DELTA } from "../../const/player_const";
+
 export default class PlayerMovementController {
   constructor(player, startTile) {
     this.player = player;
@@ -43,14 +44,13 @@ export default class PlayerMovementController {
         if (tile) {
           this.sTile = tile;
           this.player.sprite.setPosition(tile.pixelX, tile.pixelY + this.mapManager.getDepth(tile));
+
+          // Isometric depth sorting
+          const depthValue = this.player.sprite.y + this.mapManager.getDepth(this.sTile);
+          this.player.sprite.setDepth(depthValue);
         }
       }
     }
-
-    // Isometric depth sorting
-    const depthValue = this.player.sprite.y + this.mapManager.getDepth(this.sTile);
-    this.player.sprite.setDepth(depthValue);
-    this.player.tagController.name.setDepth(depthValue + 1);
   }
 
   // Updates marker position when cursor moves

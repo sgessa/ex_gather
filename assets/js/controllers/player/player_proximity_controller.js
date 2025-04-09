@@ -21,6 +21,5 @@ export default class PlayerProximityController {
 
   handleUpdate() {
     this.proximityCollider.setPosition(this.player.sprite.x, this.player.sprite.y);
-    this.proximityCollider.body.u
   }
 }

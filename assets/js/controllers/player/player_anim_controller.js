@@ -1,6 +1,7 @@
 export default class PlayerAnimController {
   constructor(player) {
     this.player = player;
+    this.movementController = this.player.movementController;
     this.scene = this.player.scene;
     this.sprite = this.player.sprite;
     this.channel = this.player.channel;
@@ -23,7 +24,7 @@ export default class PlayerAnimController {
     this.anims.create({
       key: "idle_down",
       frames: this.anims.generateFrameNumbers("player_front", { start: 0, end: 1 }),
-      frameRate: 8,
+      frameRate: 5,
       repeat: -1
     });
 
@@ -51,76 +52,37 @@ export default class PlayerAnimController {
     this.sprite.play("idle_down");
   }
 
-  // handleUpdate() {
-  //   this.sprite.setVelocity(0);
-  //
-  //   if (this.targetPosition) {
-  //     this.handleClickMovement();
-  //   } else {
-  //     this.setIdle();
-  //   }
-  //
-  //   this.broadcastMovement();
-  // }
+  handleUpdate() {
+    if (this.movementController.path.length > 0) {
+      const nextPoint = this.movementController.path[0];
+      const dx = nextPoint.x - this.movementController.sTile.x;
+      const dy = nextPoint.y - this.movementController.sTile.y;
 
-
-  handleClickMovement() {
-    const dx = this.targetPosition.x - this.sprite.x;
-    const dy = this.targetPosition.y - this.sprite.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-
-    if (distance < 5) {
-      // Reached target
-      this.targetPosition = null;
-      this.setIdle();
-    } else {
-      // Move toward target
-      const angle = Math.atan2(dy, dx);
-      this.sprite.setVelocity(
-        Math.cos(angle) * this.moveSpeed,
-        Math.sin(angle) * this.moveSpeed
-      );
-
-      // Update animation directly without going through handleUpdate
-      this.setMovementFromClick(dx, dy);
-    }
-  }
-
-  setMovementFromClick(dx, dy) {
-    // Calculate the absolute values for comparison
-    const absDx = Math.abs(dx);
-    const absDy = Math.abs(dy);
-
-    // Determine if movement is more horizontal or vertical
-    const isPrimaryHorizontal = absDx > absDy * 1.5; // 1.5:1 ratio threshold
-    const isPrimaryVertical = absDy > absDx * 1.5;
-
-    if (isPrimaryHorizontal) {
-      // Clearly horizontal movement
-      this.dirX = dx > 0 ? 'right' : 'left';
-      this.dirY = 'down'; // Default vertical direction
-    } else if (isPrimaryVertical) {
-      // Clearly vertical movement
-      this.dirY = dy > 0 ? 'down' : 'up';
-      // Maintain current horizontal direction
-    } else {
-      // Diagonal movement - combine directions
-      this.dirX = dx > 0 ? 'right' : 'left';
-      this.dirY = dy > 0 ? 'down' : 'up';
-
-      // For diagonals, prioritize the more dominant axis
-      if (absDx > absDy) {
-        this.dirY = 'down'; // Flatten the diagonal slightly
+      // Diagonal movement
+      if (dx !== 0 && dy !== 0) {
+        this.state = 'walk';
+        this.dirX = dx > 0 ? 'right' : 'left';
+        this.dirY = dy > 0 ? 'down' : 'up';
+        // You might want a special diagonal animation here
       }
+      // Existing horizontal/vertical movement
+      else if (dx !== 0) {
+        this.state = 'walk';
+        this.dirX = dx > 0 ? 'right' : 'left';
+      } else if (dy !== 0) {
+        this.state = 'walk';
+        this.dirY = dy > 0 ? 'down' : 'up';
+      }
+    } else {
+      this.setIdle();
     }
 
-    this.state = 'walk';
     this.updateAnimation();
+    this.broadcastMovement();
   }
 
   setIdle() {
     this.state = 'idle';
-    this.updateAnimation();
   }
 
   updateAnimation() {
@@ -131,20 +93,15 @@ export default class PlayerAnimController {
 
   broadcastMovement() {
     // Only send updates if state or direction changed
-    const now = Date.now();
 
-    if (this.lastPos.state !== this.state ||
-      this.lastPos.x !== this.sprite.x ||
-      this.lastPos.y !== this.sprite.y) {
-      this.scene.socketManager.channel.push("player_move", {
-        x: this.sprite.x,
-        y: this.sprite.y,
-        dir_x: this.dirX,
-        dir_y: this.dirY,
-        state: this.state
-      });
-    }
+    this.scene.socketManager.channel.push("player_move", {
+      x: this.movementController.sTile.x,
+      y: this.movementController.sTile.y,
+      dir_x: this.dirX,
+      dir_y: this.dirY,
+      state: this.state
+    });
 
-    this.lastPos = { x: this.sprite.x, y: this.sprite.y, state: this.state };
+    // this.lastPos = { x: this.sprite.x, y: this.sprite.y, state: this.state };
   }
 }

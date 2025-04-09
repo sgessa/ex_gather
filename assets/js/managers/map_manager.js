@@ -5,7 +5,10 @@ export default class MapManager {
   constructor(scene) {
     this.scene = scene;
     this.map = null;
+
     this.aStar = new EasyStar();
+    this.aStar.enableDiagonals();
+    this.aStar.disableCornerCutting();
   }
 
   preload() {

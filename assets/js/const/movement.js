@@ -1,1 +1,0 @@
-export default UPDATE_DELTA = 200;

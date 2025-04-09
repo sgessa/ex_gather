@@ -1,5 +1,4 @@
 import PlayerAnimController from "./player/player_anim_controller.js"
-import TALK_RADIUS from "../const/rtc";
 import PlayerMovementController from "./player/player_movement_controller.js";
 import PlayerTagController from "./player/player_tag_controller.js";
 import PlayerProximityController from "./player/player_proximity_controller.js";

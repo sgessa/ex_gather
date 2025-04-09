@@ -1,4 +1,4 @@
-import TALK_RADIUS from "../const/rtc";
+import { TALK_RADIUS } from "../const/player_const";
 export default class ActorController {
   constructor(scene, id, username, x, y, dirX, dirY, state) {
     this.scene = scene;

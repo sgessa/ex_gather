@@ -1,5 +1,4 @@
-import UPDATE_DELTA from "../../const/movement";
-
+import { MOVE_UPDATE_DELTA } from "../../const/player_const";
 export default class PlayerMovementController {
   constructor(player, startTile) {
     this.player = player;
@@ -29,7 +28,7 @@ export default class PlayerMovementController {
   handleUpdate(time, delta) {
     this.frameTime += delta;
 
-    if (this.frameTime > UPDATE_DELTA) {
+    if (this.frameTime > MOVE_UPDATE_DELTA) {
       this.frameTime = 0;
 
       if (this.path.length > 0) {

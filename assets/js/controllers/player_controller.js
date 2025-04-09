@@ -118,8 +118,8 @@ export default class PlayerController {
   }
 
   onPointerMove = (e) => {
-    const px = this.scene.cameras.main.worldView.x + e.x - 32;
-    const py = this.scene.cameras.main.worldView.y + e.y;
+    const px = this.scene.cameras.main.worldView.x + e.x;
+    const py = this.scene.cameras.main.worldView.y + e.y + 42;
 
     const tile = this.mapManager.getTile(
       px,

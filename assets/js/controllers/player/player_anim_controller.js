@@ -1,14 +1,18 @@
-export default class AnimController {
-  constructor(scene, currentPlayer) {
-    this.scene = scene;
-    this.sprite = currentPlayer.sprite;
-    this.channel = currentPlayer.channel;
-    this.anims = scene.anims;
+export default class PlayerAnimController {
+  constructor(player) {
+    this.player = player;
+    this.scene = this.player.scene;
+    this.sprite = this.player.sprite;
+    this.channel = this.player.channel;
+
+    this.anims = this.scene.anims;
+
     this.lastUpdate = 0;
     this.state = 'idle';
     this.dirX = 'left';
     this.dirY = 'down';
     this.lastPos = { x: this.sprite.x, y: this.sprite.y, state: this.state };
+
     // For click movements
     this.moveSpeed = 160;
     this.targetPosition = null; // For click movement

@@ -36,6 +36,9 @@ export default class GameScene extends Phaser.Scene {
       // Initialize after connection network dependant managers
       this.rtcManager = new RTCManager(this);
     });
+
+    // Visual debug
+    this.physics.world.createDebugGraphic();
   }
 
   update(time, delta) {

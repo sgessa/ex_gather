@@ -12,8 +12,7 @@ export default class PlayerController {
 
     this.mapManager = this.scene.mapManager;
 
-    // TODO: fetch from backend
-    let startTile = this.scene.mapManager.bottomLayer.getTileAt(4, 16)
+    let startTile = this.scene.mapManager.bottomLayer.getTileAt(user.x, user.y)
     this.sprite = this.createSprite(startTile);
 
     this.proximityController = new PlayerProximityController(this);

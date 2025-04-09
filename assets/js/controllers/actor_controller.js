@@ -10,6 +10,8 @@ export default class ActorController {
     this.id = actor.id;
     this.username = actor.username;
     this.state = actor.state;
+    this.x = actor.x;
+    this.y = actor.y;
 
     this.sprite = this.createSprite();
     this.collider = this.createCollider();
@@ -19,13 +21,14 @@ export default class ActorController {
   }
 
   createSprite() {
+    let startTile = this.scene.mapManager.bottomLayer.getTileAt(this.x, this.y)
     let preset = this.dirY == "up" ? "player_back" : "player_front";
-    let sprite = this.scene.physics.add.sprite(this.x, this.y, preset);
+    let sprite = this.scene.physics.add.sprite(startTile.pixelX, startTile.pixelY, preset);
 
     sprite.body.setImmovable(true);
     sprite.setScale(0.182, 0.137);
     sprite.body.setSize(130, 320);
-    sprite.setPosition(this.x, this.y);
+    sprite.setPosition(startTile.pixelX, startTile.pixelY);
 
     return sprite;
   }
@@ -80,6 +83,6 @@ export default class ActorController {
     this.sprite.destroy();
     this.collider.destroy();
     this.proximityController.destroy();
-    this.name.destroy();
+    this.tagController.destroy();
   }
 }

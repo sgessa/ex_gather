@@ -11,7 +11,7 @@ export default class ActorProximityController {
 
   create() {
     // Initialize collisions with player
-    let proximityCollider = this.scene.add.zone(this.actor.x, this.actor.y);
+    let proximityCollider = this.scene.add.zone(this.actor.sprite.x, this.actor.sprite.y);
     proximityCollider.actor = this.actor;
     this.scene.physics.world.enable(proximityCollider);
 

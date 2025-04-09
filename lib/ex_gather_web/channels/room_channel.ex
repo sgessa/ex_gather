@@ -6,23 +6,22 @@ defmodule ExGatherWeb.RoomChannel do
   @impl true
   def join("room:" <> _room = room_name, _payload, socket) do
     player = socket.assigns.player
+    room_server = :"#{room_name}"
 
     socket =
       socket
       |> assign(:player, player)
-      |> assign(:room_server, :"#{room_name}")
+      |> assign(:room_server, room_server)
 
-    send(self(), :after_join)
+    {:ok, player, players} = GenServer.call(room_server, {:join, player})
+    send(self(), {:after_join, player, players})
 
-    {:ok, %{player: player}, socket}
+    {:ok, %{player: RoomJSON.player(player)}, socket}
   end
 
   @impl true
-  def handle_info(:after_join, socket) do
-    %{player: player, room_server: room_server} = socket.assigns
-    {:ok, player, players} = GenServer.call(room_server, {:join, player})
-
-    push(socket, "room_state", RoomJSON.room_state(players, player))
+  def handle_info({:after_join, player, players}, socket) do
+    push(socket, "room_state", RoomJSON.room_state(players))
     broadcast_from!(socket, "player_join", RoomJSON.player(player))
 
     {:noreply, socket}

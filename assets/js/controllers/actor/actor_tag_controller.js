@@ -18,4 +18,8 @@ export default class ActorTagController {
   handleUpdate() {
     this.name.setPosition(this.actor.sprite.x, this.actor.sprite.y - 20);
   }
+
+  destroy() {
+    this.name.destroy();
+  }
 }

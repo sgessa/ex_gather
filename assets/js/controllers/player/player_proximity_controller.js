@@ -1,4 +1,5 @@
-import { TALK_RADIUS, PROXIMITY_OFFSET } from "../../const/player_const";
+import { TALK_RADIUS, PROXIMITY_OFFSET } from "../../const/player_const"
+
 export default class PlayerProximityController {
   constructor(player) {
     this.player = player;

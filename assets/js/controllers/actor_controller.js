@@ -1,79 +1,49 @@
-import { TALK_RADIUS } from "../const/player_const";
+import ActorProximityController from "./actor/actor_proximity_controller";
+import ActorTagController from "./actor/actor_tag_controller";
+
 export default class ActorController {
-  constructor(scene, id, username, x, y, dirX, dirY, state) {
+  constructor(scene, actor) {
     this.scene = scene;
 
-    let preset = dirY == "up" ? "player_back" : "player_front";
-    this.sprite = this.scene.physics.add.sprite(x, y, preset);
-    this.sprite.body.setImmovable(true);
-    this.sprite.setScale(0.182, 0.137);
-    this.sprite.body.setSize(130, 320);
-    this.sprite.setPosition(x, y);
+    this.dirX = actor.dirX;
+    this.dirY = actor.dirY;
+    this.id = actor.id;
+    this.username = actor.username;
+    this.state = actor.state;
 
-    this.dirX = dirX;
-    this.dirY = dirY;
-    this.id = id;
-    this.username = username;
-    this.state = state;
+    this.sprite = this.createSprite();
+    this.collider = this.createCollider();
 
-    // Initialize collisions with player
-    this.inProximity = false;
-    this.proximityCollider = this.scene.add.zone(x, y);
-    this.proximityCollider.actor = this;
-    this.scene.physics.world.enable(this.proximityCollider);
-    this.proximityCollider.body.setCircle(TALK_RADIUS);
-    this.proximityCollider.setOrigin(TALK_RADIUS, TALK_RADIUS);
-    this.proximityCollider.body.setAllowGravity(false);
+    this.proximityController = new ActorProximityController(this);
+    this.tagController = new ActorTagController(this);
+  }
 
-    this.collider = this.scene.physics.add.collider(
+  createSprite() {
+    let preset = this.dirY == "up" ? "player_back" : "player_front";
+    let sprite = this.scene.physics.add.sprite(this.x, this.y, preset);
+
+    sprite.body.setImmovable(true);
+    sprite.setScale(0.182, 0.137);
+    sprite.body.setSize(130, 320);
+    sprite.setPosition(this.x, this.y);
+
+    return sprite;
+  }
+
+  createCollider() {
+    return this.scene.physics.add.collider(
       this.scene.player.sprite,
       this.sprite,
       null,
       null,
       this
     );
-
-    this.name = this.scene.add.text(x, y - 20, username, {
-      fontSize: "16px",
-      color: "#FFFF00",
-      stroke: "#000000",
-      strokeThickness: 2,
-    });
-
-    this.name.setOrigin(0.5, 1);
-    this.name.setPosition(x, y - 20);
   }
 
   update() {
-    this.proximityCollider.setPosition(this.sprite.x, this.sprite.y);
-    this.updateProximityState();
-
+    this.proximityController.handleUpdate();
+    this.tagController.handleUpdate();
     // Sync the label's position with the player
-    this.name.setPosition(this.sprite.x, this.sprite.y - 20);
-  }
-
-  onProximityEnter() {
-    this.inProximity = true;
-    this.scene.rtcManager.videoPlayersManager.toggle(this);
-  }
-
-  onProximityExit() {
-    this.inProximity = false;
-    this.scene.rtcManager.videoPlayersManager.toggle(this);
-  }
-
-  updateProximityState() {
-    const wasInProximity = this.inProximity;
-    let inProximity = this.scene.physics.world.overlap(
-      this.scene.player.proximityCollider,
-      this.proximityCollider
-    );
-
-    if (wasInProximity && !inProximity) {
-      this.onProximityExit();
-    } else if (!wasInProximity && inProximity) {
-      this.onProximityEnter();
-    }
   }
 
   move(data) {
@@ -109,7 +79,7 @@ export default class ActorController {
   destroy() {
     this.sprite.destroy();
     this.collider.destroy();
-    this.proximityCollider.destroy();
+    this.proximityController.destroy();
     this.name.destroy();
   }
 }

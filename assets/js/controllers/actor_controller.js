@@ -1,5 +1,6 @@
 import ActorProximityController from "./actor/actor_proximity_controller";
 import ActorTagController from "./actor/actor_tag_controller";
+import { SPRITE_OFFSET } from "../const/player_const";
 
 export default class ActorController {
   constructor(scene, actor) {
@@ -23,12 +24,17 @@ export default class ActorController {
   }
 
   createSprite() {
-    let startTile = this.mapManager.bottomLayer.getTileAt(this.x, this.y)
+    let startTile = this.mapManager.getTileAt(this.x, this.y, [
+      this.mapManager.bottomLayer,
+      this.mapManager.midLayer,
+      this.mapManager.topLayer,
+    ]);
+
     let preset = this.dirY == "up" ? "player_back" : "player_front";
 
     const depth = this.mapManager.getDepth(startTile);
     let sprite = this.scene.physics.add.sprite(0, 0, preset);
-    sprite.setOrigin(0, 1);
+    sprite.setOrigin(0, 1 + SPRITE_OFFSET);
     sprite.body.setImmovable(true);
     sprite.setScale(0.182, 0.137);
     sprite.body.setSize(130, 320);

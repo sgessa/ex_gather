@@ -43,7 +43,6 @@ export default class PlayerMovementController {
 
         if (tile) {
           this.sTile = tile;
-          console.log("Moving to tile: ", tile);
           this.player.sprite.setPosition(tile.pixelX, tile.pixelY + this.mapManager.getDepth(tile) + 1);
 
           // Isometric depth sorting
@@ -54,35 +53,6 @@ export default class PlayerMovementController {
     }
   }
 
-  // Updates marker position when cursor moves
-  // updateMarker = (e) => {
-  //   const px = this.scene.cameras.main.worldView.x + e.x;
-  //   const py = this.scene.cameras.main.worldView.y + e.y + 42;
-  //
-  //   const tile = this.mapManager.getTile(
-  //     px,
-  //     py,
-  //     [
-  //       this.mapManager.bottomLayer,
-  //       this.mapManager.midLayer,
-  //       this.mapManager.topLayer,
-  //     ]
-  //   );
-  //
-  //   if (tile && tile.properties.walkable) {
-  //     this.marker.setPosition(
-  //       tile.pixelX,
-  //       tile.pixelY + this.mapManager.getDepth(tile)
-  //     );
-  //
-  //     this.marker.setDepth(tile.pixelY + this.mapManager.getDepth(tile) + 1);
-  //
-  //     this.marker.visible = true;
-  //     this.dTile = tile;
-  //   } else {
-  //     this.marker.visible = false;
-  //   }
-  // };
   updateMarker = (e) => {
     // Get camera-adjusted pointer position
     const camera = this.player.scene.cameras.main;
@@ -100,7 +70,6 @@ export default class PlayerMovementController {
     );
 
     if (tile && tile.properties.walkable) {
-      console.log("Marker Tile: ", tile);
       this.marker.setPosition(
         tile.pixelX,
         tile.pixelY + this.mapManager.getDepth(tile)

@@ -1,4 +1,4 @@
-import { TAG_STYLE } from "../../const/player_const";
+import { TAG_OFFSET, TAG_STYLE } from "../../const/player_const";
 
 export default class PlayerTagController {
   constructor(player) {
@@ -14,7 +14,7 @@ export default class PlayerTagController {
     this.name = this.scene.add.text(0, 0, username, TAG_STYLE);
 
     this.name.setDepth(2000);
-    this.name.setOrigin(0.5, 1);
+    this.name.setOrigin(0.5, 1 + TAG_OFFSET);
   }
 
   handleUpdate() {

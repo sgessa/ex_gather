@@ -53,25 +53,28 @@ export default class PlayerAnimController {
   }
 
   handleUpdate() {
-    if (this.movementController.path.length > 0) {
-      const nextPoint = this.movementController.path[0];
-      const dx = nextPoint.x - this.movementController.sTile.x;
-      const dy = nextPoint.y - this.movementController.sTile.y;
+    // Use the movement controller's isMoving state
+    if (this.player.movementController.isMoving) {
+      const dx = this.player.movementController.targetPosition.x - this.player.sprite.x;
+      const dy = this.player.movementController.targetPosition.y - this.player.sprite.y;
 
       // Diagonal movement
-      if (dx !== 0 && dy !== 0) {
+      if (Math.abs(dx) > 0.1 && Math.abs(dy) > 0.1) {
         this.state = 'walk';
         this.dirX = dx > 0 ? 'right' : 'left';
         this.dirY = dy > 0 ? 'down' : 'up';
-        // You might want a special diagonal animation here
       }
-      // Existing horizontal/vertical movement
-      else if (dx !== 0) {
+      // Horizontal movement
+      else if (Math.abs(dx) > 0.1) {
         this.state = 'walk';
         this.dirX = dx > 0 ? 'right' : 'left';
-      } else if (dy !== 0) {
+        this.dirY = 'down'; // Default vertical direction
+      }
+      // Vertical movement
+      else if (Math.abs(dy) > 0.1) {
         this.state = 'walk';
         this.dirY = dy > 0 ? 'down' : 'up';
+        this.dirX = 'left'; // Default horizontal direction
       }
     } else {
       this.setIdle();

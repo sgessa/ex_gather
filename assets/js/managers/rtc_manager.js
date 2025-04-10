@@ -1,5 +1,4 @@
 import "webrtc-adapter"
-import VideoPlayersManager from "./video_players_manager";
 
 export default class RTCManager {
   constructor(scene) {
@@ -12,28 +11,38 @@ export default class RTCManager {
     this.peers = {};
     this.candidateQueue = {};
     this.socketManager = this.scene.socketManager;
-    this.videoPlayersManager = new VideoPlayersManager(this.scene);
+    this.videoPlayersManager = this.scene.videoPlayersManager;
   }
 
   async createPeerConnection(actorId) {
-    if (this.peers[actorId]) return this.peers[actorId];
+    let pc = this.peers[actorId];
 
-    const pc = new RTCPeerConnection(this.config);
-    this.peers[actorId] = pc;
-    this.candidateQueue[actorId] = [];
-
-    if (!this.stream) {
-      this.stream = await this.scene.streamController.getStream();
-      this.videoPlayersManager.create(this.scene.player, this.stream);
+    if (!pc) {
+      pc = new RTCPeerConnection(this.config);
+      this.peers[actorId] = pc;
+      this.candidateQueue[actorId] = [];
     }
+
+    this.stream = await this.scene.streamController.getStream();
 
     this.stream.getTracks((track) => pc.addTrack(track, this.stream));
     pc.addStream(this.stream);
 
     pc.ontrack = (event) => {
-      console.log(event.track.kind, 'recv track');
-      if (event.track.kind != "video") return;
-      this.videoPlayersManager.create(this.scene.actorsManager.actors[actorId], event.streams[0]);
+      const track = event.track;
+
+      this.videoPlayersManager.attach(this.scene.actorsManager.actors[actorId], event.streams[0], track.kind);
+      this.videoPlayersManager.toggleSource(actorId, false, track.kind);
+
+      event.track.onmute = () => {
+        if (track.kind != "video") return;
+        this.videoPlayersManager.toggleSource(actorId, false, track.kind);
+      };
+
+      event.track.onunmute = () => {
+        if (track.kind != "video") return;
+        this.videoPlayersManager.toggleSource(actorId, true, track.kind);
+      };
     };
 
     // Handle ICE candidates
@@ -49,7 +58,7 @@ export default class RTCManager {
   async handleNewPeer(actorId) {
     const pc = await this.createPeerConnection(actorId);
 
-    pc.createOffer()
+    pc.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: true })
       .then(offer => pc.setLocalDescription(offer))
       .then(() => {
         this.socketManager.push("webrtc_offer", { offer: pc.localDescription, player_id: actorId });

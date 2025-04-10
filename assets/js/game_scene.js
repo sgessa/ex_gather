@@ -5,6 +5,7 @@ import ActorsManager from "./managers/actors_manager";
 import SocketManager from "./managers/socket_manager";
 import SpritesManager from "./managers/sprites_manager";
 import RTCManager from "./managers/rtc_manager";
+import VideoPlayersManager from "./managers/video_players_manager";
 import StreamController from "./controllers/stream_controller";
 import PlayerController from "./controllers/player_controller";
 
@@ -14,7 +15,6 @@ export default class GameScene extends Phaser.Scene {
 
     this.player = null;
 
-    this.streamController = new StreamController(this);
     this.socketManager = new SocketManager();
     this.mapManager = new MapManager(this);
     this.actorsManager = new ActorsManager(this);
@@ -37,6 +37,8 @@ export default class GameScene extends Phaser.Scene {
       this.handlePackets();
 
       // Initialize after connection network dependant managers
+      this.videoPlayersManager = new VideoPlayersManager(this);
+      this.streamController = new StreamController(this);
       this.rtcManager = new RTCManager(this);
     });
 
@@ -75,7 +77,7 @@ export default class GameScene extends Phaser.Scene {
 
     // Listen for movement updates
     this.socketManager.channel.on("player_moved", data => {
-      this.actorsManager.move(data.id, data);
+      this.actorsManager.move(data.player_id, data);
     });
 
     // Listen for RTC negotiation
@@ -92,6 +94,10 @@ export default class GameScene extends Phaser.Scene {
     this.socketManager.channel.on("webrtc_candidate", data => {
       let { player_id, candidate } = data;
       this.rtcManager.handleIceCandidate(player_id, candidate);
+    });
+
+    this.socketManager.channel.on("webrtc_audio", data => {
+      this.videoPlayersManager.toggleSource(data.player_id, data.audio_enabled, "audio");
     });
   }
 

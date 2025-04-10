@@ -6,8 +6,8 @@ export default class ActorController {
     this.scene = scene;
     this.mapManager = this.scene.mapManager;
 
-    this.dirX = actor.dirX;
-    this.dirY = actor.dirY;
+    this.dirX = actor.dir_x;
+    this.dirY = actor.dir_y;
     this.id = actor.id;
     this.username = actor.username;
     this.state = actor.state;
@@ -16,6 +16,7 @@ export default class ActorController {
 
     this.sprite = this.createSprite();
     this.collider = this.createCollider();
+    this.updateAnimation(this.state, this.dirX, this.dirY);
 
     this.proximityController = new ActorProximityController(this);
     this.tagController = new ActorTagController(this);
@@ -24,13 +25,15 @@ export default class ActorController {
   createSprite() {
     let startTile = this.mapManager.bottomLayer.getTileAt(this.x, this.y)
     let preset = this.dirY == "up" ? "player_back" : "player_front";
-    let sprite = this.scene.physics.add.sprite(startTile.pixelX, startTile.pixelY, preset);
 
+    const depth = this.mapManager.getDepth(startTile);
+    let sprite = this.scene.physics.add.sprite(0, 0, preset);
     sprite.setOrigin(0, 1);
     sprite.body.setImmovable(true);
     sprite.setScale(0.182, 0.137);
     sprite.body.setSize(130, 320);
-    sprite.setPosition(startTile.pixelX, startTile.pixelY);
+    sprite.setPosition(startTile.pixelX, startTile.pixelY + depth);
+    sprite.setDepth(depth + 1);
 
     return sprite;
   }
@@ -46,9 +49,6 @@ export default class ActorController {
   }
 
   update() {
-    const depthValue = this.sprite.y + 1; // this.mapManager.getDepth(this.sTile);
-    this.sprite.setDepth(depthValue);
-
     this.proximityController.handleUpdate();
     this.tagController.handleUpdate();
   }
@@ -75,20 +75,24 @@ export default class ActorController {
 
     // Update animation
     if (this.state !== state || this.dirX !== dir_x || this.dirY !== dir_y) {
-      this.sprite.flipX = dir_x !== "left";
-
-      if (state === "walk") {
-        let anim = dir_y == "up" ? "walk_up" : "walk_down";
-        this.sprite.play(anim);
-      } else {
-        let anim = dir_y == "up" ? "idle_up" : "idle_down";
-        this.sprite.play(anim);
-      }
+      this.updateAnimation(state, dir_x, dir_y);
     }
 
     this.dirX = dir_x;
     this.dirY = dir_y;
     this.state = state;
+  }
+
+  updateAnimation(newState, newDirX, newDirY) {
+    this.sprite.flipX = newDirX !== "left";
+
+    if (newState === "walk") {
+      let anim = newDirY == "up" ? "walk_up" : "walk_down";
+      this.sprite.play(anim);
+    } else {
+      let anim = newDirY == "up" ? "idle_up" : "idle_down";
+      this.sprite.play(anim);
+    }
   }
 
   destroy() {

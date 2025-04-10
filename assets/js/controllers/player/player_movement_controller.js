@@ -43,7 +43,8 @@ export default class PlayerMovementController {
 
         if (tile) {
           this.sTile = tile;
-          this.player.sprite.setPosition(tile.pixelX, tile.pixelY + this.mapManager.getDepth(tile));
+          console.log("Moving to tile: ", tile);
+          this.player.sprite.setPosition(tile.pixelX, tile.pixelY + this.mapManager.getDepth(tile) + 1);
 
           // Isometric depth sorting
           const depthValue = this.player.sprite.y + this.mapManager.getDepth(this.sTile);
@@ -99,6 +100,7 @@ export default class PlayerMovementController {
     );
 
     if (tile && tile.properties.walkable) {
+      console.log("Marker Tile: ", tile);
       this.marker.setPosition(
         tile.pixelX,
         tile.pixelY + this.mapManager.getDepth(tile)

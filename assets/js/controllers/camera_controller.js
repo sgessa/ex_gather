@@ -78,7 +78,7 @@ export default class CameraController {
     let zoomDirection;
 
     if (typeof deltaY === 'number') {
-      zoomDirection = deltaY > 0 ? -1 : 1; // Your working implementation
+      zoomDirection = deltaY > 0 ? -1 : 1;
     } else {
       // Fallback for unusual cases
       zoomDirection = deltaY.deltaY > 0 ? -1 : 1;

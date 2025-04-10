@@ -41,18 +41,17 @@ export default class ActorProximityController {
   }
 
   onProximityEnter() {
-    console.log("Proximity enter", this.actor);
     this.inProximity = true;
     this.scene.rtcManager.videoPlayersManager.toggle(this.actor);
   }
 
   onProximityExit() {
-    console.log("Proximity exit", this.actor);
     this.inProximity = false;
     this.scene.rtcManager.videoPlayersManager.toggle(this.actor);
   }
 
   destroy() {
+    if (this.inProximity) this.onProximityExit();
     this.proximityCollider.destroy();
   }
 }

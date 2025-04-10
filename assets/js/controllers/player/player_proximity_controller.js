@@ -4,22 +4,22 @@ export default class PlayerProximityController {
   constructor(player) {
     this.player = player;
     this.scene = this.player.scene;
-    this.proximityCollider = this.create();
+    this.collider = this.create();
   }
 
   create() {
-    let proximityCollider = this.scene.add.zone(this.player.sprite.x, this.player.sprite.y);
-    proximityCollider.player = this.player;
+    let collider = this.scene.add.zone(this.player.sprite.x, this.player.sprite.y);
+    collider.player = this.player;
 
-    this.scene.physics.world.enable(proximityCollider);
-    proximityCollider.body.setCircle(TALK_RADIUS);
-    proximityCollider.setOrigin(TALK_RADIUS - PROXIMITY_OFFSET, TALK_RADIUS + PROXIMITY_OFFSET);
-    proximityCollider.body.setAllowGravity(false);
+    this.scene.physics.world.enable(collider);
+    collider.body.setCircle(TALK_RADIUS);
+    collider.setOrigin(TALK_RADIUS - PROXIMITY_OFFSET, TALK_RADIUS + PROXIMITY_OFFSET);
+    collider.body.setAllowGravity(false);
 
-    return proximityCollider;
+    return collider;
   }
 
   handleUpdate() {
-    this.proximityCollider.setPosition(this.player.sprite.x, this.player.sprite.y);
+    this.collider.setPosition(this.player.sprite.x, this.player.sprite.y);
   }
 }

@@ -94,6 +94,11 @@ export default class PlayerAnimController {
   broadcastMovement() {
     // Only send updates if state or direction changed
 
+    if (this.lastPos.x == this.sprite.x && this.lastPos.y == this.sprite.y && this.lastPos.state == this.state) return;
+
+    console.log('LAST', this.lastPos.x, this.lastPos)
+    console.log('moving');
+
     this.scene.socketManager.channel.push("player_move", {
       x: this.movementController.sTile.x,
       y: this.movementController.sTile.y,
@@ -102,6 +107,6 @@ export default class PlayerAnimController {
       state: this.state
     });
 
-    // this.lastPos = { x: this.sprite.x, y: this.sprite.y, state: this.state };
+    this.lastPos = { x: this.sprite.x, y: this.sprite.y, state: this.state };
   }
 }

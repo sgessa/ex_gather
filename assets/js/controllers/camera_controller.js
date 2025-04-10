@@ -16,10 +16,11 @@ export default class CameraController {
 
     // Zoom properties
     this.zoomLevel = 1.0;
-    this.minZoom = 0.5;
-    this.maxZoom = 2.0;
+    this.minZoom = 0.3;
+    this.maxZoom = 3.0;
     this.zoomStep = 0.1;
-    this.zoomDuration = 200;
+    this.lastZoomTime = 0;
+    this.zoomDebounce = 50; // ms between zoom actions
 
     // Initialize camera to follow player
     this.camera.startFollow(this.target);
@@ -30,6 +31,7 @@ export default class CameraController {
 
     this.initControls();
   }
+
   initControls() {
     // Initialize keyboard controls
     this.keys = this.scene.input.keyboard.addKeys({
@@ -39,8 +41,12 @@ export default class CameraController {
       right: Phaser.Input.Keyboard.KeyCodes.D
     });
 
-    // Mouse wheel zoom
+    // Wheel event with debouncing
     this.scene.input.on('wheel', (pointer, gameObjects, deltaX, deltaY) => {
+      const now = Date.now();
+      if (now - this.lastZoomTime < this.zoomDebounce) return;
+      this.lastZoomTime = now;
+
       this.handleZoom(deltaY);
     });
   }
@@ -68,16 +74,29 @@ export default class CameraController {
   }
 
   handleZoom(deltaY) {
-    const zoomDirection = Math.sign(deltaY) * -1;
+    // Robust direction detection with fallback
+    let zoomDirection;
+
+    if (typeof deltaY === 'number') {
+      zoomDirection = deltaY > 0 ? -1 : 1; // Your working implementation
+    } else {
+      // Fallback for unusual cases
+      zoomDirection = deltaY.deltaY > 0 ? -1 : 1;
+    }
+
+    // Calculate new zoom level with bounds checking
     const newZoom = Phaser.Math.Clamp(
       this.zoomLevel + (this.zoomStep * zoomDirection),
       this.minZoom,
       this.maxZoom
     );
 
+    // Only update if zoom actually changed
     if (newZoom !== this.zoomLevel) {
       this.zoomLevel = newZoom;
-      this.camera.zoomTo(this.zoomLevel, this.zoomDuration);
+
+      // Use zoomTo for smoother transitions (optional)
+      this.camera.zoomTo(this.zoomLevel, 100);
     }
   }
 

@@ -56,7 +56,7 @@ export default class ChatManager {
 
       message.appendChild(avatar);
 
-      author.innerText = author.username;
+      author.innerText = actor.username;
       content.appendChild(author);
     } else {
       // Message is from current player
@@ -67,16 +67,17 @@ export default class ChatManager {
       time.classList = "text-xs text-gray-500 mt-1 text-right";
     }
 
-    message.innerText = chatMessage;
+    text.innerText = chatMessage;
     time.innerText = new Date().toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
       hour12: false
     });
 
-    textContainer.append(text);
+    textContainer.appendChild(text);
     content.appendChild(textContainer);
-    message.appendChild(time);
+    content.appendChild(time);
+    message.appendChild(content);
 
     if (!actor) {
       message.appendChild(avatar);

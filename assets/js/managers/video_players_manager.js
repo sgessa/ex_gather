@@ -11,10 +11,10 @@ export default class VideoPlayersManager {
 
     if (kind == "audio") {
       this.videoPlayers[actor.id].querySelector(".audio-player").srcObject = stream;
-      //this.videoPlayers[actor.id].querySelector('.audio-player').play()
+      this.videoPlayers[actor.id].querySelector('.audio-player').play()
     } else if (kind == "video") {
       this.videoPlayers[actor.id].querySelector(".video-player").srcObject = stream;
-      //this.videoPlayers[actor.id].querySelector('.video-player').play()
+      this.videoPlayers[actor.id].querySelector('.video-player').play()
     }
   }
 

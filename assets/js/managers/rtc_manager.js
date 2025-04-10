@@ -56,7 +56,7 @@ export default class RTCManager {
   async handleNewPeer(actorId) {
     const pc = await this.createPeerConnection(actorId);
 
-    pc.createOffer()
+    pc.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: true })
       .then(offer => pc.setLocalDescription(offer))
       .then(() => {
         this.socketManager.push("webrtc_offer", { offer: pc.localDescription, player_id: actorId });

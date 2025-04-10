@@ -4,9 +4,9 @@ export default class StreamController {
     this.stream = null;
     this.initialized = false;
 
-    this.cameraEnabled = false;
     this.screenEnabled = false;
-    this.audioEnabled = false;
+    this.cameraEnabled = this.scene.game.streamControls.videoEnabled;
+    this.audioEnabled = this.scene.game.streamControls.audioEnabled;
 
     this.emptyStream = this.createEmptyStream();
 

@@ -11,8 +11,10 @@ export default class VideoPlayersManager {
 
     if (kind == "audio") {
       this.videoPlayers[actor.id].querySelector(".audio-player").srcObject = stream;
+      this.videoPlayers[actor.id].querySelector('.audio-player').play()
     } else if (kind == "video") {
       this.videoPlayers[actor.id].querySelector(".video-player").srcObject = stream;
+      this.videoPlayers[actor.id].querySelector('.video-player').play()
     }
   }
 
@@ -52,6 +54,7 @@ export default class VideoPlayersManager {
 
     this.videoPlayers[actor.id] = videoContainer;
     this.toggle(actor);
+    this.toggleSource(actor.id, actor.audioEnabled, "audio");
   }
 
   // Disable actor stream if isn't in proximity of player

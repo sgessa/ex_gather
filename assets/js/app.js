@@ -1,22 +1,8 @@
 import "phoenix_html"
-import Phaser from "phaser";
-import GameScene from "./game_scene.js"
+import JoinController from "./controllers/join_controller";
 
-const config = {
-  parent: 'game-container',
-  type: Phaser.AUTO,
-  width: "100%",
-  height: "100%",
-  scale: {
-    mode: Phaser.Scale.RESIZE,
-    autoCenter: Phaser.Scale.CENTER_BOTH,
-  },
-  physics: { default: "arcade", arcade: { gravity: { y: 0 } } },
-  scene: GameScene,
-};
-
-document.addEventListener("DOMContentLoaded", () => {
-  if (document.getElementById("game-container")) {
-    new Phaser.Game(config);
+document.addEventListener("DOMContentLoaded", function () {
+  if (document.querySelector("#game-container")) {
+    new JoinController();
   }
 });

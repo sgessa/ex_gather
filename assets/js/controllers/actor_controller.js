@@ -14,6 +14,7 @@ export default class ActorController {
     this.state = actor.state;
     this.x = actor.x;
     this.y = actor.y;
+    this.audioEnabled = actor.audio_enabled;
 
     this.sprite = this.createSprite();
     this.collider = this.createCollider();
@@ -39,7 +40,7 @@ export default class ActorController {
     sprite.setScale(0.182, 0.137);
     sprite.body.setSize(130, 320);
     sprite.setPosition(startTile.pixelX, startTile.pixelY + depth);
-    sprite.setDepth(depth + 1);
+    sprite.setDepth(sprite.y + depth + 1);
 
     return sprite;
   }

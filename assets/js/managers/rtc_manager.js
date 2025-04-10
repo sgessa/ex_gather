@@ -25,14 +25,16 @@ export default class RTCManager {
 
     this.stream = await this.scene.streamController.getStream();
 
+    console.log("Sending to peer ", this.stream.getTracks());
+
     this.stream.getTracks((track) => pc.addTrack(track, this.stream));
     pc.addStream(this.stream);
 
     pc.ontrack = (event) => {
       const track = event.track;
 
+      console.log("Attaching track", event.track.kind, " for ", actorId);
       this.videoPlayersManager.attach(this.scene.actorsManager.actors[actorId], event.streams[0], track.kind);
-      this.videoPlayersManager.toggleSource(actorId, false, track.kind);
 
       event.track.onmute = () => {
         if (track.kind != "video") return;

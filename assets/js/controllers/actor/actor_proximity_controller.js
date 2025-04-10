@@ -6,31 +6,31 @@ export default class ActorProximityController {
     this.scene = actor.scene;
 
     this.inProximity = false;
-    this.proximityCollider = this.create();
+    this.collider = this.create();
   }
 
   create() {
     // Initialize collisions with player
-    let proximityCollider = this.scene.add.zone(this.actor.sprite.x, this.actor.sprite.y);
-    proximityCollider.actor = this.actor;
-    this.scene.physics.world.enable(proximityCollider);
+    let collider = this.scene.add.zone(this.actor.sprite.x, this.actor.sprite.y);
+    collider.actor = this.actor;
+    this.scene.physics.world.enable(collider);
 
-    proximityCollider.body.setCircle(TALK_RADIUS);
-    proximityCollider.setOrigin(TALK_RADIUS - PROXIMITY_OFFSET, TALK_RADIUS + PROXIMITY_OFFSET);
-    proximityCollider.body.setAllowGravity(false);
+    collider.body.setCircle(TALK_RADIUS);
+    collider.setOrigin(TALK_RADIUS - PROXIMITY_OFFSET, TALK_RADIUS + PROXIMITY_OFFSET);
+    collider.body.setAllowGravity(false);
 
-    return proximityCollider;
+    return collider;
   }
 
   handleUpdate() {
-    if (!this.scene.player.proximityController || !this.proximityCollider) return;
+    if (!this.scene.player.proximityController || !this.collider) return;
 
-    this.proximityCollider.setPosition(this.actor.sprite.x, this.actor.sprite.y);
+    this.collider.setPosition(this.actor.sprite.x, this.actor.sprite.y);
 
     const wasInProximity = this.inProximity;
     let inProximity = this.scene.physics.world.overlap(
-      this.scene.player.proximityController.proximityCollider,
-      this.proximityCollider
+      this.scene.player.proximityController.collider,
+      this.collider
     );
 
     if (wasInProximity && !inProximity) {
@@ -52,6 +52,6 @@ export default class ActorProximityController {
 
   destroy() {
     if (this.inProximity) this.onProximityExit();
-    this.proximityCollider.destroy();
+    this.collider.destroy();
   }
 }

@@ -11,6 +11,6 @@ defmodule ExGatherWeb.RoomJSON do
   end
 
   def player(player) do
-    Map.take(player, ["id", "x", "y", "dir_x", "dir_y", "state", "username", "muted"])
+    Map.take(player, ["id", "x", "y", "dir_x", "dir_y", "state", "username", "audio_enabled"])
   end
 end

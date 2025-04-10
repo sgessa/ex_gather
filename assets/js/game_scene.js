@@ -8,6 +8,7 @@ import RTCManager from "./managers/rtc_manager";
 import VideoPlayersManager from "./managers/video_players_manager";
 import StreamController from "./controllers/stream_controller";
 import PlayerController from "./controllers/player_controller";
+import ChatManager from "./managers/chat_manager";
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -37,6 +38,7 @@ export default class GameScene extends Phaser.Scene {
       this.videoPlayersManager = new VideoPlayersManager(this);
       this.streamController = new StreamController(this);
       this.rtcManager = new RTCManager(this);
+      this.chatManager = new ChatManager(this);
     });
 
     // Visual debug

@@ -34,6 +34,15 @@ export default class VideoPlayersManager {
     audioElement.muted = false;
     videoContainer.appendChild(audioElement);
 
+    const micContainer = document.createElement('div');
+    micContainer.classList = "mic-icon disabled";
+
+    const micImage = document.createElement('img');
+    micImage.src = "/images/icons/microphone.svg";
+
+    micContainer.appendChild(micImage);
+    videoContainer.appendChild(micContainer);
+
     const videoLabel = document.createElement('div');
     videoLabel.classList = "video-label";
     videoLabel.textContent = actor.username;
@@ -87,6 +96,12 @@ export default class VideoPlayersManager {
         this.videoPlayers[actorId].querySelector(".video-player").classList.remove("hidden");
       } else {
         this.videoPlayers[actorId].querySelector(".video-player").classList.add("hidden");
+      }
+    } else if (kind == "audio") {
+      if (toggled) {
+        this.videoPlayers[actorId].querySelector(".mic-icon").classList.remove("disabled");
+      } else {
+        this.videoPlayers[actorId].querySelector(".mic-icon").classList.add("disabled");
       }
     }
   }

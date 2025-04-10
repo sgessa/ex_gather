@@ -56,6 +56,34 @@
   justify-content: center;
 }
 
+#video-group .video-container .mic-icon {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 20px;
+  height: 20px;
+  display: block;
+  /* Ensure image behaves as a block for pseudo-elements */
+}
+
+#video-group .video-container .mic-icon img {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+#video-group .video-container .mic-icon.disabled:after {
+  content: '';
+  height: 1px;
+  width: 130%;
+  background-color: black;
+  position: absolute;
+  left: 0px;
+  top: 2px;
+  transform: rotate(45deg);
+  transform-origin: 1px 1px;
+}
+
 .bottom-bar {
   position: absolute;
   bottom: 0;

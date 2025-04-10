@@ -77,7 +77,7 @@ export default class GameScene extends Phaser.Scene {
 
     // Listen for movement updates
     this.socketManager.channel.on("player_moved", data => {
-      this.actorsManager.move(data.id, data);
+      this.actorsManager.move(data.player_id, data);
     });
 
     // Listen for RTC negotiation
@@ -94,6 +94,10 @@ export default class GameScene extends Phaser.Scene {
     this.socketManager.channel.on("webrtc_candidate", data => {
       let { player_id, candidate } = data;
       this.rtcManager.handleIceCandidate(player_id, candidate);
+    });
+
+    this.socketManager.channel.on("webrtc_audio", data => {
+      this.videoPlayersManager.toggleSource(data.player_id, data.audio_enabled, "audio");
     });
   }
 

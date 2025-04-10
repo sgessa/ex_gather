@@ -32,13 +32,15 @@ export default class RTCManager {
       const track = event.track;
 
       this.videoPlayersManager.attach(this.scene.actorsManager.actors[actorId], event.streams[0], track.kind);
-      this.videoPlayersManager.toggleSource(actorId, true, track.kind);
+      this.videoPlayersManager.toggleSource(actorId, false, track.kind);
 
       event.track.onmute = () => {
+        if (track.kind != "video") return;
         this.videoPlayersManager.toggleSource(actorId, false, track.kind);
       };
 
       event.track.onunmute = () => {
+        if (track.kind != "video") return;
         this.videoPlayersManager.toggleSource(actorId, true, track.kind);
       };
     };

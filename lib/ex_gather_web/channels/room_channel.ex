@@ -43,11 +43,21 @@ defmodule ExGatherWeb.RoomChannel do
     room_server = socket.assigns.room_server
 
     # Broadcast to all other players in the room
-    broadcast_from!(socket, "player_moved", Map.put(movement, "id", player.id))
+    broadcast_from!(socket, "player_moved", Map.put(movement, "player_id", player.id))
 
     GenServer.cast(room_server, {:update_player, player.id, movement})
 
     {:noreply, assign(socket, :player, player)}
+  end
+
+  def handle_in("webrtc_audio", params, socket) do
+    sender = socket.assigns.player
+    room_server = socket.assigns.room_server
+
+    GenServer.cast(room_server, {:update_player, sender.id, params})
+    broadcast_from!(socket, "webrtc_audio", Map.put(params, "player_id", sender.id))
+
+    {:noreply, socket}
   end
 
   def handle_in("webrtc_offer", %{"offer" => offer, "player_id" => rctp_id}, socket) do

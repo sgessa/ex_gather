@@ -43,7 +43,8 @@ defmodule ExGather.Room.Server do
       "dir_x" => "left",
       "dir_y" => "down",
       "state" => "idle",
-      "socket_pid" => socket_pid
+      "socket_pid" => socket_pid,
+      "audio_enabled" => false
     }
   end
 end

@@ -59,8 +59,8 @@ export default class StreamController {
       if (!this.initialized) {
         this.scene.videoPlayersManager.create(this.scene.player);
         this.initialized = true;
-        this.updateSelf();
-        this.updateButtons();
+        this.updateStreamPlayer();
+        this.updateInterface();
       }
     }
 
@@ -68,23 +68,20 @@ export default class StreamController {
   }
 
   async toggleAudio(toggled = true) {
-    if (!this.stream) await this.getStream();
-
-    let audioTrack = this.stream.getAudioTracks()[0];
+    if (this.audioEnabled == toggled) return;
 
     if (toggled) {
-      audioTrack.enabled = true;
-
-      document.querySelector("#mute-btn").classList.remove("hidden");
-      document.querySelector("#unmute-btn").classList.add("hidden");
+      let audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      this.audioEnabled = true;
+      this.replaceAudioTrack(audioStream.getAudioTracks()[0]);
     } else {
-      audioTrack.enabled = false;
-
-      document.querySelector("#mute-btn").classList.add("hidden");
-      document.querySelector("#unmute-btn").classList.remove("hidden");
+      this.audioEnabled = false;
+      this.replaceAudioTrack(this.emptyStream.getAudioTracks()[0]);
     }
 
-    this.audioEnabled = toggled;
+    this.scene.socketManager.push("webrtc_audio", { audio_enabled: this.audioEnabled });
+    this.scene.videoPlayersManager.toggleSource(this.scene.player.id, this.audioEnabled, "audio");
+    this.updateInterface();
   }
 
   async toggleScreenshare(toggled = true) {
@@ -112,8 +109,8 @@ export default class StreamController {
     }
 
     // Replace the existing video track in the peer connection
-    this.replaceStreamTrack();
-    this.updateButtons();
+    this.replaceVideoTrack();
+    this.updateInterface();
   }
 
   async toggleCamera(toggled = true) {
@@ -129,7 +126,7 @@ export default class StreamController {
         this.toggleCamera(false);
       };
 
-      this.replaceStreamTrack();
+      this.replaceVideoTrack();
     } else {
       this.cameraEnabled = false;
 
@@ -142,20 +139,17 @@ export default class StreamController {
       this.stream = await this.getStream();
     }
 
-    this.updateButtons();
-    this.updateSelf();
+    this.updateInterface();
+    this.updateStreamPlayer();
   }
 
-  updateSelf() {
+  updateStreamPlayer() {
     const selfVideo = this.scene.videoPlayersManager.videoPlayers[this.scene.player.id];
-    if (this.screenEnabled || this.cameraEnabled) {
-      selfVideo.querySelector(".video-player").srcObject = this.stream;
-    } else {
-      selfVideo.querySelector(".video-player").srcObject = null;
-    }
+    let stream = this.screenEnabled || this.cameraEnabled ? this.stream : null;
+    selfVideo.querySelector(".video-player").srcObject = stream;
   }
 
-  updateButtons() {
+  updateInterface() {
     if (this.screenEnabled) {
       // Toggle screen sharing state
       document.querySelector("#screenshare-btn").classList.add("hidden");
@@ -174,9 +168,17 @@ export default class StreamController {
         document.querySelector("#camera-stop-btn").classList.add("hidden");
       }
     }
+
+    if (this.audioEnabled) {
+      document.querySelector("#mute-btn").classList.remove("hidden");
+      document.querySelector("#unmute-btn").classList.add("hidden");
+    } else {
+      document.querySelector("#mute-btn").classList.add("hidden");
+      document.querySelector("#unmute-btn").classList.remove("hidden");
+    }
   }
 
-  replaceStreamTrack() {
+  replaceVideoTrack() {
     const videoTrack = this.stream.getVideoTracks()[0];
 
     for (let peer of Object.values(this.scene.rtcManager.peers)) {
@@ -187,7 +189,17 @@ export default class StreamController {
       }
     }
 
-    this.updateSelf();
+    this.updateStreamPlayer();
+  }
+
+  replaceAudioTrack(audioTrack) {
+    for (let peer of Object.values(this.scene.rtcManager.peers)) {
+      const sender = peer.getSenders().find(s => s.track && s.track.kind === 'audio');
+
+      if (sender) {
+        sender.replaceTrack(audioTrack);
+      }
+    }
   }
 
   createEmptyStream() {

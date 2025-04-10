@@ -42,6 +42,7 @@ export default class PlayerMovementController {
         ]);
 
         if (tile) {
+          console.log('moving', this.sTile);
           this.sTile = tile;
           this.player.sprite.setPosition(tile.pixelX, tile.pixelY + this.mapManager.getDepth(tile));
 

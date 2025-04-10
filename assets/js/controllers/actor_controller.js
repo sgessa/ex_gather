@@ -67,7 +67,7 @@ export default class ActorController {
       targets: this.sprite,
       x: tile.pixelX,
       y: tile.pixelY + this.mapManager.getDepth(tile),
-      duration: 100, // Matches network update rate
+      duration: 300, // Matches network update rate
       ease: 'Linear'
     });
     // this.sprite.setPosition(tile.pixelX, tile.pixelY + this.mapManager.getDepth(tile));

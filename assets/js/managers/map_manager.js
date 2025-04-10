@@ -26,7 +26,7 @@ export default class MapManager {
     this.topLayer = this.map.createLayer("Tile Layer 2", tileSet).setDepth(30);
 
     this.map.createLayer("Tile Layer 3", tileSet).setDepth(40);
-    this.map.createLayer("Boundry", tileSet).setDepth(50);
+    this.map.createLayer("Boundry", tileSet).setDepth(800);
     this.map.createLayer("AlwaysAbove-1", tileSet).setDepth(1000);
     this.map.createLayer("AlwaysAbove-2", tileSet).setDepth(2000);
 

@@ -55,12 +55,13 @@ export default class PlayerMovementController {
 
     if (tile) {
       this.sTile = tile;
+
       this.targetPosition = {
         x: tile.pixelX,
         y: tile.pixelY + this.mapManager.getDepth(tile) + 1
       };
+
       this.isMoving = true;
-      console.log("Setting next target", tile);
     }
   }
 
@@ -138,7 +139,6 @@ export default class PlayerMovementController {
         this.dTile.y,
         (path) => {
           if (path) {
-            console.log("New path found", path);
             this.path = path;
           }
         }

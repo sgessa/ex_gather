@@ -7,7 +7,7 @@ export default class SocketManager {
   }
 
   init(onJoin) {
-    this.socket = new Socket("/socket", { params: { token: this.getToken() } });
+    this.socket = new Socket("https://74cb-109-55-87-0.ngrok-free.app/socket", { params: { token: this.getToken() } });
     this.socket.connect();
 
     this.channel = this.socket.channel("room:lobby", {});

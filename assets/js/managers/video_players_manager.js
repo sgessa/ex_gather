@@ -59,7 +59,7 @@ export default class VideoPlayersManager {
     if (actor.id == this.scene.player.id) return this.toggleSelf();
 
     const videoContainer = this.videoPlayers[actor.id];
-    const toggled = actor.inProximity;
+    const toggled = actor.proximityController.inProximity;
 
     if (!videoContainer) return;
 

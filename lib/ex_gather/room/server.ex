@@ -38,8 +38,8 @@ defmodule ExGather.Room.Server do
     %{
       "id" => player.id,
       "username" => player.username,
-      "x" => 100,
-      "y" => 100,
+      "x" => 4,
+      "y" => 16,
       "dir_x" => "left",
       "dir_y" => "down",
       "state" => "idle",

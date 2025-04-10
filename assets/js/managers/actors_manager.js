@@ -12,17 +12,9 @@ export default class ActorsManager {
   }
 
   spawn(actor) {
-    const { id, username, x, y, dir, state } = actor;
-
     // Create sprite (if not exists)
-    if (!this.actors[id]) {
-      this.actors[id] = new ActorController(this.scene, id, username, x, y, dir, state);
-    }
-
-    // Update position
-    actor = this.actors[id];
-    actor.sprite.setPosition(x, y);
-    actor.name.setPosition(x, y - 20);
+    if (this.actors[actor.id]) return;
+    this.actors[actor.id] = new ActorController(this.scene, actor);
   }
 
   remove(actor) {

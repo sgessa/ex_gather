@@ -1,8 +1,7 @@
 defmodule ExGatherWeb.RoomJSON do
-  def room_state(players, player) do
+  def room_state(players) do
     %{
-      players: players(players),
-      player: player(player)
+      players: players(players)
     }
   end
 

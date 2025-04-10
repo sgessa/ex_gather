@@ -3,10 +3,10 @@ import Phaser from "phaser";
 import GameScene from "./game_scene.js"
 
 const config = {
+  parent: 'game-container',
   type: Phaser.AUTO,
   width: "100%",
   height: "100%",
-  parent: 'game-container',
   scale: {
     mode: Phaser.Scale.RESIZE,
     autoCenter: Phaser.Scale.CENTER_BOTH,

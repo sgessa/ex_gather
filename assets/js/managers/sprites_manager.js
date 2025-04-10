@@ -4,6 +4,8 @@ export default class SpritesManager {
   }
 
   preload() {
+    this.scene.load.image("marker", "/images/marker.png");
+
     this.scene.load.spritesheet("player_front", "/images/frog_front_spritesheet.png", {
       frameWidth: 350,  // Width of ONE frame in pixels
       frameHeight: 350, // Height of ONE frame in pixels

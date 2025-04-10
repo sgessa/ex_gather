@@ -1,67 +1,61 @@
-import AnimController from "./anim_controller.js"
-import TALK_RADIUS from "../const/rtc";
+import PlayerAnimController from "./player/player_anim_controller.js"
+import PlayerMovementController from "./player/player_movement_controller.js";
+import PlayerTagController from "./player/player_tag_controller.js";
+import PlayerProximityController from "./player/player_proximity_controller.js";
+import CameraController from "./camera_controller.js";
+import { SPRITE_OFFSET } from "../const/player_const.js";
 
 export default class PlayerController {
-  constructor(scene, channel, userInfo) {
-    this.id = userInfo.id;
+  constructor(scene, channel, user) {
+    this.id = user.id;
     this.scene = scene;
     this.channel = channel;
-    this.username = userInfo.username;
+    this.username = user.username;
 
-    this.sprite = this.scene.physics.add.sprite(100, 100, "player_front");
-    this.sprite.setScale(0.182, 0.137);
+    this.mapManager = this.scene.mapManager;
 
-    // Set the body size smaller than the sprite for better collision detection
-    this.sprite.body.setSize(130, 320);
+    let startTile = this.scene.mapManager.getTileAt(user.x, user.y, [
+      this.mapManager.bottomLayer,
+      this.mapManager.midLayer,
+      this.mapManager.topLayer,
+    ]);
 
-    this.proximityCollider = this.scene.add.zone(this.sprite.x, this.sprite.y);
-    this.proximityCollider.player = this;
-    this.scene.physics.world.enable(this.proximityCollider);
-    this.proximityCollider.body.setCircle(TALK_RADIUS);
-    this.proximityCollider.setOrigin(TALK_RADIUS, TALK_RADIUS);
-    this.proximityCollider.body.setAllowGravity(false);
+    this.sprite = this.createSprite(startTile);
 
-    // Visual debug
-    this.scene.physics.world.createDebugGraphic();
+    this.proximityController = new PlayerProximityController(this);
+    this.tagController = new PlayerTagController(this);
 
-    this.setName(userInfo.username);
-    this.animator = new AnimController(this.scene, this);
+    this.cameraController = new CameraController(this.scene, this.sprite);
+    this.movementController = new PlayerMovementController(this, startTile);
+    this.animController = new PlayerAnimController(this);
 
-    this.scene.cameras.main.startFollow(this.sprite);
-
-    this.animator.handleCreate();
+    this.animController.handleCreate();
   }
 
-  update() {
-    this.proximityCollider.setPosition(this.sprite.x, this.sprite.y);
-
-    // Sync the label's position with the player
-    this.name.setPosition(this.sprite.x, this.sprite.y - 20);
-
-    // Sync movements
-    this.animator.handleUpdate();
-  }
-
-  moveTo(position) {
-    this.animator.targetPosition = position;
-  }
-
-  setName(userName) {
-    // Create a text object to display the player's name
-    this.name = this.scene.add.text(
-      this.sprite.x,
-      this.sprite.y - 20, // Adjust for vertical offset
-      userName,
-      {
-        fontFamily: "Arial",
-        fontSize: "16px",
-        color: "#FFFFFF",
-        stroke: "#000000",
-        strokeThickness: 2,
-      }
+  createSprite(startTile) {
+    let sprite = this.scene.physics.add.sprite(
+      startTile.pixelX,
+      startTile.pixelY + this.mapManager.getDepth(startTile),
+      "player_front"
     );
 
-    // Make the text follow the player
-    this.name.setOrigin(0.5, 1);
+    sprite.setOrigin(0, 1 + SPRITE_OFFSET);
+    sprite.setScale(0.182, 0.137);
+
+    // Set the body size smaller than the sprite for better collision detection
+    sprite.body.setSize(130, 320);
+
+    const depthValue = sprite.y + this.mapManager.getDepth(startTile);
+    sprite.setDepth(depthValue);
+
+    return sprite;
+  }
+
+  update(time, delta) {
+    this.movementController.handleUpdate(time, delta);
+    this.animController.handleUpdate();
+    this.tagController.handleUpdate();
+    this.proximityController.handleUpdate();
+    this.cameraController.update(delta);
   }
 }

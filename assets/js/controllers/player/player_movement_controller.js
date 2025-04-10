@@ -54,9 +54,39 @@ export default class PlayerMovementController {
   }
 
   // Updates marker position when cursor moves
+  // updateMarker = (e) => {
+  //   const px = this.scene.cameras.main.worldView.x + e.x;
+  //   const py = this.scene.cameras.main.worldView.y + e.y + 42;
+  //
+  //   const tile = this.mapManager.getTile(
+  //     px,
+  //     py,
+  //     [
+  //       this.mapManager.bottomLayer,
+  //       this.mapManager.midLayer,
+  //       this.mapManager.topLayer,
+  //     ]
+  //   );
+  //
+  //   if (tile && tile.properties.walkable) {
+  //     this.marker.setPosition(
+  //       tile.pixelX,
+  //       tile.pixelY + this.mapManager.getDepth(tile)
+  //     );
+  //
+  //     this.marker.setDepth(tile.pixelY + this.mapManager.getDepth(tile) + 1);
+  //
+  //     this.marker.visible = true;
+  //     this.dTile = tile;
+  //   } else {
+  //     this.marker.visible = false;
+  //   }
+  // };
   updateMarker = (e) => {
-    const px = this.scene.cameras.main.worldView.x + e.x;
-    const py = this.scene.cameras.main.worldView.y + e.y + 42;
+    // Get camera-adjusted pointer position
+    const camera = this.player.scene.cameras.main;
+    const px = camera.worldView.x + (e.x / camera.zoom);
+    const py = camera.worldView.y + (e.y / camera.zoom) + 42;
 
     const tile = this.mapManager.getTile(
       px,

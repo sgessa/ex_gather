@@ -2,6 +2,7 @@ import PlayerAnimController from "./player/player_anim_controller.js"
 import PlayerMovementController from "./player/player_movement_controller.js";
 import PlayerTagController from "./player/player_tag_controller.js";
 import PlayerProximityController from "./player/player_proximity_controller.js";
+import CameraController from "./camera_controller.js";
 
 export default class PlayerController {
   constructor(scene, channel, user) {
@@ -18,7 +19,7 @@ export default class PlayerController {
     this.proximityController = new PlayerProximityController(this);
     this.tagController = new PlayerTagController(this);
 
-    this.scene.cameras.main.startFollow(this.sprite);
+    this.cameraController = new CameraController(this.scene, this.sprite);
     this.movementController = new PlayerMovementController(this, startTile);
     this.animController = new PlayerAnimController(this);
 
@@ -49,5 +50,6 @@ export default class PlayerController {
     this.animController.handleUpdate();
     this.tagController.handleUpdate();
     this.proximityController.handleUpdate();
+    this.cameraController.update(delta);
   }
 }

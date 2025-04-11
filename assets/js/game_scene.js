@@ -71,6 +71,11 @@ export default class GameScene extends Phaser.Scene {
       this.actorsManager.move(data.player_id, data);
     });
 
+    // Listen for chat messages
+    this.socketManager.channel.on("player_chat", data => {
+      this.chatManager.appendMessage(data.player_id, data.message);
+    });
+
     // Listen for RTC negotiation
     this.socketManager.channel.on("webrtc_offer", data => {
       let { player_id, offer } = data;

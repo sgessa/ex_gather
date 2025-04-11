@@ -1,6 +1,7 @@
 export default class ChatManager {
   constructor(scene) {
-    this.scene = scene;
+    this.actorsManager = scene.actorsManager;
+    this.socketManager = scene.socketManager;
     this.hook();
   }
 
@@ -87,14 +88,19 @@ export default class ChatManager {
   }
 
   sendMessage() {
-    let message = document.querySelector("#chat-input").value;
-    document.querySelector("#chat-input").value = "";
+    let input = document.querySelector("#chat-input");
+    const message = input.value;
+    input.value = "";
 
-    // TODO:
-    // Send packet
+    this.appendMessage(0, message);
+
+    this.socketManager.push("player_chat", {
+      type: 0,
+      message: message
+    });
   }
 
   getActor(actorId) {
-    return this.scene.actorsManager.actors[actorId];
+    return this.actorsManager.actors[actorId];
   }
 }

@@ -33,12 +33,50 @@ export default class CameraController {
   }
 
   initControls() {
-    // Initialize keyboard controls
-    this.keys = this.scene.input.keyboard.addKeys({
-      up: Phaser.Input.Keyboard.KeyCodes.W,
-      down: Phaser.Input.Keyboard.KeyCodes.S,
-      left: Phaser.Input.Keyboard.KeyCodes.A,
-      right: Phaser.Input.Keyboard.KeyCodes.D
+    // Replace the keyboard.addKeys approach with event listeners
+    this.keys = {
+      up: false,
+      down: false,
+      left: false,
+      right: false
+    };
+
+    // Track key states without preventing default behavior
+    const onKey = (isDown) => (event) => {
+      // Only process if we're not in a text input
+      const activeElement = document.activeElement;
+      const inputFocused = activeElement &&
+                         (activeElement.tagName === 'INPUT' ||
+                          activeElement.tagName === 'TEXTAREA');
+
+      switch(event.key.toLowerCase()) {
+        case 'w':
+          this.keys.up = isDown && !inputFocused;
+          if (isDown && !inputFocused) event.preventDefault();
+          break;
+        case 's':
+          this.keys.down = isDown && !inputFocused;
+          if (isDown && !inputFocused) event.preventDefault();
+          break;
+        case 'a':
+          this.keys.left = isDown && !inputFocused;
+          if (isDown && !inputFocused) event.preventDefault();
+          break;
+        case 'd':
+          this.keys.right = isDown && !inputFocused;
+          if (isDown && !inputFocused) event.preventDefault();
+          break;
+      }
+    };
+
+    // Use window events instead of Phaser's keyboard system
+    window.addEventListener('keydown', onKey(true));
+    window.addEventListener('keyup', onKey(false));
+
+    // Clean up on scene destruction
+    this.scene.events.once('destroy', () => {
+      window.removeEventListener('keydown', onKey(true));
+      window.removeEventListener('keyup', onKey(false));
     });
 
     // Wheel event with debouncing
@@ -65,10 +103,12 @@ export default class CameraController {
     this.manualControlActive = false;
     this.followingTarget = true;
     this.camera.startFollow(this.target);
+
     this.camera.setFollowOffset(
       this.originalFollowOffset.x,
       this.originalFollowOffset.y
     );
+
     // Update last known position after returning
     this.lastPlayerPosition = { x: this.target.x, y: this.target.y };
   }
@@ -106,16 +146,15 @@ export default class CameraController {
   }
 
   handleCameraMovement(delta) {
-    if (this.keys.up.isDown || this.keys.down.isDown ||
-        this.keys.left.isDown || this.keys.right.isDown) {
+    if (this.keys.up || this.keys.down || this.keys.left || this.keys.right) {
       this.activateManualControl();
 
       const moveSpeed = this.moveSpeed * (delta / 16);
 
-      if (this.keys.up.isDown) this.camera.scrollY -= moveSpeed;
-      if (this.keys.down.isDown) this.camera.scrollY += moveSpeed;
-      if (this.keys.left.isDown) this.camera.scrollX -= moveSpeed;
-      if (this.keys.right.isDown) this.camera.scrollX += moveSpeed;
+      if (this.keys.up) this.camera.scrollY -= moveSpeed;
+      if (this.keys.down) this.camera.scrollY += moveSpeed;
+      if (this.keys.left) this.camera.scrollX -= moveSpeed;
+      if (this.keys.right) this.camera.scrollX += moveSpeed;
     }
   }
 

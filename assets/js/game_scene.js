@@ -8,6 +8,7 @@ import RTCManager from "./managers/rtc_manager";
 import VideoPlayersManager from "./managers/video_players_manager";
 import StreamController from "./controllers/stream_controller";
 import PlayerController from "./controllers/player_controller";
+import ExRTCManager from "./managers/ex_rtc_manager";
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -36,7 +37,7 @@ export default class GameScene extends Phaser.Scene {
       // Initialize after connection network dependant managers
       this.videoPlayersManager = new VideoPlayersManager(this);
       this.streamController = new StreamController(this);
-      this.rtcManager = new RTCManager(this);
+      //this.rtcManager = new RTCManager(this);
     });
 
     // Visual debug
@@ -52,16 +53,17 @@ export default class GameScene extends Phaser.Scene {
     // Listen for presence events
     this.socketManager.channel.on("room_state", data => {
       this.actorsManager.init(data.players);
+      this.exRTCManager = new ExRTCManager(this);
     });
 
     this.socketManager.channel.on("player_join", player => {
       this.actorsManager.spawn(player);
-      this.rtcManager.handleNewPeer(player.id);
+      //this.rtcManager.handleNewPeer(player.id);
     });
 
     this.socketManager.channel.on("player_left", player => {
       this.actorsManager.remove(player);
-      this.rtcManager.handleDisconnect(player.id);
+      //this.rtcManager.handleDisconnect(player.id);
     });
 
     // Listen for movement updates
@@ -72,21 +74,29 @@ export default class GameScene extends Phaser.Scene {
     // Listen for RTC negotiation
     this.socketManager.channel.on("webrtc_offer", data => {
       let { player_id, offer } = data;
-      this.rtcManager.handleOffer(player_id, offer);
+      //this.rtcManager.handleOffer(player_id, offer);
     });
 
     this.socketManager.channel.on("webrtc_answer", data => {
       let { player_id, answer } = data;
-      this.rtcManager.handleAnswer(player_id, answer);
+      //this.rtcManager.handleAnswer(player_id, answer);
     });
 
     this.socketManager.channel.on("webrtc_candidate", data => {
       let { player_id, candidate } = data;
-      this.rtcManager.handleIceCandidate(player_id, candidate);
+      //this.rtcManager.handleIceCandidate(player_id, candidate);
     });
 
     this.socketManager.channel.on("webrtc_audio", data => {
-      this.videoPlayersManager.toggleSource(data.player_id, data.audio_enabled, "audio");
+      //this.videoPlayersManager.toggleSource(data.player_id, data.audio_enabled, "audio");
+    });
+
+    this.socketManager.channel.on("exrtc_ice", data => {
+      this.exRTCManager.handleIce(data.ice);
+    });
+
+    this.socketManager.channel.on("exrtc_answer", data => {
+      this.exRTCManager.handleAnswer(data.answer);
     });
   }
 

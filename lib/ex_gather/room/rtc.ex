@@ -1,0 +1,88 @@
+defmodule ExGather.Room.RTC do
+  require Logger
+
+  alias ExWebRTC.{
+    ICECandidate,
+    MediaStreamTrack,
+    PeerConnection,
+    RTPCodecParameters,
+    SessionDescription
+  }
+
+  @ice_servers [%{urls: "stun:stun.l.google.com:19302"}]
+
+  @audio_codecs [
+    %RTPCodecParameters{
+      payload_type: 111,
+      mime_type: "audio/opus",
+      clock_rate: 48_000,
+      channels: 2
+    }
+  ]
+
+  @video_codecs [
+    %RTPCodecParameters{
+      payload_type: 96,
+      mime_type: "video/VP8",
+      clock_rate: 90_000
+    }
+  ]
+
+  #
+  # Start client
+  #
+
+  def start_link() do
+    {:ok, pc} =
+      PeerConnection.start_link(
+        ice_servers: @ice_servers,
+        audio_codecs: @audio_codecs,
+        video_codecs: @video_codecs
+      )
+
+    Process.monitor(pc)
+
+    {:ok, pc}
+  end
+
+  #
+  # Tracks
+  #
+
+  # Links 3rd player track to current player's peer connection
+  def create_stream_tracks() do
+    audio_stream_id = MediaStreamTrack.generate_stream_id()
+    video_stream_id = MediaStreamTrack.generate_stream_id()
+
+    audio_track = MediaStreamTrack.new(:audio, [audio_stream_id])
+    video_track = MediaStreamTrack.new(:video, [video_stream_id])
+
+    {:ok, %{audio: audio_track, video: video_track}}
+  end
+
+  def attach_tracks_to_peer(pc, %{audio: audio_track, video: video_track}) do
+    {:ok, video_sender} = PeerConnection.add_track(pc, video_track)
+    {:ok, audio_sender} = PeerConnection.add_track(pc, audio_track)
+
+    {:ok, %{audio: audio_sender, video: video_sender}}
+  end
+
+  #
+  # Negotiation
+  #
+
+  def handle_offer(pc, offer) do
+    offer = SessionDescription.from_json(offer)
+    :ok = PeerConnection.set_remote_description(pc, offer)
+
+    {:ok, answer} = PeerConnection.create_answer(pc)
+    :ok = PeerConnection.set_local_description(pc, answer)
+
+    {:ok, SessionDescription.to_json(answer)}
+  end
+
+  def handle_ice(pc, ice) do
+    candidate = ICECandidate.from_json(ice)
+    PeerConnection.add_ice_candidate(pc, candidate)
+  end
+end

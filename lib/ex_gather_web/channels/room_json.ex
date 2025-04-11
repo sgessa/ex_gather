@@ -5,11 +5,17 @@ defmodule ExGatherWeb.RoomJSON do
     }
   end
 
-  def players(players) do
-    for {_, p} <- players, do: player(p)
-  end
+  def players(players),
+    do: for({_, p} <- players, do: player(p))
 
   def player(player) do
-    Map.take(player, ["id", "x", "y", "dir_x", "dir_y", "state", "username", "audio_enabled"])
+    player
+    |> Map.take(["id", "x", "y", "dir_x", "dir_y", "state", "username", "audio_enabled"])
+    |> Map.put("rtc_tracks", rtc_tracks(player["rtc_tracks"]))
   end
+
+  defp rtc_tracks(%{audio: audio, video: video}),
+    do: %{"audio_id" => hd(audio.streams), "video_id" => hd(video.streams)}
+
+  defp rtc_tracks(_tracks), do: nil
 end

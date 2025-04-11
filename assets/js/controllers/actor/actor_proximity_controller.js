@@ -42,12 +42,12 @@ export default class ActorProximityController {
 
   onProximityEnter() {
     this.inProximity = true;
-    this.scene.rtcManager.videoPlayersManager.toggle(this.actor);
+    this.scene.videoPlayersManager.toggle(this.actor);
   }
 
   onProximityExit() {
     this.inProximity = false;
-    this.scene.rtcManager.videoPlayersManager.toggle(this.actor);
+    this.scene.videoPlayersManager.toggle(this.actor);
   }
 
   destroy() {

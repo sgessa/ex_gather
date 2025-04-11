@@ -1,5 +1,11 @@
 export default class ChatManager {
   constructor(scene) {
+    this.chatType = {
+      SAY: 0,
+      MEGAPHONE: 1,
+      WHISPER: 2
+    };
+
     this.actorsManager = scene.actorsManager;
     this.socketManager = scene.socketManager;
     this.hook();
@@ -35,8 +41,26 @@ export default class ChatManager {
     document.querySelector('#chat-sidebar').classList.toggle('translate-x-full');
   }
 
+  receiveMessage(actorId, chatType, chatMessage) {
+    const sender = this.actorsManager.getActor(actorId);
+
+    switch (chatType) {
+      case this.chatType.SAY:
+        if (sender?.proximityController?.inProximity) {
+          this.appendMessage(actorId, chatMessage);
+        }
+        break;
+      case this.chatType.MEGAPHONE:
+        this.appendMessage(actorId, chatMessage);
+        break;
+      case this.chatType.WHISPER:
+        // TODO
+        break;
+    }
+  }
+
   appendMessage(actorId, chatMessage) {
-    const actor = this.getActor(actorId);
+    const actor = this.actorsManager.getActor(actorId);
 
     const message = document.createElement("div");
     const avatar = document.createElement("div");
@@ -92,15 +116,13 @@ export default class ChatManager {
     const message = input.value;
     input.value = "";
 
+    let chatType = document.querySelector("#chat-type").value;
+
     this.appendMessage(0, message);
 
     this.socketManager.push("player_chat", {
-      type: 0,
+      type: parseInt(chatType),
       message: message
     });
-  }
-
-  getActor(actorId) {
-    return this.actorsManager.actors[actorId];
   }
 }

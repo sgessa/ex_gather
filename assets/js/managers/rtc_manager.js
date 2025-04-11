@@ -34,7 +34,7 @@ export default class RTCManager {
       const track = event.track;
 
       console.log("Attaching track", event.track.kind, " for ", actorId);
-      this.videoPlayersManager.attach(this.scene.actorsManager.actors[actorId], event.streams[0], track.kind);
+      this.videoPlayersManager.attach(this.scene.actorsManager.getActor(actorId), event.streams[0], track.kind);
 
       event.track.onmute = () => {
         if (track.kind != "video") return;

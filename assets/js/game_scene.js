@@ -42,7 +42,7 @@ export default class GameScene extends Phaser.Scene {
     });
 
     // Visual debug
-    this.physics.world.createDebugGraphic();
+    // this.physics.world.createDebugGraphic();
   }
 
   update(time, delta) {
@@ -73,7 +73,7 @@ export default class GameScene extends Phaser.Scene {
 
     // Listen for chat messages
     this.socketManager.channel.on("player_chat", data => {
-      this.chatManager.appendMessage(data.player_id, data.message);
+      this.chatManager.receiveMessage(data.player_id, data.type, data.message);
     });
 
     // Listen for RTC negotiation

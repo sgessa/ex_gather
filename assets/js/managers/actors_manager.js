@@ -27,6 +27,10 @@ export default class ActorsManager {
     actor?.move(data);
   }
 
+  getActor(actorId) {
+    return this.actors[actorId];
+  }
+
   update() {
     for (const actor of Object.values(this.actors)) {
       actor?.update();

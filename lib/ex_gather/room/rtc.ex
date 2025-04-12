@@ -67,6 +67,22 @@ defmodule ExGather.Room.RTC do
     {:ok, %{audio: audio_sender, video: video_sender}}
   end
 
+  def find_input_track(pc, id) do
+    pc
+    |> ExWebRTC.PeerConnection.get_transceivers()
+    |> Enum.find(&(&1.receiver.track.id == id))
+  end
+
+  def find_output_tracks(pc, %{video: video, audio: audio}) do
+    pc
+    |> ExWebRTC.PeerConnection.get_transceivers()
+    |> Enum.find(&(&1.sender.track && &1.sender.track.id in [video.id, audio.id]))
+    |> case do
+      nil -> false
+      _ -> true
+    end
+  end
+
   #
   # Negotiation
   #

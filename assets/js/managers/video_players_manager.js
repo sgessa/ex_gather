@@ -12,14 +12,22 @@ export default class VideoPlayersManager {
     if (kind == "audio") {
       this.videoPlayers[actor.id].querySelector(".audio-player").srcObject = stream;
       this.videoPlayers[actor.id].querySelector('.audio-player').play()
+      this.videoPlayers[actor.id].querySelector('.audio-player').addEventListener("playing", (event) => {
+        console.log('Audio playing', event);
+      });
     } else if (kind == "video") {
       this.videoPlayers[actor.id].querySelector(".video-player").srcObject = stream;
       this.videoPlayers[actor.id].querySelector('.video-player').play()
+      this.videoPlayers[actor.id].querySelector('.video-player').addEventListener("playing", (event) => {
+        console.log('Video playing', event);
+      });
     }
   }
 
   // Instantiates the video player
   create(actor) {
+    if (this.videoPlayers[actor.id]) return;
+
     const videoContainer = document.createElement('div');
     videoContainer.classList = "video-container hidden"
     videoContainer.dataset.id = `${actor.id}`;
@@ -115,5 +123,13 @@ export default class VideoPlayersManager {
 
     this.videoPlayers[actorId].remove();
     delete this.videoPlayers[actorId];
+  }
+
+  deleteAll() {
+    for (let playerId in this.videoPlayers) {
+      if (playerId != this.scene.player.id) {
+        this.delete(playerId);
+      }
+    }
   }
 }

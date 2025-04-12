@@ -23,20 +23,26 @@ export default class ExRTCManager {
       this.tracks[actor.rtcTracks.video_id] = actor;
     }
 
-    this.peer = new RTCPeerConnection(this.config);
-    this.stream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 }, frameRate: { ideal: 24 } }, audio: true });
+    if (this.peer) {
+      this.peer.close();
+      this.peer = null;
+    }
 
-    this.peer.addTransceiver(this.stream.getVideoTracks()[0], {
-      direction: "sendrecv",
-      streams: [this.stream],
-      sendEncodings: [
-        { rid: "h", maxBitrate: 1200 * 1024 },
-        { rid: "m", scaleResolutionDownBy: 2, maxBitrate: 600 * 1024 },
-        { rid: "l", scaleResolutionDownBy: 4, maxBitrate: 300 * 1024 },
-      ],
-    });
+    this.peer = new RTCPeerConnection(this.config);
+    this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
+    // this.peer.addTransceiver(this.stream.getVideoTracks()[0], {
+    //   direction: "sendrecv",
+    //   streams: [this.stream],
+    //   sendEncodings: [
+    //     { rid: "h", maxBitrate: 1200 * 1024 },
+    //     { rid: "m", scaleResolutionDownBy: 2, maxBitrate: 600 * 1024 },
+    //     { rid: "l", scaleResolutionDownBy: 4, maxBitrate: 300 * 1024 },
+    //   ],
+    // });
     // replace the call above with this to disable simulcast
     // pc.addTrack(localStream.getVideoTracks()[0]);
+    this.peer.addTrack(this.stream.getVideoTracks()[0]);
     this.peer.addTrack(this.stream.getAudioTracks()[0]);
 
     this.peer.ontrack = (event) => {
@@ -55,7 +61,15 @@ export default class ExRTCManager {
       }
     };
 
+    this.createOffer();
+  }
+
+  async createOffer() {
     this.peer.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: true })
+      .then(offer => {
+        offer.sdp = offer.sdp.replace('H264', 'VP8'); // Hacky but works for testing
+        return offer
+      })
       .then(offer => this.peer.setLocalDescription(offer))
       .then(() => {
         console.log("SENT OFFER");
@@ -67,6 +81,15 @@ export default class ExRTCManager {
   async handleAnswer(answer) {
     this.peer
       .setRemoteDescription(new RTCSessionDescription(answer))
+      .then(() => {
+        const receiver = this.peer.getReceivers().find(r => r.track.kind === 'video');
+        if (receiver) {
+          receiver.getStats().then(report => {
+            console.log('Stats fetched, PLI likely requested internally');
+            // Modern WebRTC stacks send PLI on packet loss or initial frame delay
+          });
+        }
+      })
       .catch(error => console.error('Error setting remote description:', error));
   }
 

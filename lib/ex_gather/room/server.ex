@@ -12,14 +12,25 @@ defmodule ExGather.Room.Server do
   end
 
   def handle_call({:join, player}, {from_pid, _ref} = _from, state) do
-    player = init_player_state(player, from_pid)
+    {:ok, tracks} = RTC.create_stream_tracks()
+
+    player = init_player_state(player, from_pid) |> Map.put("rtc_tracks", tracks)
     players = Map.put(state.players, player["id"], player)
+
     {:reply, {:ok, player, state.players}, %{state | players: players}}
   end
 
   def handle_call({:leave, player_id}, _from, state) do
     players = Map.delete(state.players, player_id)
     {:reply, :ok, %{state | players: players}}
+  end
+
+  def handle_call({:exrtc_start, player_id, rtc_pid}, _from, state) do
+    player =
+      state.players[player_id]
+      |> Map.put("rtc_pid", rtc_pid)
+
+    {:reply, :ok, put_in(state.players[player_id], player)}
   end
 
   def handle_cast({:update_player, id, attrs}, state) do
@@ -37,55 +48,81 @@ defmodule ExGather.Room.Server do
   end
 
   def handle_cast({:exrtc_offer, id, rtc_pid, offer}, state) do
-    {:ok, tracks} = RTC.create_stream_tracks()
+    # if old_pid = state.players[id]["rtc_pid"] do
+    #   ExWebRTC.PeerConnection.close(old_pid)
+    # end
 
-    player =
-      state.players[id]
-      |> Map.put("rtc_pid", rtc_pid)
-      |> Map.put("rtc_tracks", tracks)
+    sender = state.players[id] |> Map.put("rtc_ready", false) |> Map.put("rtc_pid", rtc_pid)
 
     state.players
-    |> Enum.reject(fn {id, _player} -> id == player["id"] end)
-    |> Enum.each(fn {_id, player} ->
-      RTC.attach_tracks_to_peer(rtc_pid, player["rtc_tracks"])
-      # RTC.attach_tracks_to_peer(player["rtc_pid"], tracks)
+    |> Enum.reject(fn {id, _player} -> id == sender["id"] end)
+    |> Enum.each(fn {_id, receiver} ->
+      # Attach existing tracks to sender
+
+      if not RTC.find_output_tracks(sender["rtc_pid"], receiver["rtc_tracks"]) do
+        IO.inspect("Adding #{receiver["username"]} tracks to #{sender["username"]}")
+
+        RTC.attach_tracks_to_peer(sender["rtc_pid"], receiver["rtc_tracks"])
+      else
+        IO.inspect(
+          "Ignoring already added #{sender["rtc_tracks"]} tracks for #{receiver["username"]}"
+        )
+      end
+
+      # Attack new track to existing players & ask them to renegotiate
+      # Prevent infinite renegotiation
+      if not RTC.find_output_tracks(receiver["rtc_pid"], sender["rtc_tracks"]) do
+        # RTC.attach_tracks_to_peer(receiver["rtc_pid"], sender["rtc_tracks"])
+        IO.inspect("Sending #{receiver["username"]} tracks to #{sender["username"]}")
+        send(receiver["socket_pid"], {:push, "exrtc_renegotiate", %{}})
+      else
+        IO.inspect("!!!!!!!!!!!!!!!!!!!! skipping #{receiver["id"]} ALREADY HAD TRACK")
+      end
     end)
 
-    {:ok, answer} = RTC.handle_offer(rtc_pid, offer)
-    send(player["socket_pid"], {:push, "exrtc_answer", %{"answer" => answer}})
+    # Continue sender negotiation
+    {:ok, answer} = RTC.handle_offer(sender["rtc_pid"], offer)
+    send(sender["socket_pid"], {:push, "exrtc_answer", %{"answer" => answer}})
 
-    players = Map.put(state.players, id, player)
-    {:noreply, %{state | players: players}}
+    {:noreply, put_in(state.players[id], sender)}
   end
 
   def handle_cast({:exrtc_ice, id, ice}, state) do
     player = state.players[id]
-    RTC.handle_ice(player["rtc_pid"], ice)
+    state = put_in(state.players[id]["rtc_ready"], true)
+
+    if state.players[id]["rtc_pid"] && Process.alive?(state.players[id]["rtc_pid"]) do
+      RTC.handle_ice(player["rtc_pid"], ice)
+    end
 
     {:noreply, state}
   end
 
-  def handle_cast({:exrtc_audio, id, rid, packet}, state) do
+  def handle_cast({:exrtc_audio, id, client_track_id, packet}, state) do
     sender = state.players[id]
 
-    if sender["id"] == 4 do
-      state.players
-      |> Enum.reject(fn {_, player} ->
-        player["id"] == sender["id"] || is_nil(player["rtc_pid"])
-      end)
-      |> Enum.each(fn {_id, receiver} ->
-        track_id =
-          if is_nil(rid), do: sender["rtc_tracks"].audio.id, else: sender["rtc_tracks"].video.id
+    track_id =
+      sender["rtc_pid"]
+      |> RTC.find_input_track(client_track_id)
+      |> case do
+        %{kind: :video} -> sender["rtc_tracks"].video.id
+        %{kind: :audio} -> sender["rtc_tracks"].audio.id
+      end
 
-        if not is_nil(rid), do: IO.inspect("Sending #{rid}")
-
-        ExWebRTC.PeerConnection.send_rtp(
-          receiver["rtc_pid"],
-          track_id,
-          packet
-        )
-      end)
-    end
+    state.players
+    |> Enum.reject(fn {_, player} ->
+      player["id"] == sender["id"] || is_nil(player["rtc_pid"])
+    end)
+    |> Enum.reject(fn {_, player} ->
+      player["rtc_ready"] != true
+    end)
+    |> Enum.each(fn {_id, receiver} ->
+      ExWebRTC.PeerConnection.send_rtp(
+        receiver["rtc_pid"],
+        track_id,
+        packet
+      )
+    end)
 
     {:noreply, state}
   end
@@ -118,7 +155,8 @@ defmodule ExGather.Room.Server do
       "dir_y" => "down",
       "state" => "idle",
       "socket_pid" => socket_pid,
-      "audio_enabled" => false
+      "audio_enabled" => false,
+      "rtc_ready" => false
     }
   end
 end

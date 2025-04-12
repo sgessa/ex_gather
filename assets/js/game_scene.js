@@ -53,7 +53,8 @@ export default class GameScene extends Phaser.Scene {
     // Listen for presence events
     this.socketManager.channel.on("room_state", data => {
       this.actorsManager.init(data.players);
-      this.exRTCManager = new ExRTCManager(this);
+
+      this.socketManager.push("exrtc_start", {});
     });
 
     this.socketManager.channel.on("player_join", player => {
@@ -89,6 +90,15 @@ export default class GameScene extends Phaser.Scene {
 
     this.socketManager.channel.on("webrtc_audio", data => {
       //this.videoPlayersManager.toggleSource(data.player_id, data.audio_enabled, "audio");
+    });
+
+    this.socketManager.channel.on("exrtc_ready", data => {
+      this.exRTCManager = new ExRTCManager(this);
+    });
+
+    this.socketManager.channel.on("exrtc_renegotiate", data => {
+      this.exRTCManager.peer.close();
+      this.exRTCManager.init();
     });
 
     this.socketManager.channel.on("exrtc_ice", data => {

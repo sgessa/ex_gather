@@ -33,8 +33,12 @@ defmodule ExGatherWeb.RoomChannel do
     {:noreply, socket}
   end
 
-  def handle_info({:ex_webrtc, _from, msg}, state) do
-    handle_webrtc_msg(msg, state)
+  def handle_info({:ex_webrtc, _from, msg}, socket) do
+    handle_webrtc_msg(msg, socket)
+  end
+
+  def handle_info({:DOWN, _pid, :process, _ppid, :normal}, socket) do
+    {:noreply, socket}
   end
 
   defp handle_webrtc_msg({:ice_candidate, candidate}, socket) do
@@ -44,20 +48,21 @@ defmodule ExGatherWeb.RoomChannel do
     {:noreply, socket}
   end
 
-  defp handle_webrtc_msg({:rtcp, packets}, socket) do
+  # Simulcast disabled
+  # defp handle_webrtc_msg({:rtcp, packets}, socket) do
+  #   sender = socket.assigns.player
+  #   room_server = socket.assigns.room_server
+
+  #   GenServer.cast(room_server, {:exrtc_send_pli, sender.id, packets})
+
+  #   {:noreply, socket}
+  # end
+
+  defp handle_webrtc_msg({:rtp, client_track_id, nil, packet}, socket) do
     sender = socket.assigns.player
     room_server = socket.assigns.room_server
 
-    GenServer.cast(room_server, {:exrtc_send_pli, sender.id, packets})
-
-    {:noreply, socket}
-  end
-
-  defp handle_webrtc_msg({:rtp, _id, rid, packet}, socket) do
-    sender = socket.assigns.player
-    room_server = socket.assigns.room_server
-
-    GenServer.cast(room_server, {:exrtc_audio, sender.id, rid, packet})
+    GenServer.cast(room_server, {:exrtc_audio, sender.id, client_track_id, packet})
     {:noreply, socket}
   end
 
@@ -78,6 +83,18 @@ defmodule ExGatherWeb.RoomChannel do
     GenServer.cast(room_server, {:update_player, player.id, movement})
 
     {:noreply, assign(socket, :player, player)}
+  end
+
+  def handle_in("exrtc_start", _params, socket) do
+    # sender = socket.assigns.player
+    # room_server = socket.assigns.room_server
+
+    # {:ok, rtc_pid} = RTC.start_link()
+    # GenServer.call(room_server, {:exrtc_start, sender.id, rtc_pid})
+
+    push(socket, "exrtc_ready", %{})
+
+    {:noreply, socket}
   end
 
   def handle_in("exrtc_offer", %{"offer" => offer}, socket) do

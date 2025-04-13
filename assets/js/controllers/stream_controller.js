@@ -67,7 +67,7 @@ export default class StreamController {
     return this.stream;
   }
 
-  async toggleAudio(toggled = true) {
+  async toggleAudio(toggled) {
     if (this.audioEnabled == toggled) return;
 
     if (toggled) {
@@ -79,12 +79,12 @@ export default class StreamController {
       this.replaceAudioTrack(this.emptyStream.getAudioTracks()[0]);
     }
 
-    this.scene.socketManager.push("webrtc_audio", { audio_enabled: this.audioEnabled });
+    this.scene.socketManager.push("exrtc_toggle_stream", { audio_enabled: this.audioEnabled });
     this.scene.videoPlayersManager.toggleSource(this.scene.player.id, this.audioEnabled, "audio");
     this.updateInterface();
   }
 
-  async toggleScreenshare(toggled = true) {
+  async toggleScreenshare(toggled) {
     if (!this.stream) await this.getStream();
     if (this.screenEnabled == toggled) return;
 
@@ -113,7 +113,7 @@ export default class StreamController {
     this.updateInterface();
   }
 
-  async toggleCamera(toggled = true) {
+  async toggleCamera(toggled) {
     if (!this.stream) await this.getStream();
     if (this.cameraEnabled == toggled) return;
 

@@ -1,1 +1,0 @@
-export const EX_RTC_ENABLED = true;

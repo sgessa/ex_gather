@@ -87,10 +87,6 @@ export default class ExRTCManager {
       .addIceCandidate(new RTCIceCandidate(candidate))
   }
 
-  async handleDisconnect(actorId) {
-    this.scene.videoPlayersManager.delete(actorId);
-  }
-
   replaceVideoTrack(videoTrack) {
     const sender = this.peer.getSenders().find(s => s.track && s.track.kind === 'video');
 

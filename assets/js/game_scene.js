@@ -108,6 +108,10 @@ export default class GameScene extends Phaser.Scene {
     this.socketManager.channel.on("exrtc_answer", data => {
       this.exRTCManager.handleAnswer(data.answer);
     });
+
+    this.socketManager.socket.onClose((event) => {
+      window.location.reload();
+    });
   }
 
 

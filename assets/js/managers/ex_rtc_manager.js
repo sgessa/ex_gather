@@ -14,15 +14,6 @@ export default class ExRTCManager {
   }
 
   async init() {
-    console.log(this.scene.actorsManager.actors);
-    for (let actor of Object.values(this.scene.actorsManager.actors)) {
-      this.scene.videoPlayersManager.create(actor);
-      console.log('Creating manager for', actor);
-
-      this.tracks[actor.rtcTracks.audio_id] = actor;
-      this.tracks[actor.rtcTracks.video_id] = actor;
-    }
-
     if (this.peer) {
       this.peer.close();
       this.peer = null;
@@ -30,6 +21,18 @@ export default class ExRTCManager {
 
     this.peer = new RTCPeerConnection(this.config);
     this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+
+    console.log(this.scene.actorsManager.actors);
+    for (let actor of Object.values(this.scene.actorsManager.actors)) {
+      this.scene.videoPlayersManager.create(actor);
+      console.log('Creating manager for', actor);
+
+      this.tracks[actor.rtcTracks.audio_id] = actor;
+      this.tracks[actor.rtcTracks.video_id] = actor;
+
+      this.peer.addTransceiver('audio', { direction: 'sendrecv' }); // For client B
+      this.peer.addTransceiver('video', { direction: 'sendrecv' }); // For client C
+    }
 
     // this.peer.addTransceiver(this.stream.getVideoTracks()[0], {
     //   direction: "sendrecv",
@@ -65,9 +68,8 @@ export default class ExRTCManager {
   }
 
   async createOffer() {
-    this.peer.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: true })
+    this.peer.createOffer()
       .then(offer => {
-        offer.sdp = offer.sdp.replace('H264', 'VP8'); // Hacky but works for testing
         return offer
       })
       .then(offer => this.peer.setLocalDescription(offer))

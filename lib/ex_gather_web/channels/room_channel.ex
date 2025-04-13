@@ -48,7 +48,6 @@ defmodule ExGatherWeb.RoomChannel do
     {:noreply, socket}
   end
 
-  # Simulcast disabled
   # defp handle_webrtc_msg({:rtcp, packets}, socket) do
   #   sender = socket.assigns.player
   #   room_server = socket.assigns.room_server

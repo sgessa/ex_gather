@@ -54,34 +54,39 @@ defmodule ExGather.Room.Server do
 
     sender = state.players[id] |> Map.put("rtc_ready", false) |> Map.put("rtc_pid", rtc_pid)
 
+    IO.inspect("Handling #{sender["username"]} NEW OFFER (NEW PID)")
+    IO.inspect(sender["rtc_tracks"], label: "#{sender["username"]} tracks")
+
     state.players
     |> Enum.reject(fn {id, _player} -> id == sender["id"] end)
     |> Enum.each(fn {_id, receiver} ->
       # Attach existing tracks to sender
-
-      if not RTC.find_output_tracks(sender["rtc_pid"], receiver["rtc_tracks"]) do
-        IO.inspect("Adding #{receiver["username"]} tracks to #{sender["username"]}")
-
-        RTC.attach_tracks_to_peer(sender["rtc_pid"], receiver["rtc_tracks"])
-      else
-        IO.inspect(
-          "Ignoring already added #{sender["rtc_tracks"]} tracks for #{receiver["username"]}"
-        )
-      end
+      IO.inspect("Adding #{receiver["username"]} tracks to #{sender["username"]}")
+      RTC.attach_tracks_to_peer(sender["rtc_pid"], receiver["rtc_tracks"])
 
       # Attack new track to existing players & ask them to renegotiate
-      # Prevent infinite renegotiation
+      # Prevent renegotiation loop
       if not RTC.find_output_tracks(receiver["rtc_pid"], sender["rtc_tracks"]) do
         # RTC.attach_tracks_to_peer(receiver["rtc_pid"], sender["rtc_tracks"])
         IO.inspect("Sending #{receiver["username"]} tracks to #{sender["username"]}")
         send(receiver["socket_pid"], {:push, "exrtc_renegotiate", %{}})
       else
-        IO.inspect("!!!!!!!!!!!!!!!!!!!! skipping #{receiver["id"]} ALREADY HAD TRACK")
+        IO.inspect("!!!!!!!!!!!!!!!!!!!! skipping #{receiver["username"]} ALREADY HAD TRACK")
       end
     end)
 
+    IO.inspect(ExWebRTC.PeerConnection.get_transceivers(sender["rtc_pid"]),
+      label: "Transceivers for #{sender["username"]}"
+    )
+
+    IO.inspect("Done #{sender["username"]} handling")
+    IO.inspect("--------------------------------------------------ç")
+
     # Continue sender negotiation
     {:ok, answer} = RTC.handle_offer(sender["rtc_pid"], offer)
+
+    IO.inspect(answer)
+
     send(sender["socket_pid"], {:push, "exrtc_answer", %{"answer" => answer}})
 
     {:noreply, put_in(state.players[id], sender)}
@@ -134,7 +139,11 @@ defmodule ExGather.Room.Server do
     for packet <- packets do
       case packet do
         {_track_id, %ExRTCP.Packet.PayloadFeedback.PLI{}} when video_track.id != nil ->
-          :ok = ExWebRTC.PeerConnection.send_pli(sender["rtc_pid"], video_track.id, "h")
+          state.players
+          |> Enum.reject(fn {id, _player} -> id == sender["id"] end)
+          |> Enum.each(fn {_id, player} ->
+            :ok = ExWebRTC.PeerConnection.send_pli(player["rtc_pid"], video_track.id, "h")
+          end)
 
         _other ->
           # do something with other RTCP packets

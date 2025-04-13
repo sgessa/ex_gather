@@ -66,10 +66,6 @@ defmodule ExGatherWeb.RoomChannel do
   defp handle_exrtc(_msg, socket), do: {:noreply, socket}
 
   @impl true
-  def handle_in("ping", payload, socket) do
-    {:reply, {:ok, payload}, socket}
-  end
-
   def handle_in("player_move", movement, socket) do
     player = socket.assigns.player
     room_server = socket.assigns.room_server

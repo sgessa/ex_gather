@@ -10,7 +10,17 @@ defmodule ExGatherWeb.RoomJSON do
 
   def player(player) do
     player
-    |> Map.take(["id", "x", "y", "dir_x", "dir_y", "state", "username", "audio_enabled"])
+    |> Map.take([
+      "id",
+      "x",
+      "y",
+      "dir_x",
+      "dir_y",
+      "state",
+      "username",
+      "rtc_audio_enabled",
+      "rtc_camera_enabled"
+    ])
     |> Map.put("rtc_tracks", rtc_tracks(player["rtc_tracks"]))
   end
 

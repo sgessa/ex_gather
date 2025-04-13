@@ -53,9 +53,11 @@ export default class ExRTCManager {
       console.log('OnTrack', event.track.kind, event);
 
       const sender = this.tracks[event.streams[0].id];
+      const enabled = track.kind == 'video' ? sender.cameraEnabled : sender.audioEnabled;
+
       this.scene.videoPlayersManager.attach(sender, event.streams[0], track.kind);
       this.scene.videoPlayersManager.toggle(sender);
-      this.scene.videoPlayersManager.toggleSource(sender.id, true, track.kind);
+      this.scene.videoPlayersManager.toggleSource(sender.id, enabled, track.kind);
     }
 
     this.peer.onicecandidate = (event) => {

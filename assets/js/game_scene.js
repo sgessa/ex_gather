@@ -73,7 +73,13 @@ export default class GameScene extends Phaser.Scene {
 
     // WebRTC peer negotiation
     this.socketManager.channel.on("exrtc_toggle_stream", data => {
-      this.videoPlayersManager.toggleSource(data.player_id, data.audio_enabled, "audio");
+      if (data.rtc_audio_enabled !== undefined) {
+        this.videoPlayersManager.toggleSource(data.player_id, data.rtc_audio_enabled, "audio");
+      }
+
+      if (data.rtc_camera_enabled !== undefined) {
+        this.videoPlayersManager.toggleSource(data.player_id, data.rtc_camera_enabled, "video");
+      }
     });
 
     this.socketManager.channel.on("exrtc_renegotiate", data => {

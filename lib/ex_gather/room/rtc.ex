@@ -101,4 +101,19 @@ defmodule ExGather.Room.RTC do
     candidate = ICECandidate.from_json(ice)
     PeerConnection.add_ice_candidate(pc, candidate)
   end
+
+  #
+  # Stream forwarding
+  #
+
+  def forward_rtp(to, track_id, packet) do
+    Enum.each(
+      to,
+      &ExWebRTC.PeerConnection.send_rtp(
+        &1,
+        track_id,
+        packet
+      )
+    )
+  end
 end

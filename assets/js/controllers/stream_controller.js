@@ -79,7 +79,7 @@ export default class StreamController {
       this.replaceAudioTrack(this.emptyStream.getAudioTracks()[0]);
     }
 
-    this.scene.socketManager.push("exrtc_toggle_stream", { audio_enabled: this.audioEnabled });
+    this.scene.socketManager.push("exrtc_toggle_stream", { rtc_audio_enabled: this.audioEnabled });
     this.scene.videoPlayersManager.toggleSource(this.scene.player.id, this.audioEnabled, "audio");
     this.updateInterface();
   }
@@ -138,6 +138,8 @@ export default class StreamController {
       this.stream = null;
       this.stream = await this.getStream();
     }
+
+    this.scene.socketManager.push("exrtc_toggle_stream", { rtc_camera_enabled: this.cameraEnabled });
 
     this.updateInterface();
     this.updateStreamPlayer();

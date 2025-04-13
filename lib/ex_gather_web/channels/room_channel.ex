@@ -33,22 +33,20 @@ defmodule ExGatherWeb.RoomChannel do
     {:noreply, socket}
   end
 
-  def handle_info({:ex_webrtc, _from, msg}, socket) do
-    handle_webrtc_msg(msg, socket)
-  end
+  def handle_info({:ex_webrtc, _from, msg}, socket),
+    do: handle_exrtc(msg, socket)
 
-  def handle_info({:DOWN, _pid, :process, _ppid, :normal}, socket) do
-    {:noreply, socket}
-  end
+  def handle_info({:DOWN, _pid, :process, _ppid, :normal}, socket),
+    do: {:noreply, socket}
 
-  defp handle_webrtc_msg({:ice_candidate, candidate}, socket) do
+  defp handle_exrtc({:ice_candidate, candidate}, socket) do
     candidate = ExWebRTC.ICECandidate.to_json(candidate)
     push(socket, "exrtc_ice", %{"ice" => candidate})
 
     {:noreply, socket}
   end
 
-  defp handle_webrtc_msg({:rtcp, packets}, socket) do
+  defp handle_exrtc({:rtcp, packets}, socket) do
     sender = socket.assigns.player
     room_server = socket.assigns.room_server
 
@@ -57,15 +55,15 @@ defmodule ExGatherWeb.RoomChannel do
     {:noreply, socket}
   end
 
-  defp handle_webrtc_msg({:rtp, client_track_id, nil, packet}, socket) do
+  defp handle_exrtc({:rtp, client_track_id, nil, packet}, socket) do
     sender = socket.assigns.player
     room_server = socket.assigns.room_server
 
-    GenServer.cast(room_server, {:exrtc_audio, sender.id, client_track_id, packet})
+    GenServer.cast(room_server, {:exrtc_send_rtp, sender.id, client_track_id, packet})
     {:noreply, socket}
   end
 
-  defp handle_webrtc_msg(_msg, socket), do: {:noreply, socket}
+  defp handle_exrtc(_msg, socket), do: {:noreply, socket}
 
   @impl true
   def handle_in("ping", payload, socket) do
@@ -78,7 +76,6 @@ defmodule ExGatherWeb.RoomChannel do
 
     # Broadcast to all other players in the room
     broadcast_from!(socket, "player_moved", Map.put(movement, "player_id", player.id))
-
     GenServer.cast(room_server, {:update_player, player.id, movement})
 
     {:noreply, assign(socket, :player, player)}
@@ -89,8 +86,8 @@ defmodule ExGatherWeb.RoomChannel do
     room_server = socket.assigns.room_server
 
     {:ok, rtc_pid} = RTC.start_link()
-
     GenServer.cast(room_server, {:exrtc_offer, player.id, rtc_pid, offer})
+
     {:noreply, socket}
   end
 

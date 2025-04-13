@@ -17,18 +17,17 @@ defmodule ExGather.Room.Server do
     player = init_player_state(player, from_pid) |> Map.put("rtc_tracks", tracks)
     players = Map.put(state.players, player["id"], player)
 
-    {:reply, {:ok, player, state.players}, %{state | players: players}}
+    {:reply, {:ok, player, state.players}, put_in(state.players, players)}
   end
 
   def handle_call({:leave, player_id}, _from, state) do
     players = Map.delete(state.players, player_id)
-    {:reply, :ok, %{state | players: players}}
+    {:reply, :ok, put_in(state.players, players)}
   end
 
   def handle_cast({:update_player, id, attrs}, state) do
-    player = state.players |> Map.get(id) |> Map.merge(attrs)
-    players = Map.put(state.players, id, player)
-    {:noreply, %{state | players: players}}
+    player = Map.merge(state.players[id], attrs)
+    {:noreply, put_in(state.players[id], player)}
   end
 
   def handle_cast({:push_to, id, event, data}, state) do
@@ -45,7 +44,10 @@ defmodule ExGather.Room.Server do
       Process.exit(old_pid, :kill)
     end
 
-    sender = state.players[id] |> Map.put("rtc_ready", false) |> Map.put("rtc_pid", rtc_pid)
+    sender =
+      state.players[id]
+      |> Map.put("rtc_ready", false)
+      |> Map.put("rtc_pid", rtc_pid)
 
     players =
       state.players
@@ -70,7 +72,7 @@ defmodule ExGather.Room.Server do
     {:ok, answer} = RTC.handle_offer(sender["rtc_pid"], offer)
     send(sender["socket_pid"], {:push, "exrtc_answer", %{"answer" => answer}})
 
-    {:noreply, %{state | players: players}}
+    {:noreply, put_in(state.players, players)}
   end
 
   def handle_cast({:exrtc_ice, id, ice}, state) do
@@ -83,10 +85,10 @@ defmodule ExGather.Room.Server do
     {:noreply, put_in(state.players[id]["rtc_ready"], true)}
   end
 
-  def handle_cast({:exrtc_audio, id, client_track_id, packet}, state) do
+  def handle_cast({:exrtc_send_rtp, id, client_track_id, packet}, state) do
     sender = state.players[id]
 
-    track_id =
+    server_track_id =
       sender["rtc_pid"]
       |> RTC.find_input_track(client_track_id)
       |> case do
@@ -95,19 +97,11 @@ defmodule ExGather.Room.Server do
       end
 
     state.players
-    |> Enum.reject(fn {_, player} ->
-      player["id"] == sender["id"] || is_nil(player["rtc_pid"])
+    |> Enum.reject(fn {_, receiver} ->
+      receiver["id"] == sender["id"] || not rtc_ready?(receiver)
     end)
-    |> Enum.reject(fn {_, player} ->
-      player["rtc_ready"] != true
-    end)
-    |> Enum.each(fn {_id, receiver} ->
-      ExWebRTC.PeerConnection.send_rtp(
-        receiver["rtc_pid"],
-        track_id,
-        packet
-      )
-    end)
+    |> Enum.map(fn {_, receiver} -> receiver["rtc_pid"] end)
+    |> RTC.forward_rtp(server_track_id, packet)
 
     {:noreply, state}
   end
@@ -121,17 +115,20 @@ defmodule ExGather.Room.Server do
         {_track_id, %ExRTCP.Packet.PayloadFeedback.PLI{}} when video_track.id != nil ->
           state.players
           |> Enum.reject(fn {id, player} ->
-            id == sender["id"] || is_nil(player["rtc_pid"] || not player["rtc_ready"])
+            id == sender["id"] || not rtc_ready?(player)
           end)
           |> Enum.each(fn {_id, player} ->
-            :ok = ExWebRTC.PeerConnection.send_pli(player["rtc_pid"], video_track.id, nil)
+            ExWebRTC.PeerConnection.send_pli(
+              player["rtc_pid"],
+              video_track.id,
+              nil
+            )
 
-            :ok =
-              ExWebRTC.PeerConnection.send_pli(
-                sender["rtc_pid"],
-                player["rtc_tracks"].video.id,
-                nil
-              )
+            ExWebRTC.PeerConnection.send_pli(
+              sender["rtc_pid"],
+              player["rtc_tracks"].video.id,
+              nil
+            )
           end)
 
         _ ->
@@ -141,6 +138,9 @@ defmodule ExGather.Room.Server do
 
     {:noreply, state}
   end
+
+  defp rtc_ready?(player),
+    do: not is_nil(player["rtc_pid"]) && player["rtc_ready"] == true
 
   defp init_player_state(player, socket_pid) do
     %{
@@ -152,8 +152,10 @@ defmodule ExGather.Room.Server do
       "dir_y" => "down",
       "state" => "idle",
       "socket_pid" => socket_pid,
-      "audio_enabled" => false,
-      "rtc_ready" => false
+      "rtc_audio_enabled" => false,
+      "rtc_camera_enabled" => false,
+      "rtc_ready" => false,
+      "rtc_pid" => nil
     }
   end
 end

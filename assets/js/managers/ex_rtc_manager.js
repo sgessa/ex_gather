@@ -24,18 +24,8 @@ export default class ExRTCManager {
     this.peer = new RTCPeerConnection(this.config);
     this.stream = await this.scene.streamController.getStream();
 
-    // Ensure a track is always sent (will be replaced when stream is enabled)
-    if (this.streamController.cameraEnabled) {
-      this.peer.addTrack(this.stream.getVideoTracks()[0]);
-    } else {
-      this.peer.addTrack(this.streamController.emptyStream.getVideoTracks()[0]);
-    }
-
-    if (this.streamController.audioEnabled) {
-      this.peer.addTrack(this.stream.getAudioTracks()[0]);
-    } else {
-      this.peer.addTrack(this.streamController.emptyStream.getAudioTracks()[0]);
-    }
+    this.peer.addTrack(this.getVideoTrack());
+    this.peer.addTrack(this.getAudioTrack());
 
     for (let actor of Object.values(this.scene.actorsManager.actors)) {
       this.scene.videoPlayersManager.create(actor);
@@ -81,6 +71,9 @@ export default class ExRTCManager {
   async handleAnswer(answer) {
     this.peer
       .setRemoteDescription(new RTCSessionDescription(answer))
+      .then(() => {
+        this.scene.socketManager.push("exrtc_ready", {});
+      })
       .catch(error => console.error('Error setting remote description:', error));
   }
 
@@ -102,6 +95,30 @@ export default class ExRTCManager {
 
     if (sender) {
       sender.replaceTrack(audioTrack);
+    }
+  }
+
+  handleReady(actorId) {
+    setTimeout(() => {
+      this.replaceVideoTrack(this.streamController.emptyStream.getVideoTracks()[0]);
+      this.replaceVideoTrack(this.getVideoTrack());
+      this.replaceAudioTrack(this.getAudioTrack());
+    }, 1000);
+  }
+
+  getVideoTrack() {
+    if (this.streamController.cameraEnabled) {
+      return this.stream.getVideoTracks()[0];
+    } else {
+      return this.streamController.emptyStream.getVideoTracks()[0];
+    }
+  }
+
+  getAudioTrack() {
+    if (this.streamController.audioEnabled) {
+      return this.stream.getAudioTracks()[0];
+    } else {
+      return this.streamController.emptyStream.getAudioTracks()[0];
     }
   }
 }

@@ -75,10 +75,12 @@ export default class GameScene extends Phaser.Scene {
     this.socketManager.channel.on("exrtc_toggle_stream", data => {
       if (data.rtc_audio_enabled !== undefined) {
         this.videoPlayersManager.toggleSource(data.player_id, data.rtc_audio_enabled, "audio");
+        this.actorsManager.actors[data.player_id].audioEnabled = data.rtc_audio_enabled;
       }
 
       if (data.rtc_camera_enabled !== undefined) {
         this.videoPlayersManager.toggleSource(data.player_id, data.rtc_camera_enabled, "video");
+        this.actorsManager.actors[data.player_id].cameraEnabled = data.rtc_camera_enabled;
       }
     });
 
@@ -93,5 +95,9 @@ export default class GameScene extends Phaser.Scene {
     this.socketManager.channel.on("exrtc_answer", data => {
       this.rtcManager.handleAnswer(data.answer);
     });
+
+    this.socketManager.channel.on("exrtc_ready", data => {
+      this.rtcManager.handleReady(data.player_id);
+    })
   }
 }

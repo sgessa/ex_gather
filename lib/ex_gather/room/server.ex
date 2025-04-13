@@ -21,7 +21,20 @@ defmodule ExGather.Room.Server do
   end
 
   def handle_call({:leave, player_id}, _from, state) do
+    player = state.players[player_id]
     players = Map.delete(state.players, player_id)
+
+    if player["rtc_pid"] do
+      state.players
+      |> Enum.reject(fn {_, receiver} ->
+        receiver["id"] == player["id"] || is_nil(receiver["rtc_pid"])
+      end)
+      |> Enum.each(fn {_id, receiver} ->
+        ExWebRTC.PeerConnection.remove_track(receiver["rtc_pid"], player["rtc_tracks"].video.id)
+        ExWebRTC.PeerConnection.remove_track(receiver["rtc_pid"], player["rtc_tracks"].audio.id)
+      end)
+    end
+
     {:reply, :ok, put_in(state.players, players)}
   end
 
@@ -82,7 +95,7 @@ defmodule ExGather.Room.Server do
       RTC.handle_ice(player["rtc_pid"], ice)
     end
 
-    {:noreply, put_in(state.players[id]["rtc_ready"], true)}
+    {:noreply, state}
   end
 
   def handle_cast({:exrtc_send_rtp, id, client_track_id, packet}, state) do
@@ -102,39 +115,6 @@ defmodule ExGather.Room.Server do
     end)
     |> Enum.map(fn {_, receiver} -> receiver["rtc_pid"] end)
     |> RTC.forward_rtp(server_track_id, packet)
-
-    {:noreply, state}
-  end
-
-  def handle_cast({:exrtc_send_pli, id, packets}, state) do
-    sender = state.players[id]
-    video_track = sender["rtc_tracks"][:video]
-
-    for packet <- packets do
-      case packet do
-        {_track_id, %ExRTCP.Packet.PayloadFeedback.PLI{}} when video_track.id != nil ->
-          state.players
-          |> Enum.reject(fn {id, player} ->
-            id == sender["id"] || not rtc_ready?(player)
-          end)
-          |> Enum.each(fn {_id, player} ->
-            ExWebRTC.PeerConnection.send_pli(
-              player["rtc_pid"],
-              video_track.id,
-              nil
-            )
-
-            ExWebRTC.PeerConnection.send_pli(
-              sender["rtc_pid"],
-              player["rtc_tracks"].video.id,
-              nil
-            )
-          end)
-
-        _ ->
-          :ok
-      end
-    end
 
     {:noreply, state}
   end

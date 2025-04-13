@@ -46,15 +46,6 @@ defmodule ExGatherWeb.RoomChannel do
     {:noreply, socket}
   end
 
-  defp handle_exrtc({:rtcp, packets}, socket) do
-    sender = socket.assigns.player
-    room_server = socket.assigns.room_server
-
-    GenServer.cast(room_server, {:exrtc_send_pli, sender.id, packets})
-
-    {:noreply, socket}
-  end
-
   defp handle_exrtc({:rtp, client_track_id, nil, packet}, socket) do
     sender = socket.assigns.player
     room_server = socket.assigns.room_server
@@ -101,6 +92,16 @@ defmodule ExGatherWeb.RoomChannel do
 
     GenServer.cast(room_server, {:update_player, sender.id, params})
     broadcast_from!(socket, "exrtc_toggle_stream", Map.put(params, "player_id", sender.id))
+
+    {:noreply, socket}
+  end
+
+  def handle_in("exrtc_ready", _params, socket) do
+    sender = socket.assigns.player
+    room_server = socket.assigns.room_server
+
+    GenServer.cast(room_server, {:update_player, sender.id, %{"rtc_ready" => true}})
+    broadcast_from!(socket, "exrtc_ready", %{"player_id" => sender.id})
 
     {:noreply, socket}
   end

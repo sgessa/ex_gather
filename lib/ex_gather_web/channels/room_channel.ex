@@ -48,14 +48,14 @@ defmodule ExGatherWeb.RoomChannel do
     {:noreply, socket}
   end
 
-  # defp handle_webrtc_msg({:rtcp, packets}, socket) do
-  #   sender = socket.assigns.player
-  #   room_server = socket.assigns.room_server
+  defp handle_webrtc_msg({:rtcp, packets}, socket) do
+    sender = socket.assigns.player
+    room_server = socket.assigns.room_server
 
-  #   GenServer.cast(room_server, {:exrtc_send_pli, sender.id, packets})
+    GenServer.cast(room_server, {:exrtc_send_pli, sender.id, packets})
 
-  #   {:noreply, socket}
-  # end
+    {:noreply, socket}
+  end
 
   defp handle_webrtc_msg({:rtp, client_track_id, nil, packet}, socket) do
     sender = socket.assigns.player
@@ -82,18 +82,6 @@ defmodule ExGatherWeb.RoomChannel do
     GenServer.cast(room_server, {:update_player, player.id, movement})
 
     {:noreply, assign(socket, :player, player)}
-  end
-
-  def handle_in("exrtc_start", _params, socket) do
-    # sender = socket.assigns.player
-    # room_server = socket.assigns.room_server
-
-    # {:ok, rtc_pid} = RTC.start_link()
-    # GenServer.call(room_server, {:exrtc_start, sender.id, rtc_pid})
-
-    push(socket, "exrtc_ready", %{})
-
-    {:noreply, socket}
   end
 
   def handle_in("exrtc_offer", %{"offer" => offer}, socket) do

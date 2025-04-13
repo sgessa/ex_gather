@@ -13,7 +13,7 @@ export default class RTCManager {
     this.socketManager = this.scene.socketManager;
     this.videoPlayersManager = this.scene.videoPlayersManager;
 
-    console.warning('Server side WebRTC proxy disabled');
+    console.warn('Server side WebRTC proxy disabled');
   }
 
   async createPeerConnection(actorId) {

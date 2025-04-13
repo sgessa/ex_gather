@@ -11,7 +11,7 @@ export default class ExRTCManager {
     this.stream = null;
     this.tracks = {};
 
-    console.warning('Server side WebRTC proxy enabled');
+    console.warn('Server side WebRTC proxy enabled');
     this.init();
   }
 
@@ -88,7 +88,7 @@ export default class ExRTCManager {
   }
 
   async handleDisconnect(actorId) {
-    this.videoPlayersManager.delete(actorId);
+    this.scene.videoPlayersManager.delete(actorId);
   }
 
   replaceVideoTrack(videoTrack) {

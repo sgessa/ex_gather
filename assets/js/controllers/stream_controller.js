@@ -180,26 +180,12 @@ export default class StreamController {
 
   replaceVideoTrack() {
     const videoTrack = this.stream.getVideoTracks()[0];
-
-    for (let peer of Object.values(this.scene.rtcManager.peers)) {
-      const sender = peer.getSenders().find(s => s.track && s.track.kind === 'video');
-
-      if (sender) {
-        sender.replaceTrack(videoTrack);
-      }
-    }
-
+    this.scene.rtcManager.replaceVideoTrack(videoTrack);
     this.updateStreamPlayer();
   }
 
   replaceAudioTrack(audioTrack) {
-    for (let peer of Object.values(this.scene.rtcManager.peers)) {
-      const sender = peer.getSenders().find(s => s.track && s.track.kind === 'audio');
-
-      if (sender) {
-        sender.replaceTrack(audioTrack);
-      }
-    }
+    this.scene.rtcManager.replaceAudioTrack(audioTrack);
   }
 
   createEmptyStream() {

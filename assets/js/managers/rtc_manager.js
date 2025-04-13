@@ -12,6 +12,8 @@ export default class RTCManager {
     this.candidateQueue = {};
     this.socketManager = this.scene.socketManager;
     this.videoPlayersManager = this.scene.videoPlayersManager;
+
+    console.warning('Server side WebRTC proxy disabled');
   }
 
   async createPeerConnection(actorId) {
@@ -121,5 +123,25 @@ export default class RTCManager {
     this.videoPlayersManager.delete(actorId);
     this.peers[actorId].close();
     delete this.peers[actorId];
+  }
+
+  replaceVideoTrack(videoTrack) {
+    for (let peer of Object.values(this.peers)) {
+      const sender = peer.getSenders().find(s => s.track && s.track.kind === 'video');
+
+      if (sender) {
+        sender.replaceTrack(videoTrack);
+      }
+    }
+  }
+
+  replaceAudioTrack(audioTrack) {
+    for (let peer of Object.values(this.peers)) {
+      const sender = peer.getSenders().find(s => s.track && s.track.kind === 'audio');
+
+      if (sender) {
+        sender.replaceTrack(audioTrack);
+      }
+    }
   }
 }

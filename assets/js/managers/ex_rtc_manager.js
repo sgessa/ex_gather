@@ -5,11 +5,13 @@ export default class ExRTCManager {
     };
 
     this.scene = scene;
+    this.streamController = this.scene.streamController;
+
     this.peer = null;
     this.stream = null;
-
     this.tracks = {};
 
+    console.warning('Server side WebRTC proxy enabled');
     this.init();
   }
 
@@ -20,10 +22,20 @@ export default class ExRTCManager {
     }
 
     this.peer = new RTCPeerConnection(this.config);
-    this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    this.stream = await this.scene.streamController.getStream();
 
-    this.peer.addTrack(this.stream.getVideoTracks()[0]);
-    this.peer.addTrack(this.stream.getAudioTracks()[0]);
+    // Ensure a track is always sent (will be replaced when stream is enabled)
+    if (this.streamController.cameraEnabled) {
+      this.peer.addTrack(this.stream.getVideoTracks()[0]);
+    } else {
+      this.peer.addTrack(this.streamController.emptyStream.getVideoTracks()[0]);
+    }
+
+    if (this.streamController.audioEnabled) {
+      this.peer.addTrack(this.stream.getAudioTracks()[0]);
+    } else {
+      this.peer.addTrack(this.streamController.emptyStream.getAudioTracks()[0]);
+    }
 
     for (let actor of Object.values(this.scene.actorsManager.actors)) {
       this.scene.videoPlayersManager.create(actor);
@@ -31,8 +43,8 @@ export default class ExRTCManager {
       this.tracks[actor.rtcTracks.audio_id] = actor;
       this.tracks[actor.rtcTracks.video_id] = actor;
 
-      this.peer.addTransceiver('audio', { direction: 'sendrecv' }); // For client B
-      this.peer.addTransceiver('video', { direction: 'sendrecv' }); // For client C
+      this.peer.addTransceiver('audio', { direction: 'sendrecv' });
+      this.peer.addTransceiver('video', { direction: 'sendrecv' });
     }
 
     this.peer.ontrack = (event) => {
@@ -73,5 +85,25 @@ export default class ExRTCManager {
   async handleIce(candidate) {
     this.peer
       .addIceCandidate(new RTCIceCandidate(candidate))
+  }
+
+  async handleDisconnect(actorId) {
+    this.videoPlayersManager.delete(actorId);
+  }
+
+  replaceVideoTrack(videoTrack) {
+    const sender = this.peer.getSenders().find(s => s.track && s.track.kind === 'video');
+
+    if (sender) {
+      sender.replaceTrack(videoTrack);
+    }
+  }
+
+  replaceAudioTrack(audioTrack) {
+    const sender = this.peer.getSenders().find(s => s.track && s.track.kind === 'audio');
+
+    if (sender) {
+      sender.replaceTrack(audioTrack);
+    }
   }
 }

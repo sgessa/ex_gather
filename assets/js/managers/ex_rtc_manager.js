@@ -24,7 +24,7 @@ export default class ExRTCManager {
     this.peer = new RTCPeerConnection(this.config);
     this.stream = await this.scene.streamController.getStream();
 
-    this.peer.addTrack(this.getVideoTrack());
+    this.peer.addTrack(this.streamController.emptyStream.getVideoTracks()[0]);
     this.peer.addTrack(this.getAudioTrack());
 
     for (let actor of Object.values(this.scene.actorsManager.actors)) {
@@ -43,11 +43,14 @@ export default class ExRTCManager {
       console.log('OnTrack', event.track.kind, event);
 
       const sender = this.tracks[event.streams[0].id];
-      const enabled = track.kind == 'video' ? sender.cameraEnabled : sender.audioEnabled;
+      let enabled;
 
-      this.scene.videoPlayersManager.attach(sender, event.streams[0], track.kind);
-      this.scene.videoPlayersManager.toggle(sender);
-      this.scene.videoPlayersManager.toggleSource(sender.id, enabled, track.kind);
+      if (sender) {
+        enabled = track.kind == 'video' ? sender.cameraEnabled : sender.audioEnabled;
+        this.scene.videoPlayersManager.attach(sender, event.streams[0], track.kind);
+        this.scene.videoPlayersManager.toggle(sender);
+        this.scene.videoPlayersManager.toggleSource(sender.id, enabled, track.kind);
+      }
     }
 
     this.peer.onicecandidate = (event) => {
@@ -99,11 +102,9 @@ export default class ExRTCManager {
   }
 
   handleReady(actorId) {
-    setTimeout(() => {
-      this.replaceVideoTrack(this.streamController.emptyStream.getVideoTracks()[0]);
-      this.replaceVideoTrack(this.getVideoTrack());
-      this.replaceAudioTrack(this.getAudioTrack());
-    }, 1000);
+    //this.replaceVideoTrack(this.streamController.emptyStream.getVideoTracks()[0]);
+    this.replaceVideoTrack(this.getVideoTrack());
+    //this.replaceAudioTrack(this.getAudioTrack());
   }
 
   getVideoTrack() {

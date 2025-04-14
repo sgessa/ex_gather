@@ -94,3 +94,9 @@
   display: none !important;
   visibility: hidden;
 }
+
+.chat-text-container {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: right;
+}

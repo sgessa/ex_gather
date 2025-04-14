@@ -82,7 +82,7 @@ export default class ChatManager {
       avatar.classList = "w-8 h-8 rounded-full bg-gray-700 flex-shrink-0";
       author.classList = "text-sm text-gray-400";
       textContainer.classList = "bg-gray-800 p-3 rounded-lg shadow-sm max-w-xs";
-      text.classList = "text-gray-200";
+      text.classList = "text-gray-200 chat-text-container";
       time.classList = "text-xs text-gray-500 mt-1";
 
       message.appendChild(avatar);
@@ -94,7 +94,7 @@ export default class ChatManager {
       avatar.classList = "w-8 h-8 rounded-full bg-blue-500 flex-shrink-0";
       message.classList = 'flex items-start space-x-2 justify-end';
       textContainer.classList = "bg-blue-600 text-white p-3 rounded-lg shadow-sm max-w-xs";
-      text.classList = "text-gray-200";
+      text.classList = "text-gray-200 chat-text-container";
       time.classList = "text-xs text-gray-500 mt-1 text-right";
     }
 

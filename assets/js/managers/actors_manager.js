@@ -18,6 +18,7 @@ export default class ActorsManager {
   }
 
   remove(actor) {
+    this.scene.videoPlayersManager.delete(actor.id);
     this.actors[actor.id]?.destroy();
     delete this.actors[actor.id];
   }

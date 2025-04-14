@@ -67,7 +67,7 @@ export default class StreamController {
     return this.stream;
   }
 
-  async toggleAudio(toggled = true) {
+  async toggleAudio(toggled) {
     if (this.audioEnabled == toggled) return;
 
     if (toggled) {
@@ -79,12 +79,12 @@ export default class StreamController {
       this.replaceAudioTrack(this.emptyStream.getAudioTracks()[0]);
     }
 
-    this.scene.socketManager.push("webrtc_audio", { audio_enabled: this.audioEnabled });
+    this.scene.socketManager.push("exrtc_toggle_stream", { rtc_audio_enabled: this.audioEnabled });
     this.scene.videoPlayersManager.toggleSource(this.scene.player.id, this.audioEnabled, "audio");
     this.updateInterface();
   }
 
-  async toggleScreenshare(toggled = true) {
+  async toggleScreenshare(toggled) {
     if (!this.stream) await this.getStream();
     if (this.screenEnabled == toggled) return;
 
@@ -113,7 +113,7 @@ export default class StreamController {
     this.updateInterface();
   }
 
-  async toggleCamera(toggled = true) {
+  async toggleCamera(toggled) {
     if (!this.stream) await this.getStream();
     if (this.cameraEnabled == toggled) return;
 
@@ -138,6 +138,8 @@ export default class StreamController {
       this.stream = null;
       this.stream = await this.getStream();
     }
+
+    this.scene.socketManager.push("exrtc_toggle_stream", { rtc_camera_enabled: this.cameraEnabled });
 
     this.updateInterface();
     this.updateStreamPlayer();
@@ -180,26 +182,12 @@ export default class StreamController {
 
   replaceVideoTrack() {
     const videoTrack = this.stream.getVideoTracks()[0];
-
-    for (let peer of Object.values(this.scene.rtcManager.peers)) {
-      const sender = peer.getSenders().find(s => s.track && s.track.kind === 'video');
-
-      if (sender) {
-        sender.replaceTrack(videoTrack);
-      }
-    }
-
+    this.scene.rtcManager.replaceVideoTrack(videoTrack);
     this.updateStreamPlayer();
   }
 
   replaceAudioTrack(audioTrack) {
-    for (let peer of Object.values(this.scene.rtcManager.peers)) {
-      const sender = peer.getSenders().find(s => s.track && s.track.kind === 'audio');
-
-      if (sender) {
-        sender.replaceTrack(audioTrack);
-      }
-    }
+    this.scene.rtcManager.replaceAudioTrack(audioTrack);
   }
 
   createEmptyStream() {

@@ -114,7 +114,13 @@ export default class ChatManager {
       message.appendChild(avatar);
     }
 
-    document.querySelector("#chat-container").appendChild(message);
+    const chatContainer = document.querySelector("#chat-container")
+    chatContainer.appendChild(message);
+
+    chatContainer.scrollTo({
+      top: chatContainer.scrollHeight,
+      behavior: 'smooth'
+    });
   }
 
   sendMessage() {

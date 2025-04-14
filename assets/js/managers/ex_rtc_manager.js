@@ -102,9 +102,7 @@ export default class ExRTCManager {
   }
 
   handleReady(actorId) {
-    //this.replaceVideoTrack(this.streamController.emptyStream.getVideoTracks()[0]);
     this.replaceVideoTrack(this.getVideoTrack());
-    //this.replaceAudioTrack(this.getAudioTrack());
   }
 
   getVideoTrack() {

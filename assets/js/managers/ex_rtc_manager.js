@@ -22,10 +22,12 @@ export default class ExRTCManager {
     }
 
     this.peer = new RTCPeerConnection(this.config);
-    this.stream = await this.scene.streamController.getStream();
 
+    await this.streamController.getVideoStream();
+    await this.streamController.getAudioStream();
+
+    this.peer.addTrack(this.streamController.emptyStream.getAudioTracks()[0]);
     this.peer.addTrack(this.streamController.emptyStream.getVideoTracks()[0]);
-    this.peer.addTrack(this.getAudioTrack());
 
     for (let actor of Object.values(this.scene.actorsManager.actors)) {
       this.scene.videoPlayersManager.create(actor);
@@ -101,13 +103,19 @@ export default class ExRTCManager {
     }
   }
 
-  handleReady(actorId) {
-    this.replaceVideoTrack(this.getVideoTrack());
+  async handleReady(actorId) {
+    await this.scene.streamController.getVideoStream();
+    await this.scene.streamController.getAudioStream();
+
+    setTimeout(() => {
+      this.replaceAudioTrack(this.getAudioTrack());
+      this.replaceVideoTrack(this.getVideoTrack());
+    }, 300);
   }
 
   getVideoTrack() {
     if (this.streamController.cameraEnabled) {
-      return this.stream.getVideoTracks()[0];
+      return this.streamController.videoStream.getVideoTracks()[0];
     } else {
       return this.streamController.emptyStream.getVideoTracks()[0];
     }
@@ -115,7 +123,7 @@ export default class ExRTCManager {
 
   getAudioTrack() {
     if (this.streamController.audioEnabled) {
-      return this.stream.getAudioTracks()[0];
+      return this.streamController.audioStream.getAudioTracks()[0];
     } else {
       return this.streamController.emptyStream.getAudioTracks()[0];
     }

@@ -7,11 +7,8 @@ import SpritesManager from "./managers/sprites_manager";
 import VideoPlayersManager from "./managers/video_players_manager";
 import StreamController from "./controllers/stream_controller";
 import PlayerController from "./controllers/player_controller";
-<<<<<<< HEAD
 import ChatManager from "./managers/chat_manager";
-=======
 import ExRTCManager from "./managers/ex_rtc_manager";
->>>>>>> main
 
 export default class GameScene extends Phaser.Scene {
   constructor() {

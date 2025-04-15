@@ -116,7 +116,7 @@ export default class StreamController {
       let cameraTrack;
       if (this.cameraEnabled) cameraTrack = this.videoStream.getVideoTracks()[0];
 
-      this.videoStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: this.audioEnabled });
+      this.videoStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
       if (cameraTrack) cameraTrack.stop()
       this.screenEnabled = true;
 
@@ -142,7 +142,7 @@ export default class StreamController {
     if (this.cameraEnabled == toggled) return;
 
     if (toggled) {
-      this.videoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: this.audioEnabled });
+      this.videoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
       this.cameraEnabled = toggled;
 
       // Detect camera stop

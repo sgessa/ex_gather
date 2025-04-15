@@ -1,6 +1,7 @@
 defmodule ExGatherWeb.RoomChannel do
   use ExGatherWeb, :channel
 
+  alias ExGather.Room.RTC
   alias ExGatherWeb.RoomJSON
 
   @impl true
@@ -32,18 +33,36 @@ defmodule ExGatherWeb.RoomChannel do
     {:noreply, socket}
   end
 
-  @impl true
-  def handle_in("ping", payload, socket) do
-    {:reply, {:ok, payload}, socket}
+  def handle_info({:ex_webrtc, _from, msg}, socket),
+    do: handle_exrtc(msg, socket)
+
+  def handle_info({:DOWN, _pid, :process, _ppid, :normal}, socket),
+    do: {:noreply, socket}
+
+  defp handle_exrtc({:ice_candidate, candidate}, socket) do
+    candidate = ExWebRTC.ICECandidate.to_json(candidate)
+    push(socket, "exrtc_ice", %{"ice" => candidate})
+
+    {:noreply, socket}
   end
 
+  defp handle_exrtc({:rtp, client_track_id, nil, packet}, socket) do
+    sender = socket.assigns.player
+    room_server = socket.assigns.room_server
+
+    GenServer.cast(room_server, {:exrtc_send_rtp, sender.id, client_track_id, packet})
+    {:noreply, socket}
+  end
+
+  defp handle_exrtc(_msg, socket), do: {:noreply, socket}
+
+  @impl true
   def handle_in("player_move", movement, socket) do
     player = socket.assigns.player
     room_server = socket.assigns.room_server
 
     # Broadcast to all other players in the room
     broadcast_from!(socket, "player_moved", Map.put(movement, "player_id", player.id))
-
     GenServer.cast(room_server, {:update_player, player.id, movement})
 
     {:noreply, assign(socket, :player, player)}
@@ -54,53 +73,43 @@ defmodule ExGatherWeb.RoomChannel do
 
     # Broadcast to all other players in the room
     broadcast_from!(socket, "player_chat", %{message: message, type: type, player_id: player.id})
+    {:noreply, socket}
+  end
+
+  def handle_in("exrtc_offer", %{"offer" => offer}, socket) do
+    player = socket.assigns.player
+    room_server = socket.assigns.room_server
+
+    {:ok, rtc_pid} = RTC.start_link()
+    GenServer.cast(room_server, {:exrtc_offer, player.id, rtc_pid, offer})
 
     {:noreply, socket}
   end
 
-  def handle_in("webrtc_audio", params, socket) do
+  def handle_in("exrtc_ice", %{"ice" => ice}, socket) do
+    player = socket.assigns.player
+    room_server = socket.assigns.room_server
+
+    GenServer.cast(room_server, {:exrtc_ice, player.id, ice})
+    {:noreply, socket}
+  end
+
+  def handle_in("exrtc_toggle_stream", params, socket) do
     sender = socket.assigns.player
     room_server = socket.assigns.room_server
 
     GenServer.cast(room_server, {:update_player, sender.id, params})
-    broadcast_from!(socket, "webrtc_audio", Map.put(params, "player_id", sender.id))
+    broadcast_from!(socket, "exrtc_toggle_stream", Map.put(params, "player_id", sender.id))
 
     {:noreply, socket}
   end
 
-  def handle_in("webrtc_offer", %{"offer" => offer, "player_id" => rctp_id}, socket) do
+  def handle_in("exrtc_ready", _params, socket) do
     sender = socket.assigns.player
     room_server = socket.assigns.room_server
 
-    GenServer.cast(
-      room_server,
-      {:push_to, rctp_id, "webrtc_offer", %{"player_id" => sender.id, "offer" => offer}}
-    )
-
-    {:noreply, socket}
-  end
-
-  def handle_in("webrtc_answer", %{"player_id" => recpt_id, "answer" => answer}, socket) do
-    sender = socket.assigns.player
-    room_server = socket.assigns.room_server
-
-    GenServer.cast(
-      room_server,
-      {:push_to, recpt_id, "webrtc_answer", %{"player_id" => sender.id, "answer" => answer}}
-    )
-
-    {:noreply, socket}
-  end
-
-  def handle_in("webrtc_candidate", %{"player_id" => recpt_id, "candidate" => candidate}, socket) do
-    sender = socket.assigns.player
-    room_server = socket.assigns.room_server
-
-    GenServer.cast(
-      room_server,
-      {:push_to, recpt_id, "webrtc_candidate",
-       %{"player_id" => sender.id, "candidate" => candidate}}
-    )
+    GenServer.cast(room_server, {:update_player, sender.id, %{"rtc_ready" => true}})
+    broadcast_from!(socket, "exrtc_ready", %{"player_id" => sender.id})
 
     {:noreply, socket}
   end

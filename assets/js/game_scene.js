@@ -4,11 +4,14 @@ import MapManager from "./managers/map_manager";
 import ActorsManager from "./managers/actors_manager";
 import SocketManager from "./managers/socket_manager";
 import SpritesManager from "./managers/sprites_manager";
-import RTCManager from "./managers/rtc_manager";
 import VideoPlayersManager from "./managers/video_players_manager";
 import StreamController from "./controllers/stream_controller";
 import PlayerController from "./controllers/player_controller";
+<<<<<<< HEAD
 import ChatManager from "./managers/chat_manager";
+=======
+import ExRTCManager from "./managers/ex_rtc_manager";
+>>>>>>> main
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -37,7 +40,6 @@ export default class GameScene extends Phaser.Scene {
       // Initialize after connection network dependant managers
       this.videoPlayersManager = new VideoPlayersManager(this);
       this.streamController = new StreamController(this);
-      this.rtcManager = new RTCManager(this);
       this.chatManager = new ChatManager(this);
     });
 
@@ -51,19 +53,22 @@ export default class GameScene extends Phaser.Scene {
   }
 
   handlePackets() {
-    // Listen for presence events
+    // Room flow
     this.socketManager.channel.on("room_state", data => {
       this.actorsManager.init(data.players);
+      this.rtcManager = new ExRTCManager(this);
     });
 
     this.socketManager.channel.on("player_join", player => {
       this.actorsManager.spawn(player);
-      this.rtcManager.handleNewPeer(player.id);
     });
 
     this.socketManager.channel.on("player_left", player => {
       this.actorsManager.remove(player);
-      this.rtcManager.handleDisconnect(player.id);
+    });
+
+    this.socketManager.socket.onClose((event) => {
+      window.location.reload();
     });
 
     // Listen for movement updates
@@ -76,43 +81,33 @@ export default class GameScene extends Phaser.Scene {
       this.chatManager.receiveMessage(data.player_id, data.type, data.message);
     });
 
-    // Listen for RTC negotiation
-    this.socketManager.channel.on("webrtc_offer", data => {
-      let { player_id, offer } = data;
-      this.rtcManager.handleOffer(player_id, offer);
-    });
+    // WebRTC peer negotiation
+    this.socketManager.channel.on("exrtc_toggle_stream", data => {
+      if (data.rtc_audio_enabled !== undefined) {
+        this.videoPlayersManager.toggleSource(data.player_id, data.rtc_audio_enabled, "audio");
+        this.actorsManager.actors[data.player_id].audioEnabled = data.rtc_audio_enabled;
+      }
 
-    this.socketManager.channel.on("webrtc_answer", data => {
-      let { player_id, answer } = data;
-      this.rtcManager.handleAnswer(player_id, answer);
-    });
-
-    this.socketManager.channel.on("webrtc_candidate", data => {
-      let { player_id, candidate } = data;
-      this.rtcManager.handleIceCandidate(player_id, candidate);
-    });
-
-    this.socketManager.channel.on("webrtc_audio", data => {
-      this.videoPlayersManager.toggleSource(data.player_id, data.audio_enabled, "audio");
-    });
-  }
-
-
-  showClickMarker(position) {
-    // Remove previous marker if exists
-    if (this.clickMarker) this.clickMarker.destroy();
-
-    // Create new marker (green circle with slight transparency)
-    this.clickMarker = this.add.graphics();
-    this.clickMarker.fillStyle(0x00ff00, 0.5);
-    this.clickMarker.fillCircle(position.x, position.y, 8);
-
-    // Fade out after 1 second
-    this.time.delayedCall(1000, () => {
-      if (this.clickMarker) {
-        this.clickMarker.destroy();
-        this.clickMarker = null;
+      if (data.rtc_camera_enabled !== undefined) {
+        this.videoPlayersManager.toggleSource(data.player_id, data.rtc_camera_enabled, "video");
+        this.actorsManager.actors[data.player_id].cameraEnabled = data.rtc_camera_enabled;
       }
     });
+
+    this.socketManager.channel.on("exrtc_renegotiate", data => {
+      this.rtcManager.init();
+    });
+
+    this.socketManager.channel.on("exrtc_ice", data => {
+      this.rtcManager.handleIce(data.ice);
+    });
+
+    this.socketManager.channel.on("exrtc_answer", data => {
+      this.rtcManager.handleAnswer(data.answer);
+    });
+
+    this.socketManager.channel.on("exrtc_ready", data => {
+      this.rtcManager.handleReady(data.player_id);
+    })
   }
 }

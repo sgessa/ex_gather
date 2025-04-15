@@ -14,7 +14,10 @@ export default class ActorController {
     this.state = actor.state;
     this.x = actor.x;
     this.y = actor.y;
-    this.audioEnabled = actor.audio_enabled;
+
+    this.audioEnabled = actor.rtc_audio_enabled;
+    this.cameraEnabled = actor.rtc_camera_enabled;
+    this.rtcTracks = actor.rtc_tracks;
 
     this.sprite = this.createSprite();
     this.collider = this.createCollider();

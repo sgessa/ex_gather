@@ -464,7 +464,7 @@ function find(y) {
         
           
             <li>
-              <span class='cov high'>90.9</span>
+              <span class='cov high'>100.0</span>
               <a href='#lib/ex_gather/users/auth.ex'>
                 
                 
@@ -790,6 +790,19 @@ function find(y) {
           
             <li>
               <span class='cov high'>100.0</span>
+              <a href='#test/support/exrtc_test_helper.ex'>
+                
+                
+                  <span class='dirname'>test/support/</span>
+                
+                <span class='basename'>exrtc_test_helper.ex</span>
+              </a>
+            </li>
+          
+        
+          
+            <li>
+              <span class='cov high'>100.0</span>
               <a href='#test/support/factory.ex'>
                 
                 
@@ -816,10 +829,10 @@ function find(y) {
       </div>
 
       <div id='stats' class='medium'>
-        <div class='percentage'>63.6</div>
-        <div class='sloc'>399</div>
-        <div class='hits'>2538</div>
-        <div class='misses'>145</div>
+        <div class='percentage'>65.3</div>
+        <div class='sloc'>416</div>
+        <div class='hits'>2623</div>
+        <div class='misses'>144</div>
       </div>
       <div id='files'>
         
@@ -3471,7 +3484,7 @@ function find(y) {
               <div id='stats' class='high'>
                 <div class='percentage'>100.0</div>
                 <div class='sloc'>23</div>
-                <div class='hits'>843</div>
+                <div class='hits'>859</div>
                 <div class='misses'>0</div>
               </div>
               <table id='source'>
@@ -3518,7 +3531,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>4</td>
-                          <td class='hits'>724</td>
+                          <td class='hits'>740</td>
                           <td class='source'>  schema &quot;users&quot; do</td>
                         </tr>
                       
@@ -4302,7 +4315,7 @@ function find(y) {
               <div id='stats' class='high'>
                 <div class='percentage'>100.0</div>
                 <div class='sloc'>6</div>
-                <div class='hits'>44</div>
+                <div class='hits'>45</div>
                 <div class='misses'>0</div>
               </div>
               <table id='source'>
@@ -4469,7 +4482,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>19</td>
-                          <td class='hits'>8</td>
+                          <td class='hits'>9</td>
                           <td class='source'>  defdelegate authenticate_user!(token), to: Auth, as: :authenticate!</td>
                         </tr>
                       
@@ -4491,10 +4504,10 @@ function find(y) {
             <div class='file'>
               <h2 id='lib/ex_gather/users/auth.ex'>lib/ex_gather/users/auth.ex</h2>
               <div id='stats' class='high'>
-                <div class='percentage'>90.9</div>
+                <div class='percentage'>100.0</div>
                 <div class='sloc'>11</div>
-                <div class='hits'>79</div>
-                <div class='misses'>1</div>
+                <div class='hits'>81</div>
+                <div class='misses'>0</div>
               </div>
               <table id='source'>
                 <thead>
@@ -4556,7 +4569,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>6</td>
-                          <td class='hits'>6</td>
+                          <td class='hits'>7</td>
                           <td class='source'>    case Phoenix.Token.verify(ExGatherWeb.Endpoint, &quot;user&quot;, token, max_age: 300) do</td>
                         </tr>
                       
@@ -4586,9 +4599,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>10</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>      _ -&gt;</td>
                         </tr>
                       
@@ -17397,7 +17410,7 @@ function find(y) {
               <div id='stats' class='medium'>
                 <div class='percentage'>57.1</div>
                 <div class='sloc'>7</div>
-                <div class='hits'>115</div>
+                <div class='hits'>118</div>
                 <div class='misses'>3</div>
               </div>
               <table id='source'>
@@ -17668,7 +17681,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>32</td>
-                          <td class='hits'>24</td>
+                          <td class='hits'>25</td>
                           <td class='source'>    ExGather.DataCase.setup_sandbox(tags)</td>
                         </tr>
                       
@@ -17732,7 +17745,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>40</td>
-                          <td class='hits'>44</td>
+                          <td class='hits'>45</td>
                           <td class='source'>    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(ExGather.Repo, shared: not tags[:async])</td>
                         </tr>
                       
@@ -17740,7 +17753,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>41</td>
-                          <td class='hits'>44</td>
+                          <td class='hits'>45</td>
                           <td class='source'>    on_exit(fn -&gt; Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)</td>
                         </tr>
                       
@@ -17896,11 +17909,690 @@ function find(y) {
         
           
             <div class='file'>
+              <h2 id='test/support/exrtc_test_helper.ex'>test/support/exrtc_test_helper.ex</h2>
+              <div id='stats' class='high'>
+                <div class='percentage'>100.0</div>
+                <div class='sloc'>17</div>
+                <div class='hits'>60</div>
+                <div class='misses'>0</div>
+              </div>
+              <table id='source'>
+                <thead>
+                  <tr>
+                    <th>Line</th>
+                    <th>Hits</th>
+                    <th>Source</th>
+                  </tr>
+                <tbody>
+                  
+                    
+                        <tr>
+                          <td class='line'>0</td>
+                          <td class='hits'></td>
+                          <td class='source'>defmodule ExRTCTestHelper do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>1</td>
+                          <td class='hits'></td>
+                          <td class='source'>  use ExUnit.Case</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>2</td>
+                          <td class='hits'></td>
+                          <td class='source'>  use Mimic</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>3</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>4</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def expect_peer_closure(rtc_pid) do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>5</td>
+                          <td class='hits'></td>
+                          <td class='source'>    ExWebRTC.PeerConnection</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>6</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    |&gt; expect(:close, fn pid -&gt;</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>7</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>      assert pid == rtc_pid</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>8</td>
+                          <td class='hits'></td>
+                          <td class='source'>      :ok</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>9</td>
+                          <td class='hits'></td>
+                          <td class='source'>    end)</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>10</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>11</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>12</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def expect_exrtc_send_rtp(to, track_id, packet) do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>13</td>
+                          <td class='hits'></td>
+                          <td class='source'>    ExWebRTC.PeerConnection</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>14</td>
+                          <td class='hits'>2</td>
+                          <td class='source'>    |&gt; expect(:send_rtp, fn out_to, out_track_id, out_packet -&gt;</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>15</td>
+                          <td class='hits'>2</td>
+                          <td class='source'>      assert out_to == to</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>16</td>
+                          <td class='hits'>2</td>
+                          <td class='source'>      assert out_track_id == track_id</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>17</td>
+                          <td class='hits'>2</td>
+                          <td class='source'>      assert out_packet == packet</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>18</td>
+                          <td class='hits'></td>
+                          <td class='source'>    end)</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>19</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>20</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>21</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def expect_exrtc_get_sender(track \\ nil) do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>22</td>
+                          <td class='hits'></td>
+                          <td class='source'>    ExWebRTC.PeerConnection</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>23</td>
+                          <td class='hits'>3</td>
+                          <td class='source'>    |&gt; expect(:get_transceivers, fn _pid -&gt;</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>24</td>
+                          <td class='hits'></td>
+                          <td class='source'>      [%{sender: %{track: track}}]</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>25</td>
+                          <td class='hits'></td>
+                          <td class='source'>    end)</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>26</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>27</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>28</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def expect_exrtc_get_receiver() do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>29</td>
+                          <td class='hits'></td>
+                          <td class='source'>    ExWebRTC.PeerConnection</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>30</td>
+                          <td class='hits'>2</td>
+                          <td class='source'>    |&gt; expect(:get_transceivers, fn _pid -&gt;</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>31</td>
+                          <td class='hits'></td>
+                          <td class='source'>      [</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>32</td>
+                          <td class='hits'></td>
+                          <td class='source'>        %{receiver: %{track: %{id: &quot;audio-id&quot;}}, kind: :audio},</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>33</td>
+                          <td class='hits'></td>
+                          <td class='source'>        %{receiver: %{track: %{id: &quot;video-id&quot;}}, kind: :video}</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>34</td>
+                          <td class='hits'></td>
+                          <td class='source'>      ]</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>35</td>
+                          <td class='hits'></td>
+                          <td class='source'>    end)</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>36</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>37</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>38</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def expect_exrtc_add_track() do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>39</td>
+                          <td class='hits'></td>
+                          <td class='source'>    ExWebRTC.PeerConnection</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>40</td>
+                          <td class='hits'>3</td>
+                          <td class='source'>    |&gt; expect(:add_track, 2, fn _pc_pid, _track_id -&gt;</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>41</td>
+                          <td class='hits'></td>
+                          <td class='source'>      {:ok, %{}}</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>42</td>
+                          <td class='hits'></td>
+                          <td class='source'>    end)</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>43</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>44</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>45</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def expect_exrtc_remove_track() do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>46</td>
+                          <td class='hits'></td>
+                          <td class='source'>    ExWebRTC.PeerConnection</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>47</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    |&gt; expect(:remove_track, 2, fn _pc, _track_id -&gt; :ok end)</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>48</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>49</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>50</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def expect_exrtc_offer_negotiation() do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>51</td>
+                          <td class='hits'></td>
+                          <td class='source'>    ExWebRTC.PeerConnection</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>52</td>
+                          <td class='hits'>6</td>
+                          <td class='source'>    |&gt; stub(:set_remote_description, fn _pc, _offer -&gt; :ok end)</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>53</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>54</td>
+                          <td class='hits'></td>
+                          <td class='source'>    ExWebRTC.PeerConnection</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>55</td>
+                          <td class='hits'>6</td>
+                          <td class='source'>    |&gt; stub(:create_answer, fn _pc -&gt;</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>56</td>
+                          <td class='hits'></td>
+                          <td class='source'>      {:ok, %ExWebRTC.SessionDescription{type: :offer, sdp: sdp_offer()[&quot;sdp&quot;]}}</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>57</td>
+                          <td class='hits'></td>
+                          <td class='source'>    end)</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>58</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>59</td>
+                          <td class='hits'></td>
+                          <td class='source'>    ExWebRTC.PeerConnection</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>60</td>
+                          <td class='hits'>6</td>
+                          <td class='source'>    |&gt; stub(:set_local_description, fn _pc, _answer -&gt; :ok end)</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>61</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>62</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>63</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def expect_webrtc_ice_negotiation() do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>64</td>
+                          <td class='hits'></td>
+                          <td class='source'>    ExWebRTC.PeerConnection</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>65</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    |&gt; expect(:add_ice_candidate, fn _pc, _candidate -&gt; :ok end)</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>66</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>67</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>68</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def sdp_offer(),</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>69</td>
+                          <td class='hits'>20</td>
+                          <td class='source'>    do: %{&quot;sdp&quot; =&gt; &quot;a\nb\n\r&quot;, &quot;type&quot; =&gt; &quot;offer&quot;}</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>70</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>71</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def ice_candidate(),</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>72</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    do: %ExWebRTC.ICECandidate{</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>73</td>
+                          <td class='hits'></td>
+                          <td class='source'>      sdp_mid: &quot;a\nb\n\r&quot;,</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>74</td>
+                          <td class='hits'></td>
+                          <td class='source'>      username_fragment: &quot;a&quot;,</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>75</td>
+                          <td class='hits'></td>
+                          <td class='source'>      candidate: &quot;b&quot;,</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>76</td>
+                          <td class='hits'></td>
+                          <td class='source'>      sdp_m_line_index: 1</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>77</td>
+                          <td class='hits'></td>
+                          <td class='source'>    }</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>78</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>79</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def ice_candidate_payload(),</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>80</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    do: ice_candidate() |&gt; ExWebRTC.ICECandidate.to_json()</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>81</td>
+                          <td class='hits'></td>
+                          <td class='source'>end</td>
+                        </tr>
+                    
+                  
+                </tbody>
+              </table>
+            </div>
+          
+        
+          
+            <div class='file'>
               <h2 id='test/support/factory.ex'>test/support/factory.ex</h2>
               <div id='stats' class='high'>
                 <div class='percentage'>100.0</div>
                 <div class='sloc'>3</div>
-                <div class='hits'>96</div>
+                <div class='hits'>99</div>
                 <div class='misses'>0</div>
               </div>
               <table id='source'>
@@ -17947,7 +18639,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>4</td>
-                          <td class='hits'>32</td>
+                          <td class='hits'>33</td>
                           <td class='source'>    %ExGather.Schemas.User{</td>
                         </tr>
                       
@@ -17955,7 +18647,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>5</td>
-                          <td class='hits'>32</td>
+                          <td class='hits'>33</td>
                           <td class='source'>      username: sequence(:username, &amp;&quot;USER#{&amp;1}&quot;),</td>
                         </tr>
                       
@@ -17963,7 +18655,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>6</td>
-                          <td class='hits'>32</td>
+                          <td class='hits'>33</td>
                           <td class='source'>      email: sequence(:email, &amp;&quot;user#{&amp;1}@example.com&quot;),</td>
                         </tr>
                       

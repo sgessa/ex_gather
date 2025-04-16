@@ -1,12 +1,12 @@
 defmodule ExGather.TestHelper do
   alias ExGather.Repo
 
-  def update!(model, attrs) do
-    model
-    |> Repo.reload()
-    |> Ecto.Changeset.change(attrs)
-    |> Repo.update!()
-  end
+  # def update!(model, attrs) do
+  #   model
+  #   |> Repo.reload()
+  #   |> Ecto.Changeset.change(attrs)
+  #   |> Repo.update!()
+  # end
 
   def get_error!(changeset, key) do
     changeset.errors

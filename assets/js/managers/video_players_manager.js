@@ -92,13 +92,10 @@ export default class VideoPlayersManager {
   // Disable player stream if no other streams nearby
   toggleSelf() {
     const selfVideo = this.videoPlayers[this.scene.player.id];
-    const remoteVideos = Object.values(this.videoPlayers)
-      .filter((p) => p != selfVideo)
-      .map((p) => p.querySelector('.audio-player'));
-
-    if (remoteVideos.some((v) => !v.muted)) {
+    if (Object.values(this.scene.actorsManager.actors).find((actor) => actor.proximityController.inProximity)) {
       selfVideo.classList.remove('hidden');
     } else {
+
       selfVideo.classList.add('hidden');
     }
   }

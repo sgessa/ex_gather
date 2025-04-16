@@ -7,6 +7,7 @@ import SpritesManager from "./managers/sprites_manager";
 import VideoPlayersManager from "./managers/video_players_manager";
 import StreamController from "./controllers/stream_controller";
 import PlayerController from "./controllers/player_controller";
+import ChatManager from "./managers/chat_manager";
 import ExRTCManager from "./managers/ex_rtc_manager";
 
 export default class GameScene extends Phaser.Scene {
@@ -36,10 +37,11 @@ export default class GameScene extends Phaser.Scene {
       // Initialize after connection network dependant managers
       this.videoPlayersManager = new VideoPlayersManager(this);
       this.streamController = new StreamController(this);
+      this.chatManager = new ChatManager(this);
     });
 
     // Visual debug
-    this.physics.world.createDebugGraphic();
+    // this.physics.world.createDebugGraphic();
   }
 
   update(time, delta) {
@@ -69,6 +71,11 @@ export default class GameScene extends Phaser.Scene {
     // Listen for movement updates
     this.socketManager.channel.on("player_moved", data => {
       this.actorsManager.move(data.player_id, data);
+    });
+
+    // Listen for chat messages
+    this.socketManager.channel.on("player_chat", data => {
+      this.chatManager.receiveMessage(data.player_id, data.type, data.message);
     });
 
     // WebRTC peer negotiation

@@ -1,7 +1,8 @@
 export default class StreamController {
   constructor(scene) {
     this.scene = scene;
-    this.stream = null;
+    this.videoStream = null;
+    this.audioStream = null;
     this.initialized = false;
 
     this.screenEnabled = false;
@@ -10,8 +11,18 @@ export default class StreamController {
 
     this.emptyStream = this.createEmptyStream();
 
-    this.getStream();
+    this.getVideoStream();
+    this.getAudioStream();
+    this.init();
     this.hook();
+  }
+
+  init() {
+    if (this.initialized) return;
+    this.scene.videoPlayersManager.create(this.scene.player);
+    this.initialized = true;
+    this.updateStreamPlayer();
+    this.updateInterface();
   }
 
   hook() {
@@ -46,36 +57,49 @@ export default class StreamController {
     });
   }
 
-  async getStream() {
-    if (!this.stream) {
+  async getVideoStream() {
+    if (!this.videoStream) {
       if (this.screenEnabled) {
-        this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: this.audioEnabled });
-      } else if (this.cameraEnabled || this.audioEnabled) {
-        this.stream = await navigator.mediaDevices.getUserMedia({ video: this.cameraEnabled, audio: this.audioEnabled });
+        this.videoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      } else if (this.cameraEnabled) {
+        this.videoStream = await navigator.mediaDevices.getUserMedia({ video: this.cameraEnabled, audio: false });
       } else {
-        this.stream = this.emptyStream;
-      }
-
-      if (!this.initialized) {
-        this.scene.videoPlayersManager.create(this.scene.player);
-        this.initialized = true;
-        this.updateStreamPlayer();
-        this.updateInterface();
+        this.videoStream = this.emptyStream;
       }
     }
 
-    return this.stream;
+    return this.videoStream;
+  }
+
+  async getAudioStream() {
+    if (!this.audioStream) {
+
+      if (this.audioEnabled) {
+        this.audioStream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true });
+      } else {
+        this.audioStream = this.emptyStream;
+      }
+    }
+
+    return this.audioStream;
   }
 
   async toggleAudio(toggled) {
     if (this.audioEnabled == toggled) return;
 
     if (toggled) {
-      let audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
       this.audioEnabled = true;
-      this.replaceAudioTrack(audioStream.getAudioTracks()[0]);
+      this.audioStream = null;
+      await this.getAudioStream();
+
+      this.replaceAudioTrack(this.audioStream.getAudioTracks()[0]);
     } else {
+      this.audioStream.getAudioTracks()[0].stop();
+
       this.audioEnabled = false;
+      this.audioStream = null;
+      await this.getAudioStream();
+
       this.replaceAudioTrack(this.emptyStream.getAudioTracks()[0]);
     }
 
@@ -85,27 +109,27 @@ export default class StreamController {
   }
 
   async toggleScreenshare(toggled) {
-    if (!this.stream) await this.getStream();
+    if (!this.videoStream) await this.getVideoStream();
     if (this.screenEnabled == toggled) return;
 
     if (toggled) {
       let cameraTrack;
-      if (this.cameraEnabled) cameraTrack = this.stream.getVideoTracks()[0];
+      if (this.cameraEnabled) cameraTrack = this.videoStream.getVideoTracks()[0];
 
-      this.stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: this.audioEnabled });
+      this.videoStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: false });
       if (cameraTrack) cameraTrack.stop()
       this.screenEnabled = true;
 
       // Detect browser sharing stop
-      this.stream.getVideoTracks()[0].onended = () => {
+      this.videoStream.getVideoTracks()[0].onended = () => {
         this.toggleScreenshare(false);
       };
     } else {
       this.screenEnabled = false;
-      this.stream.getVideoTracks()[0].stop();
+      this.videoStream.getVideoTracks()[0].stop();
 
-      this.stream = null;
-      this.stream = await this.getStream();
+      this.videoStream = null;
+      this.videoStream = await this.getVideoStream();
     }
 
     // Replace the existing video track in the peer connection
@@ -114,15 +138,15 @@ export default class StreamController {
   }
 
   async toggleCamera(toggled) {
-    if (!this.stream) await this.getStream();
+    if (!this.videoStream) await this.getVideoStream();
     if (this.cameraEnabled == toggled) return;
 
     if (toggled) {
-      this.stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: this.audioEnabled });
+      this.videoStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
       this.cameraEnabled = toggled;
 
       // Detect camera stop
-      this.stream.getVideoTracks()[0].onended = () => {
+      this.videoStream.getVideoTracks()[0].onended = () => {
         this.toggleCamera(false);
       };
 
@@ -130,13 +154,13 @@ export default class StreamController {
     } else {
       this.cameraEnabled = false;
 
-      let videoTrack = this.stream.getVideoTracks()[0];
+      let videoTrack = this.videoStream.getVideoTracks()[0];
       videoTrack.dispatchEvent(new Event("ended"));
       videoTrack.enabled = false;
       videoTrack.stop();
 
-      this.stream = null;
-      this.stream = await this.getStream();
+      this.videoStream = null;
+      this.videoStream = await this.getVideoStream();
     }
 
     this.scene.socketManager.push("exrtc_toggle_stream", { rtc_camera_enabled: this.cameraEnabled });
@@ -147,7 +171,7 @@ export default class StreamController {
 
   updateStreamPlayer() {
     const selfVideo = this.scene.videoPlayersManager.videoPlayers[this.scene.player.id];
-    let stream = this.screenEnabled || this.cameraEnabled ? this.stream : null;
+    let stream = this.screenEnabled || this.cameraEnabled ? this.videoStream : null;
     selfVideo.querySelector(".video-player").srcObject = stream;
   }
 
@@ -181,7 +205,7 @@ export default class StreamController {
   }
 
   replaceVideoTrack() {
-    const videoTrack = this.stream.getVideoTracks()[0];
+    const videoTrack = this.videoStream.getVideoTracks()[0];
     this.scene.rtcManager.replaceVideoTrack(videoTrack);
     this.updateStreamPlayer();
   }

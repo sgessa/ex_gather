@@ -18,14 +18,18 @@ export default class ActorsManager {
   }
 
   remove(actor) {
-    this.scene.videoPlayersManager.delete(actor.id);
     this.actors[actor.id]?.destroy();
+    this.scene.videoPlayersManager.delete(actor.id);
     delete this.actors[actor.id];
   }
 
   move(actorId, data) {
     const actor = this.actors[actorId];
     actor?.move(data);
+  }
+
+  getActor(actorId) {
+    return this.actors[actorId];
   }
 
   update() {

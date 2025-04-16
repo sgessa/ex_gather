@@ -68,6 +68,14 @@ defmodule ExGatherWeb.RoomChannel do
     {:noreply, assign(socket, :player, player)}
   end
 
+  def handle_in("player_chat", %{"message" => message, "type" => type}, socket) do
+    player = socket.assigns.player
+
+    # Broadcast to all other players in the room
+    broadcast_from!(socket, "player_chat", %{message: message, type: type, player_id: player.id})
+    {:noreply, socket}
+  end
+
   def handle_in("exrtc_offer", %{"offer" => offer}, socket) do
     player = socket.assigns.player
     room_server = socket.assigns.room_server

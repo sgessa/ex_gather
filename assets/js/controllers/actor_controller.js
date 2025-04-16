@@ -106,9 +106,9 @@ export default class ActorController {
   }
 
   destroy() {
+    this.proximityController.destroy();
     this.sprite.destroy();
     this.collider.destroy();
-    this.proximityController.destroy();
     this.tagController.destroy();
   }
 }

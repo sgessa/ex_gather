@@ -23,8 +23,12 @@ defmodule ExGatherWeb.ConnCase do
   def log_in_user() do
     user = ExGather.Factory.insert(:user)
 
+    {:ok, _user, token} =
+      ExGather.Users.sign_in_user(%{"email" => user.email, "password" => "Password123"})
+
     Phoenix.ConnTest.build_conn()
     |> Phoenix.ConnTest.init_test_session(%{})
     |> Plug.Conn.put_session(:user_id, user.id)
+    |> Plug.Conn.put_session(:token, token)
   end
 end

@@ -17,5 +17,5 @@ defmodule ExGather.Users do
   #
 
   defdelegate sign_in_user(params), to: Auth, as: :sign_in
-  defdelegate authenticate_user!(id), to: Auth, as: :authenticate!
+  defdelegate authenticate_user!(token), to: Auth, as: :authenticate!
 end

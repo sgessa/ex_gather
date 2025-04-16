@@ -2,11 +2,16 @@ defmodule ExGather.Users.AuthTest do
   use ExGather.DataCase
   alias ExGather.Users
 
-  describe "authenticate" do
-    test "ok" do
-      user = insert(:user)
+  setup do
+    %{user: insert(:user, email: "email@email.com")}
+  end
 
-      assert {:ok, authenticated} = Users.authenticate_user!(user.id)
+  describe "authenticate" do
+    test "ok", %{user: user} do
+      assert {:ok, _user, token} =
+               Users.sign_in_user(%{"email" => "email@email.com", "password" => "Password123"})
+
+      assert {:ok, authenticated} = Users.authenticate_user!(token)
       assert user.id == authenticated.id
     end
 
@@ -16,15 +21,12 @@ defmodule ExGather.Users.AuthTest do
   end
 
   describe "sign_in" do
-    setup do
-      %{user: insert(:user, email: "email@email.com")}
-    end
-
     test "ok", %{user: user} do
-      assert {:ok, authenticated, "abcd"} =
+      assert {:ok, authenticated, token} =
                Users.sign_in_user(%{"email" => "email@email.com", "password" => "Password123"})
 
       assert user.id == authenticated.id
+      assert token
     end
 
     test "error - invalid password" do

@@ -8,8 +8,8 @@ defmodule ExGatherWeb.Plugs.RequireUser do
   def init(config), do: config
 
   def call(conn, _args) do
-    with id <- get_session(conn, :user_id),
-         {:ok, user} <- Users.authenticate_user!(id) do
+    with token <- get_session(conn, :token),
+         {:ok, user} <- Users.authenticate_user!(token) do
       conn
       |> assign(:current_user, user)
     else

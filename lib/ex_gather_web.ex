@@ -42,8 +42,6 @@ defmodule ExGatherWeb do
         formats: [:html, :json],
         layouts: [html: ExGatherWeb.Layouts]
 
-      use Gettext, backend: ExGatherWeb.Gettext
-
       import Plug.Conn
 
       unquote(verified_routes())

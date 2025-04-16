@@ -1,8 +1,6 @@
 defmodule ExGatherWeb.Router do
   use ExGatherWeb, :router
 
-  import ExGatherWeb.UserAuth
-
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -10,71 +8,55 @@ defmodule ExGatherWeb.Router do
     plug :put_root_layout, html: {ExGatherWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
-    plug :fetch_current_user
   end
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
-  ## Authentication routes
+  #
+  # Guest
+  #
 
-  scope "/", ExGatherWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated]
-
-    get "/users/register", UserRegistrationController, :new
-    post "/users/register", UserRegistrationController, :create
-    get "/users/log_in", UserSessionController, :new
-    post "/users/log_in", UserSessionController, :create
-    get "/users/reset_password", UserResetPasswordController, :new
-    post "/users/reset_password", UserResetPasswordController, :create
-    get "/users/reset_password/:token", UserResetPasswordController, :edit
-    put "/users/reset_password/:token", UserResetPasswordController, :update
+  pipeline :require_guest do
+    plug ExGatherWeb.Plugs.RequireGuest
   end
 
   scope "/", ExGatherWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:browser, :require_guest]
 
-    get "/users/settings", UserSettingsController, :edit
-    put "/users/settings", UserSettingsController, :update
-    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+    get "/users/signup", UserController, :new
+    post "/users/signup", UserController, :create
+
+    get "/users/login", AuthController, :new
+    post "/users/login", AuthController, :create
+  end
+
+  #
+  # Authenticated
+  #
+
+  pipeline :require_user do
+    plug ExGatherWeb.Plugs.RequireUser
   end
 
   scope "/", ExGatherWeb do
-    pipe_through [:browser]
+    pipe_through [:browser, :require_user]
 
-    delete "/users/log_out", UserSessionController, :delete
-    get "/users/confirm", UserConfirmationController, :new
-    post "/users/confirm", UserConfirmationController, :create
-    get "/users/confirm/:token", UserConfirmationController, :edit
-    post "/users/confirm/:token", UserConfirmationController, :update
-  end
-
-  scope "/", ExGatherWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    get "/users/settings", UserController, :edit
+    put "/users/settings", UserController, :update
+    delete "/users/logout", AuthController, :delete
 
     get "/", PageController, :home
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", ExGatherWeb do
-  #   pipe_through :api
-  # end
-
-  # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:ex_gather, :dev_routes) do
-    # If you want to use the LiveDashboard in production, you should put
-    # it behind authentication and allow only admins to access it.
-    # If your application does not have an admins-only section yet,
-    # you can use Plug.BasicAuth to set up some basic authentication
-    # as long as you are also using SSL (which you should anyway).
     import Phoenix.LiveDashboard.Router
 
     scope "/dev" do
       pipe_through :browser
 
       live_dashboard "/dashboard", metrics: ExGatherWeb.Telemetry
-      forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
 end

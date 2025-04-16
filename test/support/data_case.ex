@@ -24,6 +24,8 @@ defmodule ExGather.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import ExGather.DataCase
+      import ExGather.Factory
+      import ExGather.TestHelper
     end
   end
 

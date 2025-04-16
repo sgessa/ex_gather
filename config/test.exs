@@ -23,12 +23,6 @@ config :ex_gather, ExGatherWeb.Endpoint,
   secret_key_base: "GiT3yAsIRxj5bAI4dx2jR31gJ4t9Bne8Frn3faGTs8/3GlQ/iZMSBLFrbkb2DubV",
   server: false
 
-# In test we don't send emails
-config :ex_gather, ExGather.Mailer, adapter: Swoosh.Adapters.Test
-
-# Disable swoosh api client as it is only required for production adapters
-config :swoosh, :api_client, false
-
 # Print only warnings and errors during test
 config :logger, level: :warning
 

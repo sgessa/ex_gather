@@ -3,14 +3,14 @@
     Register for an account
     <:subtitle>
       Already registered?
-      <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
+      <.link navigate={~p"/users/login"} class="font-semibold text-brand hover:underline">
         Log in
       </.link>
       to your account now.
     </:subtitle>
   </.header>
 
-  <.simple_form :let={f} for={@changeset} action={~p"/users/register"}>
+  <.simple_form :let={f} for={@changeset} action={~p"/users/signup"}>
     <.error :if={@changeset.action == :insert}>
       Oops, something went wrong! Please check the errors below.
     </.error>

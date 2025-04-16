@@ -15,7 +15,11 @@ defmodule ExGather.Users.AuthTest do
       assert user.id == authenticated.id
     end
 
-    test "error" do
+    test "error - wrong token" do
+      assert {:error, :unauthenticated} = Users.authenticate_user!("wrong")
+    end
+
+    test "error - nil token" do
       assert {:error, :unauthenticated} = Users.authenticate_user!(nil)
     end
   end

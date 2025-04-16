@@ -6,6 +6,7 @@ defmodule ExGather.Rooms.ServerTest do
   alias ExGather.Room.Player
 
   import ExMachina, only: [sequence: 2]
+  import ExRTCTestHelper
 
   setup :set_mimic_global
   setup :verify_on_exit!
@@ -95,6 +96,22 @@ defmodule ExGather.Rooms.ServerTest do
       refute state_player.rtc_ready
     end
 
+    test "ok - renegotiated offer", %{player: player, room: room} do
+      expect_exrtc_offer_negotiation()
+
+      # First offer
+      rtc_pid = :c.pid(0, 255, 0)
+      GenServer.call(room, {:join, player})
+      assert :ok = GenServer.cast(room, {:exrtc_offer, player.id, rtc_pid, sdp_offer()})
+
+      # Second offer closes the previous PID
+      expect_peer_closure(rtc_pid)
+
+      rtc_pid = self()
+      assert :ok = GenServer.cast(room, {:exrtc_offer, player.id, rtc_pid, sdp_offer()})
+      assert :ok = GenServer.call(room, {:leave, player.id})
+    end
+
     test "ok - offer with renegotiation", %{player: player, room: room} do
       expect_exrtc_offer_negotiation()
 
@@ -117,6 +134,10 @@ defmodule ExGather.Rooms.ServerTest do
 
       # GenServer asks `Renegotiator` to renegotiate
       assert_receive {:push, "exrtc_renegotiate", %{}}
+
+      # When `Renegotiator` leave the room, tracks get removed from `Player`
+      expect_exrtc_remove_track()
+      assert :ok = GenServer.call(room, {:leave, renegotiator.id})
     end
 
     test "ok - offer no renegotiation", %{player: player, room: room} do
@@ -155,13 +176,15 @@ defmodule ExGather.Rooms.ServerTest do
       # First user negotiates
       GenServer.call(room, {:join, player})
       GenServer.cast(room, {:exrtc_offer, player.id, rtc_pid, sdp_offer()})
+      GenServer.cast(room, {:update_player, player.id, %{rtc_ready: true}})
 
       expect_webrtc_ice_negotiation()
 
       assert :ok = GenServer.cast(room, {:exrtc_ice, player.id, ice_candidate_payload()})
+      assert :ok = GenServer.call(room, {:leave, player.id})
     end
 
-    test "ok - forward rtp - video", %{player: sender, room: room} do
+    test "ok - forward rtp", %{player: sender, room: room} do
       expect_exrtc_offer_negotiation()
 
       rtc_pid = self()
@@ -184,7 +207,8 @@ defmodule ExGather.Rooms.ServerTest do
       # Ensure receiver is ready
       GenServer.cast(room, {:update_player, receiver.id, %{rtc_ready: true}})
 
-      expect_exrtc_get_receiver(%{id: "video-id"}, :video)
+      # Video
+      expect_exrtc_get_receiver()
 
       expect_exrtc_send_rtp(
         receiver_state.rtc_pid,
@@ -193,68 +217,17 @@ defmodule ExGather.Rooms.ServerTest do
       )
 
       GenServer.cast(room, {:exrtc_send_rtp, sender.id, "video-id", "rtp-packet"})
+
+      # Audio
+      expect_exrtc_get_receiver()
+
+      expect_exrtc_send_rtp(
+        receiver_state.rtc_pid,
+        sender_state.rtc_tracks.audio.id,
+        "rtp-packet"
+      )
+
+      GenServer.cast(room, {:exrtc_send_rtp, sender.id, "audio-id", "rtp-packet"})
     end
   end
-
-  def expect_exrtc_send_rtp(to, track_id, packet) do
-    ExWebRTC.PeerConnection
-    |> expect(:send_rtp, fn out_to, out_track_id, out_packet ->
-      assert out_to == to
-      assert out_track_id == track_id
-      assert out_packet == packet
-    end)
-  end
-
-  def expect_exrtc_get_sender(track \\ nil) do
-    ExWebRTC.PeerConnection
-    |> stub(:get_transceivers, fn _pid ->
-      [%{sender: %{track: track}}]
-    end)
-  end
-
-  def expect_exrtc_get_receiver(track \\ nil, kind) do
-    ExWebRTC.PeerConnection
-    |> stub(:get_transceivers, fn _pid ->
-      [%{receiver: %{track: track}, kind: kind}]
-    end)
-  end
-
-  defp expect_exrtc_add_track() do
-    ExWebRTC.PeerConnection
-    |> stub(:add_track, fn _pc_pid, _track_id ->
-      {:ok, %{}}
-    end)
-  end
-
-  defp expect_exrtc_offer_negotiation() do
-    ExWebRTC.PeerConnection
-    |> stub(:set_remote_description, fn _pc, _offer -> :ok end)
-
-    ExWebRTC.PeerConnection
-    |> stub(:create_answer, fn _pc ->
-      {:ok, %ExWebRTC.SessionDescription{type: :offer, sdp: sdp_offer()["sdp"]}}
-    end)
-
-    ExWebRTC.PeerConnection
-    |> stub(:set_local_description, fn _pc, _answer -> :ok end)
-  end
-
-  def expect_webrtc_ice_negotiation() do
-    ExWebRTC.PeerConnection
-    |> stub(:add_ice_candidate, fn _pc, _candidate -> :ok end)
-  end
-
-  defp sdp_offer(),
-    do: %{"sdp" => "a\nb\n\r", "type" => "offer"}
-
-  def ice_candidate(),
-    do: %ExWebRTC.ICECandidate{
-      sdp_mid: "a\nb\n\r",
-      username_fragment: "a",
-      candidate: "b",
-      sdp_m_line_index: 1
-    }
-
-  def ice_candidate_payload(),
-    do: ice_candidate() |> ExWebRTC.ICECandidate.to_json()
 end

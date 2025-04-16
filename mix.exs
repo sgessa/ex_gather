@@ -56,6 +56,7 @@ defmodule ExGather.MixProject do
       {:jason, "~> 1.2"},
       {:bandit, "~> 1.5"},
       {:ex_webrtc, "~> 0.12.0"},
+      {:useful, "~> 1.14.0"},
       # Test purpose
       {:ex_machina, "~> 2.7.0"},
       {:mimic, "~> 1.11.0", only: :test}

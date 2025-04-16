@@ -6,7 +6,7 @@ defmodule ExGatherWeb.Plugs.RequireGuest do
   def init(config), do: config
 
   def call(conn, _args) do
-    case get_session(conn, :user_id) do
+    case get_session(conn, :token) do
       nil ->
         conn
 

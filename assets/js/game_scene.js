@@ -11,6 +11,7 @@ import ChatManager from "./managers/chat_manager";
 import ExRTCManager from "./managers/ex_rtc_manager";
 import RoomStatePacket from "./packets/room_state_packet";
 import PlayerPacket from "./packets/player_packet";
+import PlayerLeftPacket from "./packets/player/player_left_packet";
 import ChatMsgPacket from "./packets/chat_msg_packet";
 import PlayerMovedPacket from "./packets/player/player_moved_packet";
 import WebrtcAnswerPacket from "./packets/webrtc/webrtc_answer_packet";
@@ -70,8 +71,9 @@ export default class GameScene extends Phaser.Scene {
       this.actorsManager.spawn(packet.parse());
     });
 
-    this.socketManager.channel.on("player_left", player => {
-      this.actorsManager.remove(player);
+    this.socketManager.channel.on("player_left", data => {
+      const packet = new PlayerLeftPacket(data);
+      this.actorsManager.remove(packet.parse());
     });
 
     this.socketManager.socket.onClose((event) => {

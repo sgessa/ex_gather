@@ -18,10 +18,10 @@ export default class ActorsManager {
     this.actors[actor.id] = new ActorController(this.scene, actor);
   }
 
-  remove(actor) {
-    this.actors[actor.id]?.destroy();
-    this.scene.videoPlayersManager.delete(actor.id);
-    delete this.actors[actor.id];
+  remove(actorId) {
+    this.actors[actorId]?.destroy();
+    this.scene.videoPlayersManager.delete(actorId);
+    delete this.actors[actorId];
   }
 
   move(data) {

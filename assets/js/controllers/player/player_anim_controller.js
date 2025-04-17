@@ -1,3 +1,5 @@
+import PlayerMovePacket from "../../packets/player/player_move_packet";
+
 export default class PlayerAnimController {
   constructor(player) {
     this.player = player;
@@ -98,13 +100,15 @@ export default class PlayerAnimController {
     // Only send updates if state or direction changed
     if (this.lastPos.x == this.sprite.x && this.lastPos.y == this.sprite.y && this.lastPos.state == this.state) return;
 
-    this.scene.socketManager.channel.push("player_move", {
-      x: this.movementController.sTile.x,
-      y: this.movementController.sTile.y,
-      dir_x: this.dirX,
-      dir_y: this.dirY,
-      state: this.state
-    });
+    const packet = (new PlayerMovePacket()).build(
+      this.movementController.sTile.x,
+      this.movementController.sTile.y,
+      this.dirX,
+      this.dirY,
+      this.state
+    );
+
+    this.scene.socketManager.channel.push("player_move", packet);
 
     this.lastPos = { x: this.sprite.x, y: this.sprite.y, state: this.state };
   }

@@ -2,6 +2,7 @@ defmodule ExGather.Room.Server do
   use GenServer
 
   alias ExGather.Room.RTC
+  alias ExGatherWeb.Packets
 
   def start_link(opts) do
     GenServer.start_link(__MODULE__, [], opts)
@@ -71,11 +72,11 @@ defmodule ExGather.Room.Server do
 
         # Attack new track to existing players & ask them to renegotiate
         # Prevent renegotiation loop
-        if not RTC.find_output_tracks(receiver["rtc_pid"], sender["rtc_tracks"]) do
-          send(receiver["socket_pid"], {:push, "exrtc_renegotiate", %{}})
-          {id, Map.put(receiver, "rtc_ready", false)}
-        else
+        if RTC.find_output_tracks(receiver["rtc_pid"], sender["rtc_tracks"]) do
           {id, receiver}
+        else
+          send(receiver["socket_pid"], {:push, "exrtc_renegotiate", <<>>})
+          {id, Map.put(receiver, "rtc_ready", false)}
         end
       end)
       |> Map.new()
@@ -83,7 +84,9 @@ defmodule ExGather.Room.Server do
 
     # Continue sender negotiation
     {:ok, answer} = RTC.handle_offer(sender["rtc_pid"], offer)
-    send(sender["socket_pid"], {:push, "exrtc_answer", %{"answer" => answer}})
+
+    packet = Packets.WebrtcAnswer.build(answer)
+    send(sender["socket_pid"], {:push, "exrtc_answer", packet})
 
     {:noreply, put_in(state.players, players)}
   end
@@ -123,14 +126,17 @@ defmodule ExGather.Room.Server do
     do: not is_nil(player["rtc_pid"]) && player["rtc_ready"] == true
 
   defp init_player_state(player, socket_pid) do
+    directions = ExGather.Game.PlayerState.directions()
+    states = ExGather.Game.PlayerState.states()
+
     %{
       "id" => player.id,
       "username" => player.username,
       "x" => 4,
       "y" => 16,
-      "dir_x" => "left",
-      "dir_y" => "down",
-      "state" => "idle",
+      "dir_x" => directions.left,
+      "dir_y" => directions.down,
+      "state" => states.idle,
       "socket_pid" => socket_pid,
       "rtc_audio_enabled" => false,
       "rtc_camera_enabled" => false,

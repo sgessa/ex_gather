@@ -6,7 +6,7 @@ export default class ActorsManager {
   }
 
   init(actors) {
-    for (const [id, actor] of Object.entries(actors)) {
+    for (const actor of actors) {
       this.spawn(actor);
     }
   }
@@ -23,8 +23,8 @@ export default class ActorsManager {
     delete this.actors[actor.id];
   }
 
-  move(actorId, data) {
-    const actor = this.actors[actorId];
+  move(data) {
+    const actor = this.actors[data.id];
     actor?.move(data);
   }
 

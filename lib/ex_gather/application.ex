@@ -10,10 +10,7 @@ defmodule ExGather.Application do
     children = [
       ExGatherWeb.Telemetry,
       ExGather.Repo,
-      {DNSCluster, query: Application.get_env(:ex_gather, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: ExGather.PubSub},
-      # Start the Finch HTTP client for sending emails
-      {Finch, name: ExGather.Finch},
       # Lobby GenServer
       {ExGather.Room.Server, name: :"room:lobby"},
       # Start to serve requests, typically the last entry

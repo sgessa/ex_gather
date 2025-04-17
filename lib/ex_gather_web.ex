@@ -17,7 +17,7 @@ defmodule ExGatherWeb do
   those modules here.
   """
 
-  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
+  def static_paths, do: ~w(assets fonts images cover favicon.ico robots.txt)
 
   def router do
     quote do
@@ -41,8 +41,6 @@ defmodule ExGatherWeb do
       use Phoenix.Controller,
         formats: [:html, :json],
         layouts: [html: ExGatherWeb.Layouts]
-
-      use Gettext, backend: ExGatherWeb.Gettext
 
       import Plug.Conn
 

@@ -12,8 +12,9 @@ export default class ActorsManager {
   }
 
   spawn(actor) {
-    // Create sprite (if not exists)
     if (this.actors[actor.id]) return;
+    if (actor.id == this.scene.player.id) return;
+
     this.actors[actor.id] = new ActorController(this.scene, actor);
   }
 

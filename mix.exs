@@ -9,7 +9,15 @@ defmodule ExGather.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        cover: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ]
     ]
   end
 
@@ -32,7 +40,7 @@ defmodule ExGather.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:bcrypt_elixir, "~> 3.0"},
+      {:bcrypt_elixir, "~> 3.2"},
       {:phoenix, "~> 1.7.21"},
       {:phoenix_ecto, "~> 4.5"},
       {:ecto_sql, "~> 3.10"},
@@ -40,7 +48,6 @@ defmodule ExGather.MixProject do
       {:phoenix_html, "~> 4.1"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 1.0"},
-      {:floki, ">= 0.30.0", only: :test},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
@@ -51,15 +58,17 @@ defmodule ExGather.MixProject do
        app: false,
        compile: false,
        depth: 1},
-      {:swoosh, "~> 1.5"},
-      {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 1.0"},
       {:telemetry_poller, "~> 1.0"},
       {:gettext, "~> 0.26"},
       {:jason, "~> 1.2"},
-      {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      {:ex_webrtc, "~> 0.12.0"}
+      {:ex_webrtc, "~> 0.12.0"},
+      {:useful, "~> 1.14.0"},
+      # Test purpose
+      {:ex_machina, "~> 2.7.0"},
+      {:mimic, "~> 1.11.0", only: :test},
+      {:excoveralls, "~> 0.18", only: :test}
     ]
   end
 
@@ -81,7 +90,8 @@ defmodule ExGather.MixProject do
         "tailwind myproject --minify",
         "esbuild ex_gather --minify",
         "phx.digest"
-      ]
+      ],
+      cover: ["coveralls.html --output-dir priv/static/cover"]
     ]
   end
 end

@@ -108,7 +108,7 @@ defmodule ExGatherWeb.RoomChannel do
     sender = socket.assigns.player
     room_server = socket.assigns.room_server
 
-    GenServer.cast(room_server, {:update_player, sender.id, %{"rtc_ready" => true}})
+    GenServer.cast(room_server, {:update_player, sender.id, %{rtc_ready: true}})
     broadcast_from!(socket, "exrtc_ready", %{"player_id" => sender.id})
 
     {:noreply, socket}

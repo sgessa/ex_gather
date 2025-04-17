@@ -100,3 +100,8 @@
   overflow-wrap: anywhere;
   text-align: right;
 }
+
+.custom-icon {
+  vertical-align: middle;
+  height: 100%;
+}

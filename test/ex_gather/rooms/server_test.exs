@@ -4,6 +4,7 @@ defmodule ExGather.Rooms.ServerTest do
 
   alias ExGather.Room.Server
   alias ExGather.Room.Player
+  alias ExGatherWeb.Packets
 
   import ExMachina, only: [sequence: 2]
   import ExRTCTestHelper
@@ -26,9 +27,9 @@ defmodule ExGather.Rooms.ServerTest do
       assert %Player{
                x: 4,
                y: 16,
-               dir_x: "left",
-               dir_y: "down",
-               state: "idle",
+               dir_x: 0,
+               dir_y: 3,
+               state: 0,
                rtc_pid: nil,
                rtc_ready: false,
                rtc_audio_enabled: false,
@@ -88,8 +89,8 @@ defmodule ExGather.Rooms.ServerTest do
       assert :ok = GenServer.cast(room, {:exrtc_offer, player.id, rtc_pid, sdp_offer()})
 
       # GenServer asks Room Channel to push answer
-      assert_receive {:push, "exrtc_answer",
-                      %{"answer" => %{"sdp" => "a\nb\n\r", "type" => "offer"}}}
+      answer = Packets.WebrtcAnswer.build(sdp_offer())
+      assert_receive {:push, "exrtc_answer", ^answer}
 
       assert state_player = :sys.get_state(room).players[player.id]
       assert state_player.rtc_pid == rtc_pid
@@ -133,7 +134,7 @@ defmodule ExGather.Rooms.ServerTest do
       assert :ok = GenServer.cast(room, {:exrtc_offer, player.id, rtc_pid, sdp_offer()})
 
       # GenServer asks `Renegotiator` to renegotiate
-      assert_receive {:push, "exrtc_renegotiate", %{}}
+      assert_receive {:push, "exrtc_renegotiate", ""}
 
       # When `Renegotiator` leave the room, tracks get removed from `Player`
       expect_exrtc_remove_track()

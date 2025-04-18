@@ -8,6 +8,7 @@ export default class JoinController {
     this.videoStream = null;
 
     this.hooks();
+    this.init();
   }
 
   hooks() {
@@ -23,6 +24,16 @@ export default class JoinController {
     document.querySelector("#video-checkbox").addEventListener("change", (event) => {
       this.toggleVideo(event.currentTarget);
     });
+  }
+
+  init() {
+    if (localStorage.getItem('audioEnabled')) {
+      document.querySelector("#audio-checkbox").click();
+    }
+
+    if (localStorage.getItem('videoEnabled')) {
+      document.querySelector("#video-checkbox").click();
+    }
   }
 
   async startScene() {
@@ -57,12 +68,15 @@ export default class JoinController {
     if (target.checked) {
       try {
         this.audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        localStorage.setItem('audioEnabled', true);
       } catch {
         target.checked = false;
+        localStorage.removeItem('audioEnabled');
       }
     } else {
       if (this.audioStream) {
         this.audioStream.getAudioTracks()[0].stop();
+        localStorage.removeItem('audioEnabled');
       }
     }
   }
@@ -74,14 +88,19 @@ export default class JoinController {
         document.querySelector("#video-preview").srcObject = this.videoStream;
         document.querySelector("#video-preview").classList.remove("hidden");
         document.querySelector("#video-placeholder").classList.add("hidden");
+
+        localStorage.setItem('videoEnabled', true);
       } catch {
         target.checked = false;
+        localStorage.removeItem('videoEnabled');
       }
     } else {
       if (this.videoStream) {
         this.videoStream.getVideoTracks()[0].stop();
         document.querySelector("#video-preview").classList.add("hidden");
         document.querySelector("#video-placeholder").classList.remove("hidden");
+
+        localStorage.removeItem('videoEnabled');
       }
     }
   }

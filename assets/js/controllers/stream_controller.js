@@ -13,17 +13,20 @@ export default class StreamController {
 
     this.emptyStream = this.createEmptyStream();
 
-    this.getVideoStream();
-    this.getAudioStream();
     this.init();
     this.hook();
   }
 
-  init() {
+  async init() {
     if (this.initialized) return;
     this.scene.videoPlayersManager.create(this.scene.player);
     this.initialized = true;
+
+    await this.getVideoStream();
+    await this.getAudioStream();
+
     this.updateStreamPlayer();
+    this.updateServerStream();
     this.updateInterface();
   }
 
@@ -105,10 +108,8 @@ export default class StreamController {
       this.replaceAudioTrack(this.emptyStream.getAudioTracks()[0]);
     }
 
-    const packet = new WebrtcToggleStreamPacket();
-    this.scene.socketManager.push("exrtc_toggle_stream", packet.build(this.audioEnabled, this.cameraEnabled));
-
-    this.scene.videoPlayersManager.toggleSource(this.scene.player.id, this.audioEnabled, "audio");
+    this.updateStreamPlayer();
+    this.updateServerStream();
     this.updateInterface();
   }
 
@@ -167,9 +168,7 @@ export default class StreamController {
       this.videoStream = await this.getVideoStream();
     }
 
-    const packet = new WebrtcToggleStreamPacket();
-    this.scene.socketManager.push("exrtc_toggle_stream", packet.build(this.audioEnabled, this.cameraEnabled));
-
+    this.updateServerStream();
     this.updateInterface();
     this.updateStreamPlayer();
   }
@@ -178,6 +177,9 @@ export default class StreamController {
     const selfVideo = this.scene.videoPlayersManager.videoPlayers[this.scene.player.id];
     let stream = this.screenEnabled || this.cameraEnabled ? this.videoStream : null;
     selfVideo.querySelector(".video-player").srcObject = stream;
+
+    this.scene.videoPlayersManager.toggleSource(this.scene.player.id, this.audioEnabled, "audio");
+    this.scene.videoPlayersManager.toggleSource(this.scene.player.id, (this.cameraEnabled || this.screenEnabled), "video");
   }
 
   updateInterface() {
@@ -217,6 +219,12 @@ export default class StreamController {
 
   replaceAudioTrack(audioTrack) {
     this.scene.rtcManager.replaceAudioTrack(audioTrack);
+    this.updateStreamPlayer();
+  }
+
+  updateServerStream() {
+    const packet = new WebrtcToggleStreamPacket();
+    this.scene.socketManager.push("exrtc_toggle_stream", packet.build(this.audioEnabled, this.cameraEnabled));
   }
 
   createEmptyStream() {

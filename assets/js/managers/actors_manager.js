@@ -6,7 +6,7 @@ export default class ActorsManager {
   }
 
   init(actors) {
-    for (const [id, actor] of Object.entries(actors)) {
+    for (const actor of actors) {
       this.spawn(actor);
     }
   }
@@ -18,14 +18,14 @@ export default class ActorsManager {
     this.actors[actor.id] = new ActorController(this.scene, actor);
   }
 
-  remove(actor) {
-    this.actors[actor.id]?.destroy();
-    this.scene.videoPlayersManager.delete(actor.id);
-    delete this.actors[actor.id];
+  remove(actorId) {
+    this.actors[actorId]?.destroy();
+    this.scene.videoPlayersManager.delete(actorId);
+    delete this.actors[actorId];
   }
 
-  move(actorId, data) {
-    const actor = this.actors[actorId];
+  move(data) {
+    const actor = this.actors[data.id];
     actor?.move(data);
   }
 

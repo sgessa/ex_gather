@@ -1,3 +1,6 @@
+import WebrtcOfferPacket from "../packets/webrtc/webrtc_offer_packet"
+import WebrtcIceCandidatePacket from "../packets/webrtc/webrtc_ice_candidate_packet";
+
 export default class ExRTCManager {
   constructor(scene) {
     this.config = {
@@ -32,8 +35,8 @@ export default class ExRTCManager {
     for (let actor of Object.values(this.scene.actorsManager.actors)) {
       this.scene.videoPlayersManager.create(actor);
 
-      this.tracks[actor.rtcTracks.audio_id] = actor;
-      this.tracks[actor.rtcTracks.video_id] = actor;
+      this.tracks[actor.rtcTracks.audioId] = actor;
+      this.tracks[actor.rtcTracks.videoId] = actor;
 
       this.peer.addTransceiver('audio', { direction: 'sendrecv' });
       this.peer.addTransceiver('video', { direction: 'sendrecv' });
@@ -57,7 +60,8 @@ export default class ExRTCManager {
 
     this.peer.onicecandidate = (event) => {
       if (event.candidate) {
-        this.scene.socketManager.push("exrtc_ice", { ice: event.candidate });
+        const packet = new WebrtcIceCandidatePacket();
+        this.scene.socketManager.push("exrtc_ice", packet.build(event.candidate));
       }
     };
 
@@ -68,7 +72,8 @@ export default class ExRTCManager {
     this.peer.createOffer()
       .then(offer => this.peer.setLocalDescription(offer))
       .then(() => {
-        this.scene.socketManager.push("exrtc_offer", { offer: this.peer.localDescription });
+        const packet = new WebrtcOfferPacket();
+        this.scene.socketManager.push("exrtc_offer", packet.build(this.peer.localDescription));
       })
       .catch(error => console.error('Error creating offer:', error));
   }

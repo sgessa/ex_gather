@@ -1,4 +1,5 @@
 import { Socket } from "phoenix"
+import PlayerPacket from "../packets/player_packet"
 
 export default class SocketManager {
   constructor() {
@@ -7,14 +8,19 @@ export default class SocketManager {
   }
 
   init(onJoin) {
-    this.socket = new Socket("/socket", { params: { token: this.getToken() } });
+    this.socket = new Socket("/socket", {
+      params: { token: this.getToken() },
+      binaryType: "arraybuffer"
+    });
+
     this.socket.connect();
 
     this.channel = this.socket.channel("room:lobby", {});
 
     this.channel.join().
       receive("ok", data => {
-        onJoin(data);
+        const packet = new PlayerPacket(data);
+        onJoin(packet.parse());
       });
 
     window.addEventListener("beforeunload", () => {

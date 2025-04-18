@@ -9,6 +9,15 @@ import StreamController from "./controllers/stream_controller";
 import PlayerController from "./controllers/player_controller";
 import ChatManager from "./managers/chat_manager";
 import ExRTCManager from "./managers/ex_rtc_manager";
+import RoomStatePacket from "./packets/room_state_packet";
+import PlayerPacket from "./packets/player_packet";
+import PlayerLeftPacket from "./packets/player/player_left_packet";
+import ChatMsgPacket from "./packets/chat_msg_packet";
+import PlayerMovedPacket from "./packets/player/player_moved_packet";
+import WebrtcAnswerPacket from "./packets/webrtc/webrtc_answer_packet";
+import WebrtcIceCandidatePacket from "./packets/webrtc/webrtc_ice_candidate_packet";
+import WebrtcReadyPacket from "./packets/webrtc/webrtc_ready_packet";
+import WebrtcToggleStreamPacket from "./packets/webrtc/webrtc_toggle_stream_packet";
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -30,8 +39,8 @@ export default class GameScene extends Phaser.Scene {
   create() {
     this.mapManager.create();
 
-    this.socketManager.init((data) => {
-      this.player = new PlayerController(this, this.socketManager.channel, data.player);
+    this.socketManager.init((playerPacket) => {
+      this.player = new PlayerController(this, this.socketManager.channel, playerPacket);
       this.handlePackets();
 
       // Initialize after connection network dependant managers
@@ -52,16 +61,19 @@ export default class GameScene extends Phaser.Scene {
   handlePackets() {
     // Room flow
     this.socketManager.channel.on("room_state", data => {
-      this.actorsManager.init(data.players);
+      const packet = new RoomStatePacket(data);
+      this.actorsManager.init(packet.parse());
       this.rtcManager = new ExRTCManager(this);
     });
 
-    this.socketManager.channel.on("player_join", player => {
-      this.actorsManager.spawn(player);
+    this.socketManager.channel.on("player_join", data => {
+      const packet = new PlayerPacket(data);
+      this.actorsManager.spawn(packet.parse());
     });
 
-    this.socketManager.channel.on("player_left", player => {
-      this.actorsManager.remove(player);
+    this.socketManager.channel.on("player_left", data => {
+      const packet = new PlayerLeftPacket(data);
+      this.actorsManager.remove(packet.parse());
     });
 
     this.socketManager.socket.onClose((event) => {
@@ -70,24 +82,32 @@ export default class GameScene extends Phaser.Scene {
 
     // Listen for movement updates
     this.socketManager.channel.on("player_moved", data => {
-      this.actorsManager.move(data.player_id, data);
+      const packet = new PlayerMovedPacket(data);
+      this.actorsManager.move(packet.parse());
     });
 
     // Listen for chat messages
     this.socketManager.channel.on("player_chat", data => {
-      this.chatManager.receiveMessage(data.player_id, data.type, data.message);
+      const packet = new ChatMsgPacket();
+      const { player_id, type, msg } = packet.parse(data);
+      this.chatManager.receiveMessage(player_id, type, msg);
     });
 
     // WebRTC peer negotiation
     this.socketManager.channel.on("exrtc_toggle_stream", data => {
-      if (data.rtc_audio_enabled !== undefined) {
-        this.videoPlayersManager.toggleSource(data.player_id, data.rtc_audio_enabled, "audio");
-        this.actorsManager.actors[data.player_id].audioEnabled = data.rtc_audio_enabled;
+      const packet = new WebrtcToggleStreamPacket();
+      const { playerId, rtcAudioEnabled, rtcCameraEnabled } = packet.parse(data);
+
+      let actor = this.actorsManager.actors[playerId];
+
+      if (actor.rtcAudioEnabled !== rtcAudioEnabled) {
+        this.videoPlayersManager.toggleSource(playerId, rtcAudioEnabled, "audio");
+        actor.audioEnabled = rtcAudioEnabled;
       }
 
-      if (data.rtc_camera_enabled !== undefined) {
-        this.videoPlayersManager.toggleSource(data.player_id, data.rtc_camera_enabled, "video");
-        this.actorsManager.actors[data.player_id].cameraEnabled = data.rtc_camera_enabled;
+      if (actor.rtcCameraEnabled !== rtcCameraEnabled) {
+        this.videoPlayersManager.toggleSource(playerId, rtcCameraEnabled, "video");
+        actor.cameraEnabled = rtcCameraEnabled;
       }
     });
 
@@ -96,15 +116,18 @@ export default class GameScene extends Phaser.Scene {
     });
 
     this.socketManager.channel.on("exrtc_ice", data => {
-      this.rtcManager.handleIce(data.ice);
+      const packet = new WebrtcIceCandidatePacket();
+      this.rtcManager.handleIce(packet.parse(data));
     });
 
     this.socketManager.channel.on("exrtc_answer", data => {
-      this.rtcManager.handleAnswer(data.answer);
+      const packet = new WebrtcAnswerPacket(data);
+      this.rtcManager.handleAnswer(packet.parse());
     });
 
     this.socketManager.channel.on("exrtc_ready", data => {
-      this.rtcManager.handleReady(data.player_id);
+      const packet = new WebrtcReadyPacket(data);
+      this.rtcManager.handleReady(packet.parse());
     })
   }
 }

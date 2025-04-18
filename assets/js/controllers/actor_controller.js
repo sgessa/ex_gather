@@ -7,17 +7,17 @@ export default class ActorController {
     this.scene = scene;
     this.mapManager = this.scene.mapManager;
 
-    this.dirX = actor.dir_x;
-    this.dirY = actor.dir_y;
+    this.dirX = actor.dirX;
+    this.dirY = actor.dirY;
     this.id = actor.id;
     this.username = actor.username;
     this.state = actor.state;
     this.x = actor.x;
     this.y = actor.y;
 
-    this.audioEnabled = actor.rtc_audio_enabled;
-    this.cameraEnabled = actor.rtc_camera_enabled;
-    this.rtcTracks = actor.rtc_tracks;
+    this.audioEnabled = actor.rtcAudioEnabled;
+    this.cameraEnabled = actor.rtcCameraEnabled;
+    this.rtcTracks = actor.rtcTracks;
 
     this.sprite = this.createSprite();
     this.collider = this.createCollider();
@@ -64,7 +64,7 @@ export default class ActorController {
   }
 
   move(data) {
-    const { id, x, y, dir_x, dir_y, state } = data;
+    const { id, x, y, dirX, dirY, state } = data;
 
     let tile = this.mapManager.getTileAt(x, y, [
       this.mapManager.bottomLayer,
@@ -80,16 +80,16 @@ export default class ActorController {
       duration: 300, // Matches network update rate
       ease: 'Linear'
     });
-    // this.sprite.setPosition(tile.pixelX, tile.pixelY + this.mapManager.getDepth(tile));
+
     this.sprite.setDepth(this.sprite.y + this.mapManager.getDepth(tile));
 
     // Update animation
-    if (this.state !== state || this.dirX !== dir_x || this.dirY !== dir_y) {
-      this.updateAnimation(state, dir_x, dir_y);
+    if (this.state !== state || this.dirX !== dirX || this.dirY !== dirY) {
+      this.updateAnimation(state, dirX, dirY);
     }
 
-    this.dirX = dir_x;
-    this.dirY = dir_y;
+    this.dirX = dirX;
+    this.dirY = dirY;
     this.state = state;
   }
 

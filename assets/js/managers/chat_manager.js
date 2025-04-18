@@ -1,4 +1,5 @@
 import ChatBubbleManager from "./chat/chat_bubble_manager.js";
+import ChatMsgPacket from "../packets/chat_msg_packet";
 
 export default class ChatManager {
   constructor(scene) {
@@ -133,9 +134,11 @@ export default class ChatManager {
     this.appendMessage(0, message);
     this.bubbleManager.showBubble(0, message);
 
-    this.socketManager.push("player_chat", {
-      type: parseInt(chatType),
-      message: message
-    });
+    const packet = new ChatMsgPacket();
+
+    this.socketManager.push("player_chat", packet.build(
+      parseInt(chatType),
+      message
+    ));
   }
 }

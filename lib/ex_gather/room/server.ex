@@ -3,6 +3,7 @@ defmodule ExGather.Room.Server do
 
   alias ExGather.Room.RTC
   alias ExGather.Room.Player
+  alias ExGatherWeb.Packets
 
   defstruct players: %{}
 
@@ -66,11 +67,11 @@ defmodule ExGather.Room.Server do
 
         # Attack new track to existing players & ask them to renegotiate
         # Prevent renegotiation loop
-        unless RTC.find_output_tracks(receiver.rtc_pid, sender.rtc_tracks) do
-          send(receiver.socket_pid, {:push, "exrtc_renegotiate", %{}})
-          {id, %{receiver | rtc_ready: false}}
-        else
+        if RTC.find_output_tracks(receiver.rtc_pid, sender.rtc_tracks) do
           {id, receiver}
+        else
+          send(receiver.socket_pid, {:push, "exrtc_renegotiate", ""})
+          {id, %{receiver | rtc_ready: false}}
         end
       end)
       |> Map.new()
@@ -78,7 +79,8 @@ defmodule ExGather.Room.Server do
 
     # Continue sender negotiation
     {:ok, answer} = RTC.handle_offer(sender.rtc_pid, offer)
-    send(sender.socket_pid, {:push, "exrtc_answer", %{"answer" => answer}})
+    packet = Packets.WebrtcAnswer.build(answer)
+    send(sender.socket_pid, {:push, "exrtc_answer", packet})
 
     {:noreply, put_in(state.players, players)}
   end
@@ -86,8 +88,9 @@ defmodule ExGather.Room.Server do
   def handle_cast({:exrtc_ice, id, ice}, state) do
     player = state.players[id]
 
-    if Player.rtc_alive?(player),
-      do: RTC.handle_ice(player.rtc_pid, ice)
+    if Player.rtc_alive?(player) do
+      RTC.handle_ice(player.rtc_pid, ice)
+    end
 
     {:noreply, state}
   end
@@ -105,7 +108,7 @@ defmodule ExGather.Room.Server do
 
     state.players
     |> Enum.reject(fn {_, receiver} ->
-      receiver.id == sender.id || not Player.rtc_ready?(receiver)
+      receiver.id == sender.id || !Player.rtc_ready?(receiver)
     end)
     |> Enum.map(fn {_, receiver} -> receiver.rtc_pid end)
     |> RTC.forward_rtp(server_track_id, packet)

@@ -1,3 +1,5 @@
+import WebrtcToggleStreamPacket from "../packets/webrtc/webrtc_toggle_stream_packet";
+
 export default class StreamController {
   constructor(scene) {
     this.scene = scene;
@@ -10,9 +12,6 @@ export default class StreamController {
     this.audioEnabled = this.scene.game.streamControls.audioEnabled;
 
     this.emptyStream = this.createEmptyStream();
-
-    console.log('cam', this.cameraEnabled);
-    console.log('aud', this.audioEnabled);
 
     this.init();
     this.hook();
@@ -224,8 +223,8 @@ export default class StreamController {
   }
 
   updateServerStream() {
-    this.scene.socketManager.push("exrtc_toggle_stream", { rtc_audio_enabled: this.audioEnabled });
-    this.scene.socketManager.push("exrtc_toggle_stream", { rtc_camera_enabled: this.cameraEnabled });
+    const packet = new WebrtcToggleStreamPacket();
+    this.scene.socketManager.push("exrtc_toggle_stream", packet.build(this.audioEnabled, this.cameraEnabled));
   }
 
   createEmptyStream() {

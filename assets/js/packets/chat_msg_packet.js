@@ -2,9 +2,6 @@ import PacketWriter from './packet_writer';
 import PacketReader from './packet_reader';
 
 export default class ChatMsgPacket {
-  constructor() {
-  }
-
   build(type, msg) {
     let writer = new PacketWriter();
     writer.uint8(type);

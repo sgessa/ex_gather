@@ -1,26 +1,13 @@
 defmodule ExGather.Room.Player do
-  @dir_x %{
-    left: 0,
-    right: 1
-  }
-
-  @dir_y %{
-    up: 2,
-    down: 3
-  }
-
-  @state %{
-    idle: 0,
-    walk: 1
-  }
+  alias ExGather.Room.PlayerState
 
   defstruct id: nil,
             username: nil,
             x: 4,
             y: 16,
-            dir_x: @dir_x.left,
-            dir_y: @dir_y.down,
-            state: @state.idle,
+            dir_x: PlayerState.directions().left,
+            dir_y: PlayerState.directions().down,
+            state: PlayerState.states().idle,
             socket_pid: nil,
             rtc_pid: nil,
             rtc_ready: false,
@@ -39,9 +26,11 @@ defmodule ExGather.Room.Player do
     struct(__MODULE__, attrs)
   end
 
-  def rtc_alive?(%{rtc_pid: rtc_pid} = _player),
-    do: rtc_pid && Process.alive?(rtc_pid)
+  def rtc_alive?(%{rtc_pid: rtc_pid} = _player) do
+    rtc_pid && Process.alive?(rtc_pid)
+  end
 
-  def rtc_ready?(player),
-    do: not is_nil(player.rtc_pid) && player.rtc_ready == true
+  def rtc_ready?(player) do
+    !is_nil(player.rtc_pid) && player.rtc_ready
+  end
 end

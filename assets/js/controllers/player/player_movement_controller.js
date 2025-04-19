@@ -47,11 +47,7 @@ export default class PlayerMovementController {
 
   setNextTarget() {
     const point = this.path.shift();
-    const tile = this.mapManager.getTileAt(point.x, point.y, [
-      this.mapManager.bottomLayer,
-      this.mapManager.midLayer,
-      this.mapManager.topLayer,
-    ]);
+    const tile = this.mapManager.getTileAt(point.x, point.y);
 
     if (tile) {
       this.sTile = tile;
@@ -104,15 +100,7 @@ export default class PlayerMovementController {
     const px = camera.worldView.x + (e.x / camera.zoom);
     const py = camera.worldView.y + (e.y / camera.zoom) + 42;
 
-    const tile = this.mapManager.getTile(
-      px,
-      py,
-      [
-        this.mapManager.bottomLayer,
-        this.mapManager.midLayer,
-        this.mapManager.topLayer,
-      ]
-    );
+    const tile = this.mapManager.getTile(px, py);
 
     if (tile && tile.properties.walkable) {
       this.marker.setPosition(

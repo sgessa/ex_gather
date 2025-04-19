@@ -45,8 +45,6 @@ export default class ExRTCManager {
     this.peer.ontrack = (event) => {
       const track = event.track;
 
-      console.log('OnTrack', event.track.kind, event);
-
       const sender = this.tracks[event.streams[0].id];
       let enabled;
 

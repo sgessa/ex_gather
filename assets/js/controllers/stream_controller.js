@@ -99,7 +99,7 @@ export default class StreamController {
 
       this.replaceAudioTrack(this.audioStream.getAudioTracks()[0]);
     } else {
-      this.audioStream.getAudioTracks()[0].stop();
+      await this.audioStream.getAudioTracks()[0].stop();
 
       this.audioEnabled = false;
       this.audioStream = null;
@@ -130,9 +130,9 @@ export default class StreamController {
         this.toggleScreenshare(false);
       };
     } else {
-      this.screenEnabled = false;
-      this.videoStream.getVideoTracks()[0].stop();
+      await this.videoStream.getVideoTracks()[0].stop();
 
+      this.screenEnabled = false;
       this.videoStream = null;
       this.videoStream = await this.getVideoStream();
     }
@@ -157,13 +157,9 @@ export default class StreamController {
 
       this.replaceVideoTrack();
     } else {
+      await this.videoStream.getVideoTracks()[0].stop();
+
       this.cameraEnabled = false;
-
-      let videoTrack = this.videoStream.getVideoTracks()[0];
-      videoTrack.dispatchEvent(new Event("ended"));
-      videoTrack.enabled = false;
-      videoTrack.stop();
-
       this.videoStream = null;
       this.videoStream = await this.getVideoStream();
     }

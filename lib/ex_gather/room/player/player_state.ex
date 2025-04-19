@@ -1,4 +1,4 @@
-defmodule ExGather.Room.PlayerState do
+defmodule ExGather.Room.Player.State do
   @directions %{
     left: 0,
     right: 1,

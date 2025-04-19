@@ -14,11 +14,7 @@ export default class PlayerController {
 
     this.mapManager = this.scene.mapManager;
 
-    let startTile = this.scene.mapManager.getTileAt(user.x, user.y, [
-      this.mapManager.bottomLayer,
-      this.mapManager.midLayer,
-      this.mapManager.topLayer,
-    ]);
+    let startTile = this.scene.mapManager.getTileAt(user.x, user.y);
 
     this.sprite = this.createSprite(startTile);
 

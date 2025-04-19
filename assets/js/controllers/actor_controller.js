@@ -28,11 +28,7 @@ export default class ActorController {
   }
 
   createSprite() {
-    let startTile = this.mapManager.getTileAt(this.x, this.y, [
-      this.mapManager.bottomLayer,
-      this.mapManager.midLayer,
-      this.mapManager.topLayer,
-    ]);
+    let startTile = this.mapManager.getTileAt(this.x, this.y);
 
     let preset = this.dirY == "up" ? "player_back" : "player_front";
 
@@ -66,11 +62,7 @@ export default class ActorController {
   move(data) {
     const { id, x, y, dirX, dirY, state } = data;
 
-    let tile = this.mapManager.getTileAt(x, y, [
-      this.mapManager.bottomLayer,
-      this.mapManager.midLayer,
-      this.mapManager.topLayer,
-    ]);
+    let tile = this.mapManager.getTileAt(x, y);
 
     // Apply tween for smooth movement
     this.scene.tweens.add({

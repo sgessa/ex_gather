@@ -1,7 +1,7 @@
 defmodule ExGatherWeb.RoomChannel do
   use ExGatherWeb, :channel
 
-  alias ExGather.Room.RTC
+  alias ExGather.Room
   alias ExGatherWeb.Packets
 
   @impl true
@@ -9,24 +9,18 @@ defmodule ExGatherWeb.RoomChannel do
     player = socket.assigns.player
     room_server = :"#{room_name}"
 
-    socket =
-      socket
-      |> assign(:player, player)
-      |> assign(:room_server, room_server)
-
-    {:ok, player, players} = GenServer.call(room_server, {:join, player})
+    {:ok, player, players} = Room.Server.call(room_server, {:join, player})
     send(self(), {:after_join, player, players})
 
-    {:ok, {:binary, Packets.Player.build(player)}, socket}
+    socket = assign(socket, :room_server, room_server)
+    packet = Packets.Player.build(player)
+    {:ok, {:binary, packet}, socket}
   end
 
   @impl true
   def handle_info({:after_join, player, players}, socket) do
-    players = Map.values(players)
     push(socket, "room_state", {:binary, Packets.RoomState.build(players)})
-
     broadcast_from!(socket, "player_join", {:binary, Packets.Player.build(player)})
-
     {:noreply, socket}
   end
 
@@ -74,7 +68,8 @@ defmodule ExGatherWeb.RoomChannel do
       {:binary, Packets.PlayerMoved.build(player.id, movement)}
     )
 
-    GenServer.cast(room_server, {:update_player, player.id, movement})
+    attrs = Map.delete(movement, :__struct__)
+    Room.Server.cast(room_server, {:update_player, player.id, attrs})
 
     {:noreply, assign(socket, :player, player)}
   end
@@ -83,12 +78,12 @@ defmodule ExGatherWeb.RoomChannel do
     player = socket.assigns.player
 
     # Broadcast to all other players in the room
-    %{"type" => type, "msg" => msg} = Packets.ChatMsg.parse(packet)
+    %{type: type, msg: msg} = Packets.ChatMsg.parse(packet)
     packet = Packets.ChatMsg.build(player.id, type, msg)
 
     broadcast_from!(socket, "player_chat", {:binary, packet})
 
-    {:noreply, socket}
+    {:reply, :ok, socket}
   end
 
   def handle_in("exrtc_offer", {:binary, packet}, socket) do
@@ -96,10 +91,10 @@ defmodule ExGatherWeb.RoomChannel do
     room_server = socket.assigns.room_server
     offer = Packets.WebrtcOffer.parse(packet)
 
-    {:ok, rtc_pid} = RTC.start_peer()
-    GenServer.cast(room_server, {:exrtc_offer, player.id, rtc_pid, offer})
+    {:ok, rtc_pid} = Room.RTC.start_peer()
+    Room.Server.cast(room_server, {:exrtc_offer, player.id, rtc_pid, offer})
 
-    {:noreply, socket}
+    {:reply, :ok, socket}
   end
 
   def handle_in("exrtc_ice", {:binary, packet}, socket) do
@@ -109,7 +104,7 @@ defmodule ExGatherWeb.RoomChannel do
     candidate = Packets.WebrtcIceCandidate.parse(packet)
     GenServer.cast(room_server, {:exrtc_ice, player.id, candidate})
 
-    {:noreply, socket}
+    {:reply, :ok, socket}
   end
 
   def handle_in("exrtc_toggle_stream", {:binary, packet}, socket) do
@@ -128,7 +123,7 @@ defmodule ExGatherWeb.RoomChannel do
 
     broadcast_from!(socket, "exrtc_toggle_stream", {:binary, packet})
 
-    {:noreply, socket}
+    {:reply, :ok, socket}
   end
 
   def handle_in("exrtc_ready", _params, socket) do
@@ -139,7 +134,7 @@ defmodule ExGatherWeb.RoomChannel do
     packet = Packets.WebrtcReady.build(sender.id)
     broadcast_from!(socket, "exrtc_ready", {:binary, packet})
 
-    {:noreply, socket}
+    {:reply, :ok, socket}
   end
 
   @impl true

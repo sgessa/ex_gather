@@ -9,6 +9,14 @@ defmodule ExGather.Room.Server do
     GenServer.start_link(__MODULE__, [], opts)
   end
 
+  def call(pid, msg) do
+    GenServer.call(pid, msg)
+  end
+
+  def cast(pid, msg) do
+    GenServer.cast(pid, msg)
+  end
+
   def init(_args) do
     {:ok, %__MODULE__{}}
   end
@@ -17,7 +25,8 @@ defmodule ExGather.Room.Server do
     {:ok, %{id: id} = player} = Handler.retain(player, from_pid)
 
     state = put_in(state.players[id], player)
-    {:reply, {:ok, player, state.players}, state}
+    players = Map.values(state.players)
+    {:reply, {:ok, player, players}, state}
   end
 
   def handle_call({:leave, player_id}, _from, state) do
@@ -31,9 +40,7 @@ defmodule ExGather.Room.Server do
   end
 
   def handle_cast({:update_player, id, attrs}, state) do
-    attrs = Useful.atomize_map_keys(attrs)
     player = Map.merge(state.players[id], attrs)
-
     {:noreply, put_in(state.players[id], player)}
   end
 

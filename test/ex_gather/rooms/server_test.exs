@@ -57,8 +57,8 @@ defmodule ExGather.Rooms.ServerTest do
       assert video_track.id
       assert audio_track.id
 
-      assert Map.get(players, retained.id) == retained
-      assert state.players == players
+      assert Enum.member?(players, retained) == true
+      assert state.players == Enum.into(players, %{}, fn player -> {player.id, player} end)
     end
   end
 
@@ -85,7 +85,7 @@ defmodule ExGather.Rooms.ServerTest do
     end
 
     test "ok", %{server_state: state} do
-      assert {:noreply, state} = cast({:update_player, 1, %{"rtc_ready" => true}}, state)
+      assert {:noreply, state} = cast({:update_player, 1, %{rtc_ready: true}}, state)
       assert state.players[1].rtc_ready
     end
   end

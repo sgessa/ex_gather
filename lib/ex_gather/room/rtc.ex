@@ -29,10 +29,10 @@ defmodule ExGather.Room.RTC do
   ]
 
   #
-  # Start client
+  # Peer Connection
   #
 
-  def start_link() do
+  def start_peer() do
     {:ok, pc} =
       PeerConnection.start_link(
         ice_servers: @ice_servers,
@@ -44,6 +44,13 @@ defmodule ExGather.Room.RTC do
 
     {:ok, pc}
   end
+
+  def close_peer(rtc_pid) when is_pid(rtc_pid) do
+    ExWebRTC.PeerConnection.close(rtc_pid)
+    Process.exit(rtc_pid, :kill)
+  end
+
+  def close_peer(_pid), do: :ok
 
   #
   # Tracks
@@ -65,6 +72,11 @@ defmodule ExGather.Room.RTC do
     {:ok, audio_sender} = PeerConnection.add_track(pc, audio_track)
 
     {:ok, %{audio: audio_sender, video: video_sender}}
+  end
+
+  def detach_tracks_from_peer(pc, %{audio: audio_track, video: video_track}) do
+    PeerConnection.remove_track(pc, video_track.id)
+    PeerConnection.remove_track(pc, audio_track.id)
   end
 
   def find_input_track(pc, id) do
@@ -98,8 +110,12 @@ defmodule ExGather.Room.RTC do
   end
 
   def handle_ice(pc, ice) do
-    candidate = ICECandidate.from_json(ice)
-    PeerConnection.add_ice_candidate(pc, candidate)
+    if pc && Process.alive?(pc) do
+      candidate = ICECandidate.from_json(ice)
+      PeerConnection.add_ice_candidate(pc, candidate)
+    end
+
+    :ok
   end
 
   #

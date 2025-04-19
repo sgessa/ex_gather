@@ -96,7 +96,7 @@ defmodule ExGatherWeb.RoomChannel do
     room_server = socket.assigns.room_server
     offer = Packets.WebrtcOffer.parse(packet)
 
-    {:ok, rtc_pid} = RTC.start_link()
+    {:ok, rtc_pid} = RTC.start_peer()
     GenServer.cast(room_server, {:exrtc_offer, player.id, rtc_pid, offer})
 
     {:noreply, socket}

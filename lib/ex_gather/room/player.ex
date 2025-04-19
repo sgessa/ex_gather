@@ -1,13 +1,13 @@
 defmodule ExGather.Room.Player do
-  alias ExGather.Room.PlayerState
+  alias ExGather.Room.Player
 
   defstruct id: nil,
             username: nil,
             x: 4,
             y: 16,
-            dir_x: PlayerState.directions().left,
-            dir_y: PlayerState.directions().down,
-            state: PlayerState.states().idle,
+            dir_x: Player.State.directions().left,
+            dir_y: Player.State.directions().down,
+            state: Player.State.states().idle,
             socket_pid: nil,
             rtc_pid: nil,
             rtc_ready: false,
@@ -15,7 +15,7 @@ defmodule ExGather.Room.Player do
             rtc_camera_enabled: false,
             rtc_tracks: %{}
 
-  def new(attrs, {socket_pid, _ref}) do
+  def new(attrs, socket_pid) do
     {:ok, tracks} = ExGather.Room.RTC.create_stream_tracks()
 
     attrs =
@@ -24,10 +24,6 @@ defmodule ExGather.Room.Player do
       |> Map.put(:rtc_tracks, tracks)
 
     struct(__MODULE__, attrs)
-  end
-
-  def rtc_alive?(%{rtc_pid: rtc_pid} = _player) do
-    rtc_pid && Process.alive?(rtc_pid)
   end
 
   def rtc_ready?(player) do

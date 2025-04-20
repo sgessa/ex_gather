@@ -15,8 +15,9 @@ defmodule ExGatherWeb.Packets.ChatMsg do
 
   def parse(packet) do
     {type, packet} = PacketReader.uint8(packet)
+    {dest, packet} = PacketReader.uint8(packet)
     {msg, _packet} = PacketReader.string(packet)
 
-    %{"type" => type, "msg" => msg}
+    %{"type" => type, "msg" => msg, "dest" => dest}
   end
 end

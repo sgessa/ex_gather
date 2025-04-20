@@ -25,15 +25,13 @@ defmodule ExGatherWeb.ChatComponents do
       id="avatar-sidebar"
       class="w-14 bg-gray-800 border-r border-gray-700 flex flex-col items-center py-3 space-y-3 overflow-y-auto sm:w-16"
     >
-      <!-- Avatar List -->
       <div class="flex flex-col space-y-2">
-        <!-- Example Avatar -->
-        <div class="relative">
+        <div class="relative chat-dm" data-dest="-1">
           <img
             src="https://via.placeholder.com/40"
-            alt="User Avatar"
+            alt="Public"
             class="w-8 h-8 sm:w-10 sm:h-10 rounded-full cursor-pointer hover:ring-2 hover:ring-blue-500"
-            title="User 1"
+            title="Public"
           />
           <span class="absolute bottom-0 right-0 w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full border-2 border-gray-800">
           </span>

@@ -1,15 +1,14 @@
 import ActorController from "../actor_controller.js";
 
 export default class ChatMessageController {
-  constructor(sender, type, message) {
+  constructor(sender, message) {
     this.sender = sender;
-    this.chatType = type;
     this.chatMessage = message;
 
-    this.append();
+    this.element = this.create();
   }
 
-  append() {
+  create() {
     const message = document.createElement("div");
     const avatar = document.createElement("div");
     const content = document.createElement("div");
@@ -56,12 +55,15 @@ export default class ChatMessageController {
       message.appendChild(avatar);
     }
 
-    const chatContainer = document.querySelector("#chat-container")
-    chatContainer.appendChild(message);
+    return message;
+  }
 
-    chatContainer.scrollTo({
-      top: chatContainer.scrollHeight,
-      behavior: 'smooth'
-    });
+  show() {
+    const chatContainer = document.querySelector("#chat-container")
+    chatContainer.appendChild(this.element);
+  }
+
+  hide() {
+    this.element.remove();
   }
 }

@@ -4,7 +4,4 @@ export const CHAT_TYPE = {
   WHISPER: 2
 };
 
-export const CHAT_STATE = {
-  PUBLIC: 0,
-  DM: 1
-};
+export const PUBLIC_DEST = -1;

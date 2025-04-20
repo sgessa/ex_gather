@@ -68,9 +68,7 @@ defmodule ExGatherWeb.RoomChannel do
       {:binary, Packets.PlayerMoved.build(player.id, movement)}
     )
 
-    attrs = Map.delete(movement, :__struct__)
-    Room.Server.cast(room_server, {:update_player, player.id, attrs})
-
+    Room.Server.cast(room_server, {:update_player, player.id, movement})
     {:noreply, assign(socket, :player, player)}
   end
 

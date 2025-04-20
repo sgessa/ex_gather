@@ -529,7 +529,7 @@ function find(y) {
         
           
             <li>
-              <span class='cov low'>45.0</span>
+              <span class='cov high'>98.3</span>
               <a href='#lib/ex_gather_web/channels/room_channel.ex'>
                 
                 
@@ -724,7 +724,7 @@ function find(y) {
         
           
             <li>
-              <span class='cov low'>45.4</span>
+              <span class='cov high'>90.9</span>
               <a href='#lib/ex_gather_web/packets/packet_reader.ex'>
                 
                 
@@ -737,7 +737,7 @@ function find(y) {
         
           
             <li>
-              <span class='cov high'>81.8</span>
+              <span class='cov high'>100.0</span>
               <a href='#lib/ex_gather_web/packets/packet_writer.ex'>
                 
                 
@@ -763,7 +763,7 @@ function find(y) {
         
           
             <li>
-              <span class='cov terrible'>0.0</span>
+              <span class='cov high'>100.0</span>
               <a href='#lib/ex_gather_web/packets/player_left.ex'>
                 
                 
@@ -828,7 +828,7 @@ function find(y) {
         
           
             <li>
-              <span class='cov terrible'>0.0</span>
+              <span class='cov high'>100.0</span>
               <a href='#lib/ex_gather_web/packets/webrtc_ice_candidate.ex'>
                 
                 
@@ -854,7 +854,7 @@ function find(y) {
         
           
             <li>
-              <span class='cov terrible'>0.0</span>
+              <span class='cov high'>100.0</span>
               <a href='#lib/ex_gather_web/packets/webrtc_ready.ex'>
                 
                 
@@ -867,7 +867,7 @@ function find(y) {
         
           
             <li>
-              <span class='cov terrible'>0.0</span>
+              <span class='cov high'>100.0</span>
               <a href='#lib/ex_gather_web/packets/webrtc_toggle_stream.ex'>
                 
                 
@@ -1010,11 +1010,11 @@ function find(y) {
         
       </div>
 
-      <div id='stats' class='medium'>
-        <div class='percentage'>69.7</div>
+      <div id='stats' class='high'>
+        <div class='percentage'>80.3</div>
         <div class='sloc'>505</div>
-        <div class='hits'>2938</div>
-        <div class='misses'>153</div>
+        <div class='hits'>3874</div>
+        <div class='misses'>99</div>
       </div>
       <div id='files'>
         
@@ -6864,11 +6864,11 @@ function find(y) {
           
             <div class='file'>
               <h2 id='lib/ex_gather_web/channels/room_channel.ex'>lib/ex_gather_web/channels/room_channel.ex</h2>
-              <div id='stats' class='low'>
-                <div class='percentage'>45.0</div>
+              <div id='stats' class='high'>
+                <div class='percentage'>98.3</div>
                 <div class='sloc'>60</div>
-                <div class='hits'>54</div>
-                <div class='misses'>33</div>
+                <div class='hits'>160</div>
+                <div class='misses'>1</div>
               </div>
               <table id='source'>
                 <thead>
@@ -6946,7 +6946,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>8</td>
-                          <td class='hits'>4</td>
+                          <td class='hits'>12</td>
                           <td class='source'>    player = socket.assigns.player</td>
                         </tr>
                       
@@ -6954,7 +6954,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>9</td>
-                          <td class='hits'>4</td>
+                          <td class='hits'>12</td>
                           <td class='source'>    room_server = :&quot;#{room_name}&quot;</td>
                         </tr>
                       
@@ -6970,7 +6970,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>11</td>
-                          <td class='hits'>4</td>
+                          <td class='hits'>12</td>
                           <td class='source'>    {:ok, player, players} = Room.Server.call(room_server, {:join, player})</td>
                         </tr>
                       
@@ -6978,7 +6978,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>12</td>
-                          <td class='hits'>4</td>
+                          <td class='hits'>12</td>
                           <td class='source'>    send(self(), {:after_join, player, players})</td>
                         </tr>
                       
@@ -6994,7 +6994,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>14</td>
-                          <td class='hits'>4</td>
+                          <td class='hits'>12</td>
                           <td class='source'>    socket = assign(socket, :room_server, room_server)</td>
                         </tr>
                       
@@ -7002,7 +7002,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>15</td>
-                          <td class='hits'>4</td>
+                          <td class='hits'>12</td>
                           <td class='source'>    packet = Packets.Player.build(player)</td>
                         </tr>
                       
@@ -7010,7 +7010,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>16</td>
-                          <td class='hits'>4</td>
+                          <td class='hits'>12</td>
                           <td class='source'>    {:ok, {:binary, packet}, socket}</td>
                         </tr>
                       
@@ -7050,7 +7050,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>21</td>
-                          <td class='hits'>4</td>
+                          <td class='hits'>12</td>
                           <td class='source'>    push(socket, &quot;room_state&quot;, {:binary, Packets.RoomState.build(players)})</td>
                         </tr>
                       
@@ -7058,7 +7058,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>22</td>
-                          <td class='hits'>4</td>
+                          <td class='hits'>12</td>
                           <td class='source'>    broadcast_from!(socket, &quot;player_join&quot;, {:binary, Packets.Player.build(player)})</td>
                         </tr>
                       
@@ -7096,9 +7096,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>27</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    push(socket, event, {:binary, packet})</td>
                         </tr>
                       
@@ -7136,9 +7136,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>32</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>3</td>
                           <td class='source'>    handle_exrtc(msg, socket)</td>
                         </tr>
                       
@@ -7200,17 +7200,17 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>40</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    packet = Packets.WebrtcIceCandidate.build(candidate)</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>41</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    push(socket, &quot;exrtc_ice&quot;, {:binary, packet})</td>
                         </tr>
                       
@@ -7256,17 +7256,17 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>47</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    sender = socket.assigns.player</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>48</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    room_server = socket.assigns.room_server</td>
                         </tr>
                       
@@ -7280,10 +7280,10 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>50</td>
-                          <td class='hits'>0</td>
-                          <td class='source'>    GenServer.cast(room_server, {:exrtc_send_rtp, sender.id, client_track_id, packet})</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    Room.Server.cast(room_server, {:exrtc_send_rtp, sender.id, client_track_id, packet})</td>
                         </tr>
                       
                   
@@ -7312,9 +7312,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>54</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>  defp handle_exrtc(_msg, socket), do: {:noreply, socket}</td>
                         </tr>
                       
@@ -7680,17 +7680,17 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>100</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    player = socket.assigns.player</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>101</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    room_server = socket.assigns.room_server</td>
                         </tr>
                       
@@ -7704,18 +7704,18 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>103</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    candidate = Packets.WebrtcIceCandidate.parse(packet)</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>104</td>
-                          <td class='hits'>0</td>
-                          <td class='source'>    GenServer.cast(room_server, {:exrtc_ice, player.id, candidate})</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    Room.Server.cast(room_server, {:exrtc_ice, player.id, candidate})</td>
                         </tr>
                       
                   
@@ -7728,9 +7728,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>106</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    {:reply, :ok, socket}</td>
                         </tr>
                       
@@ -7760,17 +7760,17 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>110</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    sender = socket.assigns.player</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>111</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    room_server = socket.assigns.room_server</td>
                         </tr>
                       
@@ -7784,18 +7784,18 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>113</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    params = Packets.WebrtcToggleStream.parse(packet)</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>114</td>
-                          <td class='hits'>0</td>
-                          <td class='source'>    GenServer.cast(room_server, {:update_player, sender.id, params})</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    Room.Server.cast(room_server, {:update_player, sender.id, params})</td>
                         </tr>
                       
                   
@@ -7808,9 +7808,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>116</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    packet =</td>
                         </tr>
                       
@@ -7824,9 +7824,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>118</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>        sender.id,</td>
                         </tr>
                       
@@ -7864,9 +7864,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>123</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    broadcast_from!(socket, &quot;exrtc_toggle_stream&quot;, {:binary, packet})</td>
                         </tr>
                       
@@ -7880,9 +7880,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>125</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    {:reply, :ok, socket}</td>
                         </tr>
                       
@@ -7912,17 +7912,17 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>129</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    sender = socket.assigns.player</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>130</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    room_server = socket.assigns.room_server</td>
                         </tr>
                       
@@ -7936,25 +7936,25 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>132</td>
-                          <td class='hits'>0</td>
-                          <td class='source'>    GenServer.cast(room_server, {:update_player, sender.id, %{rtc_ready: true}})</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    Room.Server.cast(room_server, {:update_player, sender.id, %{rtc_ready: true}})</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>133</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    packet = Packets.WebrtcReady.build(sender.id)</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>134</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    broadcast_from!(socket, &quot;exrtc_ready&quot;, {:binary, packet})</td>
                         </tr>
                       
@@ -7968,9 +7968,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>136</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    {:reply, :ok, socket}</td>
                         </tr>
                       
@@ -8008,26 +8008,26 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>141</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    player = socket.assigns.player</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>142</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    room_server = socket.assigns.room_server</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>143</td>
-                          <td class='hits'>0</td>
-                          <td class='source'>    :ok = GenServer.call(room_server, {:leave, player.id})</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    :ok = Room.Server.call(room_server, {:leave, player.id})</td>
                         </tr>
                       
                   
@@ -8048,17 +8048,17 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>146</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    packet = Packets.PlayerLeft.build(player.id)</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>147</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    broadcast_from!(socket, &quot;player_left&quot;, {:binary, packet})</td>
                         </tr>
                       
@@ -16889,11 +16889,11 @@ function find(y) {
           
             <div class='file'>
               <h2 id='lib/ex_gather_web/packets/packet_reader.ex'>lib/ex_gather_web/packets/packet_reader.ex</h2>
-              <div id='stats' class='low'>
-                <div class='percentage'>45.4</div>
+              <div id='stats' class='high'>
+                <div class='percentage'>90.9</div>
                 <div class='sloc'>11</div>
-                <div class='hits'>12</div>
-                <div class='misses'>6</div>
+                <div class='hits'>38</div>
+                <div class='misses'>1</div>
               </div>
               <table id='source'>
                 <thead>
@@ -16977,9 +16977,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>9</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>2</td>
                           <td class='source'>    &lt;&lt;value::little-unsigned-integer-size(16), rest::binary&gt;&gt; = packet</td>
                         </tr>
                       
@@ -17121,9 +17121,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>27</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>2</td>
                           <td class='source'>    &lt;&lt;value::little-unsigned-integer-size(8), rest::binary&gt;&gt; = packet</td>
                         </tr>
                       
@@ -17137,25 +17137,25 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>29</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>2</td>
                           <td class='source'>    case value do</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>30</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>      0 -&gt; {false, rest}</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>31</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>      1 -&gt; {true, rest}</td>
                         </tr>
                       
@@ -17203,7 +17203,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>37</td>
-                          <td class='hits'>2</td>
+                          <td class='hits'>8</td>
                           <td class='source'>    &lt;&lt;length::little-unsigned-integer-size(32), rest::bytes&gt;&gt; = packet</td>
                         </tr>
                       
@@ -17219,7 +17219,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>39</td>
-                          <td class='hits'>2</td>
+                          <td class='hits'>8</td>
                           <td class='source'>    if length &gt; 0 do</td>
                         </tr>
                       
@@ -17227,7 +17227,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>40</td>
-                          <td class='hits'>2</td>
+                          <td class='hits'>8</td>
                           <td class='source'>      &lt;&lt;value::bytes-size(length), rest::bytes&gt;&gt; = rest</td>
                         </tr>
                       
@@ -17289,10 +17289,10 @@ function find(y) {
             <div class='file'>
               <h2 id='lib/ex_gather_web/packets/packet_writer.ex'>lib/ex_gather_web/packets/packet_writer.ex</h2>
               <div id='stats' class='high'>
-                <div class='percentage'>81.8</div>
+                <div class='percentage'>100.0</div>
                 <div class='sloc'>11</div>
-                <div class='hits'>291</div>
-                <div class='misses'>2</div>
+                <div class='hits'>727</div>
+                <div class='misses'>0</div>
               </div>
               <table id='source'>
                 <thead>
@@ -17330,7 +17330,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>3</td>
-                          <td class='hits'>34</td>
+                          <td class='hits'>76</td>
                           <td class='source'>    &lt;&lt;&gt;&gt;</td>
                         </tr>
                       
@@ -17370,7 +17370,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>8</td>
-                          <td class='hits'>18</td>
+                          <td class='hits'>49</td>
                           <td class='source'>    &lt;&lt;packet::bytes, value::little-unsigned-integer-size(64)&gt;&gt;</td>
                         </tr>
                       
@@ -17408,9 +17408,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>13</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>3</td>
                           <td class='source'>    &lt;&lt;packet::bytes, value::little-unsigned-integer-size(16)&gt;&gt;</td>
                         </tr>
                       
@@ -17450,7 +17450,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>18</td>
-                          <td class='hits'>59</td>
+                          <td class='hits'>139</td>
                           <td class='source'>    &lt;&lt;packet::bytes, value::little-unsigned-integer-size(8)&gt;&gt;</td>
                         </tr>
                       
@@ -17490,7 +17490,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>23</td>
-                          <td class='hits'>34</td>
+                          <td class='hits'>82</td>
                           <td class='source'>    &lt;&lt;packet::bytes, value::little-integer-size(32)&gt;&gt;</td>
                         </tr>
                       
@@ -17520,9 +17520,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>27</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>3</td>
                           <td class='source'>  def bool(packet, true), do: packet &lt;&gt; &lt;&lt;1&gt;&gt;</td>
                         </tr>
                       
@@ -17530,7 +17530,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>28</td>
-                          <td class='hits'>28</td>
+                          <td class='hits'>79</td>
                           <td class='source'>  def bool(packet, false), do: packet &lt;&gt; &lt;&lt;0&gt;&gt;</td>
                         </tr>
                       
@@ -17562,7 +17562,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>32</td>
-                          <td class='hits'>54</td>
+                          <td class='hits'>135</td>
                           <td class='source'>    value = if value, do: value, else: &quot;&quot;</td>
                         </tr>
                       
@@ -17570,7 +17570,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>33</td>
-                          <td class='hits'>54</td>
+                          <td class='hits'>135</td>
                           <td class='source'>    &lt;&lt;packet::bytes, byte_size(value)::little-unsigned-integer-size(32), value::binary&gt;&gt;</td>
                         </tr>
                       
@@ -17602,7 +17602,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>37</td>
-                          <td class='hits'>5</td>
+                          <td class='hits'>13</td>
                           <td class='source'>    &lt;&lt;packet::bytes, binary::bytes&gt;&gt;</td>
                         </tr>
                       
@@ -17634,7 +17634,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>41</td>
-                          <td class='hits'>5</td>
+                          <td class='hits'>13</td>
                           <td class='source'>    Enum.reduce(enum, packet, fun)</td>
                         </tr>
                       
@@ -17666,7 +17666,7 @@ function find(y) {
               <div id='stats' class='high'>
                 <div class='percentage'>100.0</div>
                 <div class='sloc'>12</div>
-                <div class='hits'>168</div>
+                <div class='hits'>456</div>
                 <div class='misses'>0</div>
               </div>
               <table id='source'>
@@ -17745,7 +17745,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>8</td>
-                          <td class='hits'>14</td>
+                          <td class='hits'>38</td>
                           <td class='source'>    %{audio: audio, video: video} = player.rtc_tracks</td>
                         </tr>
                       
@@ -17769,7 +17769,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>11</td>
-                          <td class='hits'>14</td>
+                          <td class='hits'>38</td>
                           <td class='source'>    |&gt; PacketWriter.uint64(player.id)</td>
                         </tr>
                       
@@ -17777,7 +17777,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>12</td>
-                          <td class='hits'>14</td>
+                          <td class='hits'>38</td>
                           <td class='source'>    |&gt; PacketWriter.int32(player.x)</td>
                         </tr>
                       
@@ -17785,7 +17785,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>13</td>
-                          <td class='hits'>14</td>
+                          <td class='hits'>38</td>
                           <td class='source'>    |&gt; PacketWriter.int32(player.y)</td>
                         </tr>
                       
@@ -17793,7 +17793,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>14</td>
-                          <td class='hits'>14</td>
+                          <td class='hits'>38</td>
                           <td class='source'>    |&gt; PacketWriter.uint8(player.dir_x)</td>
                         </tr>
                       
@@ -17801,7 +17801,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>15</td>
-                          <td class='hits'>14</td>
+                          <td class='hits'>38</td>
                           <td class='source'>    |&gt; PacketWriter.uint8(player.dir_y)</td>
                         </tr>
                       
@@ -17809,7 +17809,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>16</td>
-                          <td class='hits'>14</td>
+                          <td class='hits'>38</td>
                           <td class='source'>    |&gt; PacketWriter.uint8(player.state)</td>
                         </tr>
                       
@@ -17817,7 +17817,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>17</td>
-                          <td class='hits'>14</td>
+                          <td class='hits'>38</td>
                           <td class='source'>    |&gt; PacketWriter.string(player.username)</td>
                         </tr>
                       
@@ -17825,7 +17825,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>18</td>
-                          <td class='hits'>14</td>
+                          <td class='hits'>38</td>
                           <td class='source'>    |&gt; PacketWriter.bool(player.rtc_audio_enabled)</td>
                         </tr>
                       
@@ -17833,7 +17833,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>19</td>
-                          <td class='hits'>14</td>
+                          <td class='hits'>38</td>
                           <td class='source'>    |&gt; PacketWriter.bool(player.rtc_camera_enabled)</td>
                         </tr>
                       
@@ -17841,7 +17841,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>20</td>
-                          <td class='hits'>14</td>
+                          <td class='hits'>38</td>
                           <td class='source'>    |&gt; PacketWriter.string(hd(audio.streams))</td>
                         </tr>
                       
@@ -17849,7 +17849,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>21</td>
-                          <td class='hits'>14</td>
+                          <td class='hits'>38</td>
                           <td class='source'>    |&gt; PacketWriter.string(hd(video.streams))</td>
                         </tr>
                       
@@ -17878,11 +17878,11 @@ function find(y) {
           
             <div class='file'>
               <h2 id='lib/ex_gather_web/packets/player_left.ex'>lib/ex_gather_web/packets/player_left.ex</h2>
-              <div id='stats' class='terrible'>
-                <div class='percentage'>0.0</div>
+              <div id='stats' class='high'>
+                <div class='percentage'>100.0</div>
                 <div class='sloc'>1</div>
-                <div class='hits'>0</div>
-                <div class='misses'>1</div>
+                <div class='hits'>2</div>
+                <div class='misses'>0</div>
               </div>
               <table id='source'>
                 <thead>
@@ -17934,9 +17934,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>5</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>2</td>
                           <td class='source'>    |&gt; PacketWriter.uint64(player_id)</td>
                         </tr>
                       
@@ -18334,7 +18334,7 @@ function find(y) {
               <div id='stats' class='high'>
                 <div class='percentage'>100.0</div>
                 <div class='sloc'>3</div>
-                <div class='hits'>15</div>
+                <div class='hits'>39</div>
                 <div class='misses'>0</div>
               </div>
               <table id='source'>
@@ -18397,7 +18397,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>6</td>
-                          <td class='hits'>5</td>
+                          <td class='hits'>13</td>
                           <td class='source'>    length = length(players)</td>
                         </tr>
                       
@@ -18429,7 +18429,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>10</td>
-                          <td class='hits'>5</td>
+                          <td class='hits'>13</td>
                           <td class='source'>    |&gt; PacketWriter.reduce(players, fn player, acc -&gt;</td>
                         </tr>
                       
@@ -18437,7 +18437,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>11</td>
-                          <td class='hits'>5</td>
+                          <td class='hits'>13</td>
                           <td class='source'>      PacketWriter.append(acc, Packets.Player.build(player))</td>
                         </tr>
                       
@@ -18561,11 +18561,11 @@ function find(y) {
           
             <div class='file'>
               <h2 id='lib/ex_gather_web/packets/webrtc_ice_candidate.ex'>lib/ex_gather_web/packets/webrtc_ice_candidate.ex</h2>
-              <div id='stats' class='terrible'>
-                <div class='percentage'>0.0</div>
+              <div id='stats' class='high'>
+                <div class='percentage'>100.0</div>
                 <div class='sloc'>9</div>
-                <div class='hits'>0</div>
-                <div class='misses'>9</div>
+                <div class='hits'>22</div>
+                <div class='misses'>0</div>
               </div>
               <table id='source'>
                 <thead>
@@ -18625,33 +18625,33 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>6</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>3</td>
                           <td class='source'>    |&gt; PacketWriter.string(candidate.candidate)</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>7</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>3</td>
                           <td class='source'>    |&gt; PacketWriter.uint16(candidate.sdp_m_line_index)</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>8</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>3</td>
                           <td class='source'>    |&gt; PacketWriter.string(candidate.sdp_mid)</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>9</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>3</td>
                           <td class='source'>    |&gt; PacketWriter.string(candidate.username_fragment)</td>
                         </tr>
                       
@@ -18681,33 +18681,33 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>13</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>2</td>
                           <td class='source'>    {candidate, packet} = PacketReader.string(packet)</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>14</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>2</td>
                           <td class='source'>    {sdp_m_line_index, packet} = PacketReader.uint16(packet)</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>15</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>2</td>
                           <td class='source'>    {sdp_mid, packet} = PacketReader.string(packet)</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>16</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>2</td>
                           <td class='source'>    {username_fragment, _packet} = PacketReader.string(packet)</td>
                         </tr>
                       
@@ -18721,9 +18721,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>18</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>2</td>
                           <td class='source'>    %{</td>
                         </tr>
                       
@@ -18887,11 +18887,11 @@ function find(y) {
           
             <div class='file'>
               <h2 id='lib/ex_gather_web/packets/webrtc_ready.ex'>lib/ex_gather_web/packets/webrtc_ready.ex</h2>
-              <div id='stats' class='terrible'>
-                <div class='percentage'>0.0</div>
+              <div id='stats' class='high'>
+                <div class='percentage'>100.0</div>
                 <div class='sloc'>1</div>
-                <div class='hits'>0</div>
-                <div class='misses'>1</div>
+                <div class='hits'>2</div>
+                <div class='misses'>0</div>
               </div>
               <table id='source'>
                 <thead>
@@ -18943,9 +18943,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>5</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>2</td>
                           <td class='source'>    |&gt; PacketWriter.uint64(player_id)</td>
                         </tr>
                       
@@ -18974,11 +18974,11 @@ function find(y) {
           
             <div class='file'>
               <h2 id='lib/ex_gather_web/packets/webrtc_toggle_stream.ex'>lib/ex_gather_web/packets/webrtc_toggle_stream.ex</h2>
-              <div id='stats' class='terrible'>
-                <div class='percentage'>0.0</div>
+              <div id='stats' class='high'>
+                <div class='percentage'>100.0</div>
                 <div class='sloc'>4</div>
-                <div class='hits'>0</div>
-                <div class='misses'>4</div>
+                <div class='hits'>6</div>
+                <div class='misses'>0</div>
               </div>
               <table id='source'>
                 <thead>
@@ -19054,9 +19054,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>8</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>3</td>
                           <td class='source'>    |&gt; PacketWriter.bool(camera_enabled)</td>
                         </tr>
                       
@@ -19086,17 +19086,17 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>12</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    {audio_enabled, packet} = PacketReader.bool(packet)</td>
                         </tr>
                       
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>13</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    {camera_enabled, _packet} = PacketReader.bool(packet)</td>
                         </tr>
                       
@@ -19110,9 +19110,9 @@ function find(y) {
                     
                   
                     
-                        <tr class='miss'>
+                        <tr class='hit'>
                           <td class='line'>15</td>
-                          <td class='hits'>0</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    %{</td>
                         </tr>
                       
@@ -20292,7 +20292,7 @@ function find(y) {
               <div id='stats' class='high'>
                 <div class='percentage'>100.0</div>
                 <div class='sloc'>2</div>
-                <div class='hits'>5</div>
+                <div class='hits'>13</div>
                 <div class='misses'>0</div>
               </div>
               <table id='source'>
@@ -20555,7 +20555,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>31</td>
-                          <td class='hits'>4</td>
+                          <td class='hits'>12</td>
                           <td class='source'>    ExGather.DataCase.setup_sandbox(tags)</td>
                         </tr>
                       
@@ -20890,7 +20890,7 @@ function find(y) {
               <div id='stats' class='high'>
                 <div class='percentage'>100.0</div>
                 <div class='sloc'>4</div>
-                <div class='hits'>120</div>
+                <div class='hits'>136</div>
                 <div class='misses'>0</div>
               </div>
               <table id='source'>
@@ -21225,7 +21225,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>40</td>
-                          <td class='hits'>46</td>
+                          <td class='hits'>54</td>
                           <td class='source'>    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(ExGather.Repo, shared: not tags[:async])</td>
                         </tr>
                       
@@ -21233,7 +21233,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>41</td>
-                          <td class='hits'>46</td>
+                          <td class='hits'>54</td>
                           <td class='source'>    on_exit(fn -&gt; Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)</td>
                         </tr>
                       

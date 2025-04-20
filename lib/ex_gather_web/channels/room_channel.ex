@@ -48,7 +48,7 @@ defmodule ExGatherWeb.RoomChannel do
     sender = socket.assigns.player
     room_server = socket.assigns.room_server
 
-    GenServer.cast(room_server, {:exrtc_send_rtp, sender.id, client_track_id, packet})
+    Room.Server.cast(room_server, {:exrtc_send_rtp, sender.id, client_track_id, packet})
     {:noreply, socket}
   end
 
@@ -102,7 +102,7 @@ defmodule ExGatherWeb.RoomChannel do
     room_server = socket.assigns.room_server
 
     candidate = Packets.WebrtcIceCandidate.parse(packet)
-    GenServer.cast(room_server, {:exrtc_ice, player.id, candidate})
+    Room.Server.cast(room_server, {:exrtc_ice, player.id, candidate})
 
     {:reply, :ok, socket}
   end
@@ -112,7 +112,7 @@ defmodule ExGatherWeb.RoomChannel do
     room_server = socket.assigns.room_server
 
     params = Packets.WebrtcToggleStream.parse(packet)
-    GenServer.cast(room_server, {:update_player, sender.id, params})
+    Room.Server.cast(room_server, {:update_player, sender.id, params})
 
     packet =
       Packets.WebrtcToggleStream.build(
@@ -130,7 +130,7 @@ defmodule ExGatherWeb.RoomChannel do
     sender = socket.assigns.player
     room_server = socket.assigns.room_server
 
-    GenServer.cast(room_server, {:update_player, sender.id, %{rtc_ready: true}})
+    Room.Server.cast(room_server, {:update_player, sender.id, %{rtc_ready: true}})
     packet = Packets.WebrtcReady.build(sender.id)
     broadcast_from!(socket, "exrtc_ready", {:binary, packet})
 
@@ -141,7 +141,7 @@ defmodule ExGatherWeb.RoomChannel do
   def terminate(_reason, socket) do
     player = socket.assigns.player
     room_server = socket.assigns.room_server
-    :ok = GenServer.call(room_server, {:leave, player.id})
+    :ok = Room.Server.call(room_server, {:leave, player.id})
 
     # Automatically called on disconnect
     packet = Packets.PlayerLeft.build(player.id)

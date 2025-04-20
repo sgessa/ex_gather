@@ -134,4 +134,124 @@ defmodule ExGatherWeb.RoomChannelTest do
       assert_reply ref, :ok
     end
   end
+
+  describe "exrtc_ice" do
+    test "handles WebRTC ICE candidate", %{socket: socket} do
+      player_id = @player.id
+
+      ice_candidate = %{
+        candidate: "candidate",
+        sdp_m_line_index: 0,
+        sdp_mid: "mid",
+        username_fragment: "frag"
+      }
+
+      packet = Packets.WebrtcIceCandidate.build(ice_candidate)
+      parsed_candidate = Packets.WebrtcIceCandidate.parse(packet)
+
+      expect(Room.Server.cast(:"room:lobby", {:exrtc_ice, ^player_id, ^parsed_candidate})) do
+        :ok
+      end
+
+      ref = push(socket, "exrtc_ice", {:binary, packet})
+      assert_reply ref, :ok
+    end
+  end
+
+  describe "exrtc_toggle_stream" do
+    test "toggles RTC stream", %{socket: socket} do
+      player_id = @player.id
+
+      params = %{
+        "rtc_audio_enabled" => true,
+        "rtc_camera_enabled" => false
+      }
+
+      <<_::little-unsigned-integer-size(64), packet::binary>> =
+        Packets.WebrtcToggleStream.build(player_id, true, false)
+
+      expect(Room.Server.cast(:"room:lobby", {:update_player, ^player_id, ^params}), do: :ok)
+
+      ref = push(socket, "exrtc_toggle_stream", {:binary, packet})
+      assert_reply ref, :ok
+
+      packet = Packets.WebrtcToggleStream.build(player_id, true, false)
+      assert_broadcast "exrtc_toggle_stream", {:binary, ^packet}
+    end
+  end
+
+  describe "exrtc_ready" do
+    test "sets RTC ready state", %{socket: socket} do
+      player_id = @player.id
+
+      expect(Room.Server.cast(:"room:lobby", {:update_player, ^player_id, %{rtc_ready: true}}),
+        do: :ok
+      )
+
+      ref = push(socket, "exrtc_ready", %{})
+      assert_reply ref, :ok
+
+      packet = Packets.WebrtcReady.build(player_id)
+      assert_broadcast "exrtc_ready", {:binary, ^packet}
+    end
+  end
+
+  describe "terminate" do
+    test "leaves the channel", %{socket: socket} do
+      player_id = @player.id
+
+      Process.unlink(socket.channel_pid)
+
+      expect(Room.Server.call(:"room:lobby", {:leave, ^player_id}), do: :ok)
+      :ok = close(socket)
+
+      packet = Packets.PlayerLeft.build(player_id)
+      assert_broadcast "player_left", {:binary, ^packet}
+    end
+  end
+
+  describe "handle_info" do
+    test "handle push message", %{socket: socket} do
+      send(socket.channel_pid, {:push, "hello", "Hello World!"})
+      assert_push "hello", {:binary, "Hello World!"}
+    end
+
+    test "handle ex_webrtc RTP nessage", %{socket: socket} do
+      player_id = @player.id
+      client_track_id = 1
+      packet = "Hello World"
+      msg = {:rtp, client_track_id, nil, packet}
+
+      expect(
+        Room.Server.cast(:"room:lobby", {:exrtc_send_rtp, ^player_id, ^client_track_id, ^packet}),
+        do: :ok
+      )
+
+      send(socket.channel_pid, {:ex_webrtc, self(), msg})
+
+      refute_push "exrtc_send_rtp", _packet
+    end
+
+    test "handle ex_webrtc ICE message", %{socket: socket} do
+      ice_candidate = %{
+        candidate: "candidate",
+        sdp_m_line_index: 0,
+        sdp_mid: "mid",
+        username_fragment: "frag"
+      }
+
+      packet = Packets.WebrtcIceCandidate.build(ice_candidate)
+      msg = {:ice_candidate, ice_candidate}
+
+      send(socket.channel_pid, {:ex_webrtc, self(), msg})
+
+      assert_push "exrtc_ice", {:binary, ^packet}
+    end
+
+    test "handle invalid ex_webrtc message", %{socket: socket} do
+      send(socket.channel_pid, {:ex_webrtc, self(), :invalid})
+      refute_push "exrtc_ice", _packet
+      refute_push "exrtc_send_rtp", _packet
+    end
+  end
 end

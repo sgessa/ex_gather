@@ -1,17 +1,15 @@
-import ChatBubbleManager from "./chat/chat_bubble_manager.js";
 import ChatMsgPacket from "../packets/chat_msg_packet";
-
+import { CHAT_TYPE, CHAT_STATE } from "../const/chat_const";
+import ChatMessageController from "../controllers/chat/chat_message_controller.js";
+import ChatBubbleController from "../controllers/chat/chat_bubble_controller.js";
 export default class ChatManager {
   constructor(scene) {
-    this.chatType = {
-      SAY: 0,
-      MEGAPHONE: 1,
-      WHISPER: 2
-    };
-
+    this.scene = scene;
     this.actorsManager = scene.actorsManager;
     this.socketManager = scene.socketManager;
-    this.bubbleManager = new ChatBubbleManager(scene);
+
+    this.bubbles = new Map();
+
     this.hook();
   }
 
@@ -45,83 +43,39 @@ export default class ChatManager {
     document.querySelector('#chat-sidebar').classList.toggle('translate-x-full');
   }
 
-  receiveMessage(actorId, chatType, chatMessage) {
+  handleMessage(actorId, chatType, chatMessage) {
     const sender = this.actorsManager.getActor(actorId);
     if (!sender) return;
 
     switch (chatType) {
-      case this.chatType.SAY:
+      case CHAT_TYPE.SAY:
         if (sender?.proximityController?.inProximity) {
-          this.appendMessage(actorId, chatMessage);
-          this.bubbleManager.showBubble(actorId, chatMessage);
+          this.createMessage(sender, chatType, chatMessage);
+          this.bubbleManager.showBubble(sender, chatMessage);
         }
         break;
-      case this.chatType.MEGAPHONE:
-        this.appendMessage(actorId, chatMessage);
-        this.bubbleManager.showBubble(actorId, chatMessage);
+      case CHAT_TYPE.MEGAPHONE:
+        this.createMessage(sender, chatType, chatMessage);
+        this.createBubble(sender, chatMessage);
         break;
-      case this.chatType.WHISPER:
+      case CHAT_TYPE.WHISPER:
         // TODO
         break;
     }
   }
 
-  appendMessage(actorId, chatMessage) {
-    const actor = this.actorsManager.getActor(actorId);
+  createMessage(sender, type, message) {
+    new ChatMessageController(sender, type, message);
+  }
 
-    const message = document.createElement("div");
-    const avatar = document.createElement("div");
-    const content = document.createElement("div");
-    const author = document.createElement("p");
-    const textContainer = document.createElement("div");
-    const text = document.createElement("p");
-    const time = document.createElement("p");
+  createBubble(sender, message) {
+    const bubble = new ChatBubbleController(this, sender, message);
 
-    if (actor) {
-      // Message is from actor
-      message.classList = "flex items-start space-x-2";
-      avatar.classList = "w-8 h-8 rounded-full bg-gray-700 flex-shrink-0";
-      author.classList = "text-sm text-gray-400";
-      textContainer.classList = "bg-gray-800 p-3 rounded-lg shadow-sm max-w-xs";
-      text.classList = "text-gray-200 chat-text-container";
-      time.classList = "text-xs text-gray-500 mt-1";
-
-      message.appendChild(avatar);
-
-      author.innerText = actor.username;
-      content.appendChild(author);
-    } else {
-      // Message is from current player
-      avatar.classList = "w-8 h-8 rounded-full bg-blue-500 flex-shrink-0";
-      message.classList = 'flex items-start space-x-2 justify-end';
-      textContainer.classList = "bg-blue-600 text-white p-3 rounded-lg shadow-sm max-w-xs";
-      text.classList = "text-gray-200 chat-text-container";
-      time.classList = "text-xs text-gray-500 mt-1 text-right";
+    if (!this.bubbles.has(sender.id)) {
+      this.bubbles.set(sender.id, []);
     }
 
-    text.innerText = chatMessage;
-    time.innerText = new Date().toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    });
-
-    textContainer.appendChild(text);
-    content.appendChild(textContainer);
-    content.appendChild(time);
-    message.appendChild(content);
-
-    if (!actor) {
-      message.appendChild(avatar);
-    }
-
-    const chatContainer = document.querySelector("#chat-container")
-    chatContainer.appendChild(message);
-
-    chatContainer.scrollTo({
-      top: chatContainer.scrollHeight,
-      behavior: 'smooth'
-    });
+    this.bubbles.get(sender.id).push(bubble);
   }
 
   sendMessage() {
@@ -131,8 +85,8 @@ export default class ChatManager {
 
     let chatType = document.querySelector("#chat-type").value;
 
-    this.appendMessage(0, message);
-    this.bubbleManager.showBubble(0, message);
+    this.createMessage(this.scene.player, CHAT_TYPE.SAY, message);
+    this.createBubble(this.scene.player, message);
 
     const packet = new ChatMsgPacket();
 

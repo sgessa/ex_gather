@@ -90,7 +90,7 @@ export default class GameScene extends Phaser.Scene {
     this.socketManager.channel.on("player_chat", data => {
       const packet = new ChatMsgPacket();
       const { player_id, type, msg } = packet.parse(data);
-      this.chatManager.receiveMessage(player_id, type, msg);
+      this.chatManager.handleMessage(player_id, type, msg);
     });
 
     // WebRTC peer negotiation

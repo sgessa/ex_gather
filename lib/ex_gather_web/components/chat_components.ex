@@ -21,21 +21,13 @@ defmodule ExGatherWeb.ChatComponents do
 
   def chat_dm_sidebar(assigns) do
     ~H"""
-    <div
-      id="avatar-sidebar"
-      class="w-14 bg-gray-800 border-r border-gray-700 flex flex-col items-center py-3 space-y-3 overflow-y-auto sm:w-16"
-    >
-      <div class="flex flex-col space-y-2">
-        <div class="relative chat-dm" data-dest="-1">
-          <img
-            src="https://via.placeholder.com/40"
-            alt="Public"
-            class="w-8 h-8 sm:w-10 sm:h-10 rounded-full cursor-pointer hover:ring-2 hover:ring-blue-500"
-            title="Public"
-          />
-          <span class="absolute bottom-0 right-0 w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full border-2 border-gray-800">
-          </span>
-        </div>
+    <div class="w-14 bg-gray-800 border-r border-gray-700 flex flex-col items-center py-3 space-y-3 overflow-y-auto sm:w-16">
+      <div class="flex flex-col space-y-2" id="chat-dest-container">
+        <a class="relative chat-dm" data-dest="-1">
+          <div class="w-8 h-8 rounded-full bg-gray-700 flex-shrink-0">
+            PUB
+          </div>
+        </a>
       </div>
     </div>
     """

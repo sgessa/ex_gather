@@ -1,7 +1,8 @@
 import ChatMsgPacket from "../packets/chat_msg_packet";
-import { CHAT_TYPE, PUBLIC_DEST } from "../const/chat_const";
 import ChatMessageController from "../controllers/chat/chat_message_controller.js";
 import ChatBubbleController from "../controllers/chat/chat_bubble_controller.js";
+import ChatDestController from "../controllers/chat/chat_dest_controller.js";
+import { CHAT_TYPE, PUBLIC_DEST } from "../const/chat_const";
 export default class ChatManager {
   constructor(scene) {
     this.scene = scene;
@@ -12,9 +13,27 @@ export default class ChatManager {
 
     this.bubbles = new Map();
     this.messages = new Map();
+    this.dests = {};
     this.messages.set(this.currentDest, []);
 
     this.hook();
+  }
+
+  init() {
+    for (let actor of Object.values(this.actorsManager.actors)) {
+      this.dests[actor.id] = new ChatDestController(this, actor);
+      this.messages.set(actor.id, []);
+    }
+  }
+
+  addDest(id) {
+    if (this.dests[id]) return;
+    const actor = this.actorsManager.getActor(id);
+    this.dests[actor.id] = new ChatDestController(this, actor);
+
+    if (!this.messages.has(id)) {
+      this.messages.set(id, []);
+    }
   }
 
   hook() {
@@ -40,7 +59,7 @@ export default class ChatManager {
       this.toggle();
     });
 
-    document.querySelector(".chat-dm").addEventListener('click', (event) => {
+    document.querySelector(".chat-dm[data-dest='-1']").addEventListener('click', (event) => {
       const dest = event.currentTarget.dataset.dest;
       this.toggleDest(dest);
     });
@@ -91,7 +110,7 @@ export default class ChatManager {
         this.createBubble(sender, chatMessage);
         break;
       case CHAT_TYPE.WHISPER:
-        this.createMessage(sender, sender, chatType, chatMessage);
+        this.createMessage(sender, sender.id, chatMessage);
         break;
     }
   }
@@ -134,13 +153,16 @@ export default class ChatManager {
     ));
 
     this.createMessage(this.scene.player, this.currentDest, message);
-    this.createBubble(this.scene.player, message);
+
+    if (chatType !== CHAT_TYPE.WHISPER) {
+      this.createBubble(this.scene.player, message);
+    }
 
     input.value = "";
   }
 
   getChatType() {
-    if (this.currentDest) {
+    if (this.currentDest != PUBLIC_DEST) {
       return CHAT_TYPE.WHISPER;
     } else {
       return document.querySelector("#chat-type").value;

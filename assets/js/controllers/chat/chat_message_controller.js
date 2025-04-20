@@ -17,7 +17,7 @@ export default class ChatMessageController {
     const text = document.createElement("p");
     const time = document.createElement("p");
 
-    if (typeof this.sender == ActorController) {
+    if (this.sender.isActor) {
       // Message is from actor
       message.classList = "flex items-start space-x-2";
       avatar.classList = "w-8 h-8 rounded-full bg-gray-700 flex-shrink-0";

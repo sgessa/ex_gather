@@ -63,12 +63,14 @@ export default class GameScene extends Phaser.Scene {
     this.socketManager.channel.on("room_state", data => {
       const packet = new RoomStatePacket(data);
       this.actorsManager.init(packet.parse());
+      this.chatManager.init();
       this.rtcManager = new ExRTCManager(this);
     });
 
     this.socketManager.channel.on("player_join", data => {
-      const packet = new PlayerPacket(data);
-      this.actorsManager.spawn(packet.parse());
+      const packet = new PlayerPacket(data).parse();
+      this.actorsManager.spawn(packet);
+      this.chatManager.addDest(packet.id);
     });
 
     this.socketManager.channel.on("player_left", data => {

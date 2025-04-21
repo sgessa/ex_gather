@@ -2,7 +2,6 @@ defmodule ExGather.Room.RTC do
   require Logger
 
   alias ExWebRTC.{
-    ICECandidate,
     MediaStreamTrack,
     PeerConnection,
     RTPCodecParameters,
@@ -100,7 +99,6 @@ defmodule ExGather.Room.RTC do
   #
 
   def handle_offer(pc, offer) do
-    offer = SessionDescription.from_json(offer)
     :ok = PeerConnection.set_remote_description(pc, offer)
 
     {:ok, answer} = PeerConnection.create_answer(pc)
@@ -109,9 +107,8 @@ defmodule ExGather.Room.RTC do
     {:ok, SessionDescription.to_json(answer)}
   end
 
-  def handle_ice(pc, ice) do
+  def handle_ice(pc, candidate) do
     if pc && Process.alive?(pc) do
-      candidate = ICECandidate.from_json(ice)
       PeerConnection.add_ice_candidate(pc, candidate)
     end
 

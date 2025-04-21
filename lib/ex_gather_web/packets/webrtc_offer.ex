@@ -3,7 +3,6 @@ defmodule ExGatherWeb.Packets.WebrtcOffer do
 
   def parse(packet) do
     {sdp, _packet} = PacketReader.string(packet)
-
-    %{"type" => "offer", "sdp" => sdp}
+    struct(ExWebRTC.SessionDescription, %{type: :offer, sdp: sdp})
   end
 end

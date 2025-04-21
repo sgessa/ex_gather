@@ -121,8 +121,8 @@ defmodule ExGatherWeb.RoomChannelTest do
   describe "exrtc_offer" do
     test "handles WebRTC offer", %{socket: socket} do
       player_id = @player.id
-      offer = %{"type" => "offer", "sdp" => "long sdp string"}
-      packet = PacketWriter.build() |> PacketWriter.string(offer["sdp"])
+      offer = %ExWebRTC.SessionDescription{type: :offer, sdp: "long sdp string"}
+      packet = PacketWriter.build() |> PacketWriter.string(offer.sdp)
 
       expect(Room.RTC.start_peer(), do: {:ok, "rtc_pid"})
 
@@ -163,8 +163,8 @@ defmodule ExGatherWeb.RoomChannelTest do
       player_id = @player.id
 
       params = %{
-        "rtc_audio_enabled" => true,
-        "rtc_camera_enabled" => false
+        rtc_audio_enabled: true,
+        rtc_camera_enabled: false
       }
 
       <<_::little-unsigned-integer-size(64), packet::binary>> =

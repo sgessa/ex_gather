@@ -14,8 +14,8 @@ defmodule ExGatherWeb.Packets.WebrtcToggleStream do
     {camera_enabled, _packet} = PacketReader.bool(packet)
 
     %{
-      "rtc_audio_enabled" => audio_enabled,
-      "rtc_camera_enabled" => camera_enabled
+      rtc_audio_enabled: audio_enabled,
+      rtc_camera_enabled: camera_enabled
     }
   end
 end

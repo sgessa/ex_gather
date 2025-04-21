@@ -115,8 +115,8 @@ defmodule ExGatherWeb.RoomChannel do
     packet =
       Packets.WebrtcToggleStream.build(
         sender.id,
-        params["rtc_audio_enabled"],
-        params["rtc_camera_enabled"]
+        params.rtc_audio_enabled,
+        params.rtc_camera_enabled
       )
 
     broadcast_from!(socket, "exrtc_toggle_stream", {:binary, packet})

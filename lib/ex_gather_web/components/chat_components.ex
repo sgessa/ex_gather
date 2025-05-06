@@ -1,6 +1,8 @@
 defmodule ExGatherWeb.ChatComponents do
   use Phoenix.Component
 
+  import ExGatherWeb.CoreComponents, only: [icon: 1]
+
   def chat_header(assigns) do
     ~H"""
     <div class="bg-gray-800 text-white p-4 flex justify-between items-center">
@@ -24,8 +26,8 @@ defmodule ExGatherWeb.ChatComponents do
     <div class="w-14 bg-gray-800 border-r border-gray-700 flex flex-col items-center py-3 space-y-3 overflow-y-auto sm:w-16">
       <div class="flex flex-col space-y-2" id="chat-dest-container">
         <a class="relative chat-dm" data-dest="-1">
-          <div class="w-8 h-8 rounded-full bg-gray-700 flex-shrink-0">
-            PUB
+          <div class="w-8 h-8 rounded-full bg-gray-700 flex-shrink-0 chat-dest-active">
+            <.icon name="hero-megaphone" />
           </div>
         </a>
       </div>

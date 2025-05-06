@@ -13,7 +13,7 @@ export default class ChatDestController {
     dest.dataset.dest = this.dest.id;
 
     avatar.classList = "w-8 h-8 rounded-full bg-gray-700 flex-shrink-0"
-    avatar.innerText = this.dest.id;
+    avatar.innerText = this.dest.username[0].toUpperCase();
     dest.appendChild(avatar);
 
     document.querySelector("#chat-dest-container").appendChild(dest);
@@ -23,5 +23,9 @@ export default class ChatDestController {
     });
 
     return dest;
+  }
+
+  remove() {
+    this.element.remove();
   }
 }

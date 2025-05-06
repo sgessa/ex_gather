@@ -36,6 +36,18 @@ export default class ChatManager {
     }
   }
 
+  removeDest(id) {
+    if (!this.dests[id]) return;
+
+    if (this.currentDest == id) {
+      this.toggleDest(PUBLIC_DEST);
+    }
+
+    this.messages.set(id, []);
+    this.dests[id].remove();
+    delete this.dests[id];
+  }
+
   hook() {
     document.querySelector("#chat-send-btn").addEventListener('click', (event) => {
       event.preventDefault();
@@ -77,6 +89,15 @@ export default class ChatManager {
     }
 
     this.currentDest = parseInt(dest);
+
+    document.querySelector('.chat-dest-active').classList.remove('chat-dest-active');
+    document.querySelector(`.chat-dm[data-dest='${dest}'] div`).classList.add('chat-dest-active');
+
+    if (this.currentDest == PUBLIC_DEST) {
+      document.querySelector("#chat-type").classList.remove("hidden");
+    } else {
+      document.querySelector("#chat-type").classList.add("hidden");
+    }
 
     for (let message of this.messages.get(this.currentDest)) {
       message.show();

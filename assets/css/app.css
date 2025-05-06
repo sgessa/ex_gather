@@ -105,3 +105,17 @@
   vertical-align: middle;
   height: 100%;
 }
+
+.chat-dm>div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0px !important;
+  margin: 0px !important;
+  background: #fff;
+  cursor: pointer;
+}
+
+.chat-dest-active {
+  border: 3px solid green;
+}

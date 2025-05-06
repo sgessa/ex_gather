@@ -23,6 +23,12 @@ defmodule ExGatherWeb.PacketReader do
     {value, rest}
   end
 
+  @spec int64(binary()) :: {integer(), binary()}
+  def int64(packet) do
+    <<value::little-signed-integer-size(64), rest::binary>> = packet
+    {value, rest}
+  end
+
   @spec bool(binary()) :: {boolean(), binary()}
   def bool(packet) do
     <<value::little-unsigned-integer-size(8), rest::binary>> = packet

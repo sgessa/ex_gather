@@ -28,6 +28,12 @@ export default class PacketReader {
     return value;
   }
 
+  readInt64() {
+    const value = this.view.getBigInt64(this.offset, true);
+    this.offset += 8;
+    return value;
+  }
+
   readBool() {
     const value = this.view.getUint8(this.offset);
     this.offset += 1;

@@ -29,6 +29,11 @@ defmodule ExGatherWeb.RoomChannel do
     {:noreply, socket}
   end
 
+  def handle_info({:broadcast, event, packet}, socket) do
+    broadcast_from(socket, event, {:binary, packet})
+    {:noreply, socket}
+  end
+
   def handle_info({:ex_webrtc, _from, msg}, socket) do
     handle_exrtc(msg, socket)
   end
@@ -73,13 +78,11 @@ defmodule ExGatherWeb.RoomChannel do
   end
 
   def handle_in("player_chat", {:binary, packet}, socket) do
+    room_server = socket.assigns.room_server
     player = socket.assigns.player
 
-    # Broadcast to all other players in the room
-    %{type: type, msg: msg} = Packets.ChatMsg.parse(packet)
-    packet = Packets.ChatMsg.build(player.id, type, msg)
-
-    broadcast_from!(socket, "player_chat", {:binary, packet})
+    %{type: type, msg: msg, dest: dest} = Packets.ChatMsg.parse(packet)
+    Room.Server.cast(room_server, {:player_chat, player.id, dest, type, msg})
 
     {:reply, :ok, socket}
   end

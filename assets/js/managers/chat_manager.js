@@ -1,18 +1,51 @@
-import ChatBubbleManager from "./chat/chat_bubble_manager.js";
 import ChatMsgPacket from "../packets/chat_msg_packet";
-
+import ChatMessageController from "../controllers/chat/chat_message_controller.js";
+import ChatBubbleController from "../controllers/chat/chat_bubble_controller.js";
+import ChatDestController from "../controllers/chat/chat_dest_controller.js";
+import { CHAT_TYPE, PUBLIC_DEST } from "../const/chat_const";
 export default class ChatManager {
   constructor(scene) {
-    this.chatType = {
-      SAY: 0,
-      MEGAPHONE: 1,
-      WHISPER: 2
-    };
-
+    this.scene = scene;
     this.actorsManager = scene.actorsManager;
     this.socketManager = scene.socketManager;
-    this.bubbleManager = new ChatBubbleManager(scene);
+
+    this.currentDest = PUBLIC_DEST;
+
+    this.bubbles = new Map();
+    this.messages = new Map();
+    this.dests = {};
+    this.messages.set(this.currentDest, []);
+
     this.hook();
+  }
+
+  init() {
+    for (let actor of Object.values(this.actorsManager.actors)) {
+      this.dests[actor.id] = new ChatDestController(this, actor);
+      this.messages.set(actor.id, []);
+    }
+  }
+
+  addDest(id) {
+    if (this.dests[id]) return;
+    const actor = this.actorsManager.getActor(id);
+    this.dests[actor.id] = new ChatDestController(this, actor);
+
+    if (!this.messages.has(id)) {
+      this.messages.set(id, []);
+    }
+  }
+
+  removeDest(id) {
+    if (!this.dests[id]) return;
+
+    if (this.currentDest == id) {
+      this.toggleDest(PUBLIC_DEST);
+    }
+
+    this.messages.set(id, []);
+    this.dests[id].remove();
+    delete this.dests[id];
   }
 
   hook() {
@@ -38,6 +71,11 @@ export default class ChatManager {
       this.toggle();
     });
 
+    document.querySelector(".chat-dm[data-dest='-1']").addEventListener('click', (event) => {
+      const dest = event.currentTarget.dataset.dest;
+      this.toggleDest(dest);
+    });
+
     document.querySelector("#chat-toggle-btn").classList.remove('hidden');
   }
 
@@ -45,78 +83,31 @@ export default class ChatManager {
     document.querySelector('#chat-sidebar').classList.toggle('translate-x-full');
   }
 
-  receiveMessage(actorId, chatType, chatMessage) {
-    const sender = this.actorsManager.getActor(actorId);
-    if (!sender) return;
-
-    switch (chatType) {
-      case this.chatType.SAY:
-        if (sender?.proximityController?.inProximity) {
-          this.appendMessage(actorId, chatMessage);
-          this.bubbleManager.showBubble(actorId, chatMessage);
-        }
-        break;
-      case this.chatType.MEGAPHONE:
-        this.appendMessage(actorId, chatMessage);
-        this.bubbleManager.showBubble(actorId, chatMessage);
-        break;
-      case this.chatType.WHISPER:
-        // TODO
-        break;
+  toggleDest(dest) {
+    for (let message of this.messages.get(this.currentDest)) {
+      message.hide();
     }
+
+    this.currentDest = parseInt(dest);
+
+    document.querySelector('.chat-dest-active').classList.remove('chat-dest-active');
+    document.querySelector(`.chat-dm[data-dest='${dest}'] div`).classList.add('chat-dest-active');
+
+    if (this.currentDest == PUBLIC_DEST) {
+      document.querySelector("#chat-type").classList.remove("hidden");
+    } else {
+      document.querySelector("#chat-type").classList.add("hidden");
+    }
+
+    for (let message of this.messages.get(this.currentDest)) {
+      message.show();
+    }
+
+    this.scrollDown();
   }
 
-  appendMessage(actorId, chatMessage) {
-    const actor = this.actorsManager.getActor(actorId);
-
-    const message = document.createElement("div");
-    const avatar = document.createElement("div");
-    const content = document.createElement("div");
-    const author = document.createElement("p");
-    const textContainer = document.createElement("div");
-    const text = document.createElement("p");
-    const time = document.createElement("p");
-
-    if (actor) {
-      // Message is from actor
-      message.classList = "flex items-start space-x-2";
-      avatar.classList = "w-8 h-8 rounded-full bg-gray-700 flex-shrink-0";
-      author.classList = "text-sm text-gray-400";
-      textContainer.classList = "bg-gray-800 p-3 rounded-lg shadow-sm max-w-xs";
-      text.classList = "text-gray-200 chat-text-container";
-      time.classList = "text-xs text-gray-500 mt-1";
-
-      message.appendChild(avatar);
-
-      author.innerText = actor.username;
-      content.appendChild(author);
-    } else {
-      // Message is from current player
-      avatar.classList = "w-8 h-8 rounded-full bg-blue-500 flex-shrink-0";
-      message.classList = 'flex items-start space-x-2 justify-end';
-      textContainer.classList = "bg-blue-600 text-white p-3 rounded-lg shadow-sm max-w-xs";
-      text.classList = "text-gray-200 chat-text-container";
-      time.classList = "text-xs text-gray-500 mt-1 text-right";
-    }
-
-    text.innerText = chatMessage;
-    time.innerText = new Date().toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false
-    });
-
-    textContainer.appendChild(text);
-    content.appendChild(textContainer);
-    content.appendChild(time);
-    message.appendChild(content);
-
-    if (!actor) {
-      message.appendChild(avatar);
-    }
-
+  scrollDown() {
     const chatContainer = document.querySelector("#chat-container")
-    chatContainer.appendChild(message);
 
     chatContainer.scrollTo({
       top: chatContainer.scrollHeight,
@@ -124,21 +115,78 @@ export default class ChatManager {
     });
   }
 
+  handleMessage(actorId, chatType, chatMessage) {
+    const sender = this.actorsManager.getActor(actorId);
+    if (!sender) return;
+
+    switch (chatType) {
+      case CHAT_TYPE.SAY:
+        if (sender?.proximityController?.inProximity) {
+          this.createMessage(sender, PUBLIC_DEST, chatMessage);
+          this.createBubble(sender, chatMessage);
+        }
+        break;
+      case CHAT_TYPE.MEGAPHONE:
+        this.createMessage(sender, PUBLIC_DEST, chatMessage);
+        this.createBubble(sender, chatMessage);
+        break;
+      case CHAT_TYPE.WHISPER:
+        this.createMessage(sender, sender.id, chatMessage);
+        break;
+    }
+  }
+
+  createMessage(sender, chatDest, chatMessage) {
+    const message = new ChatMessageController(sender, chatMessage);
+
+    if (!this.messages.has(chatDest)) {
+      this.messages.set(chatDest, []);
+    }
+
+    this.messages.get(chatDest).push(message);
+
+    if (this.currentDest == chatDest) {
+      message.show();
+      this.scrollDown();
+    }
+  }
+
+  createBubble(sender, message) {
+    const bubble = new ChatBubbleController(this, sender, message);
+
+    if (!this.bubbles.has(sender.id)) {
+      this.bubbles.set(sender.id, []);
+    }
+
+    this.bubbles.get(sender.id).push(bubble);
+  }
+
   sendMessage() {
-    let input = document.querySelector("#chat-input");
+    const input = document.querySelector("#chat-input");
+    const chatType = this.getChatType();
     const message = input.value;
-    input.value = "";
-
-    let chatType = document.querySelector("#chat-type").value;
-
-    this.appendMessage(0, message);
-    this.bubbleManager.showBubble(0, message);
 
     const packet = new ChatMsgPacket();
-
     this.socketManager.push("player_chat", packet.build(
       parseInt(chatType),
+      this.currentDest,
       message
     ));
+
+    this.createMessage(this.scene.player, this.currentDest, message);
+
+    if (chatType !== CHAT_TYPE.WHISPER) {
+      this.createBubble(this.scene.player, message);
+    }
+
+    input.value = "";
+  }
+
+  getChatType() {
+    if (this.currentDest != PUBLIC_DEST) {
+      return CHAT_TYPE.WHISPER;
+    } else {
+      return document.querySelector("#chat-type").value;
+    }
   }
 }

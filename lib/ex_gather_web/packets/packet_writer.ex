@@ -4,6 +4,11 @@ defmodule ExGatherWeb.PacketWriter do
     <<>>
   end
 
+  @spec int64(binary(), integer()) :: binary()
+  def int64(packet, value) do
+    <<packet::bytes, value::little-signed-integer-size(64)>>
+  end
+
   @spec uint64(binary(), integer()) :: binary()
   def uint64(packet, value) do
     <<packet::bytes, value::little-unsigned-integer-size(64)>>

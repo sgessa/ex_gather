@@ -249,4 +249,42 @@ defmodule ExGather.Rooms.ServerTest do
       {:noreply, _state} = cast({:exrtc_send_rtp, @player_id, "audio-id", "rtp-packet"}, state)
     end
   end
+
+  describe "player_chat" do
+    test "ok - public chat", %{server_state: state} do
+      state =
+        put_in(state.players, %{
+          1 => %Player{id: 1, socket_pid: self()},
+          2 => %Player{id: 2, socket_pid: nil}
+        })
+
+      sender_id = 1
+      msg_type = 0
+      dest_id = -1
+      msg = "Hello, world"
+
+      {:noreply, _state} = cast({:player_chat, sender_id, dest_id, msg_type, msg}, state)
+
+      packet = Packets.ChatMsg.build(sender_id, msg_type, msg)
+      assert_receive {:broadcast, "player_chat", ^packet}
+    end
+
+    test "ok - whisper", %{server_state: state} do
+      state =
+        put_in(state.players, %{
+          1 => %Player{id: 1, socket_pid: nil},
+          2 => %Player{id: 2, socket_pid: self()}
+        })
+
+      sender_id = 1
+      msg_type = 2
+      dest_id = 2
+      msg = "Hello, world"
+
+      {:noreply, _state} = cast({:player_chat, sender_id, dest_id, msg_type, msg}, state)
+
+      packet = Packets.ChatMsg.build(sender_id, msg_type, msg)
+      assert_receive {:push, "player_chat", ^packet}
+    end
+  end
 end

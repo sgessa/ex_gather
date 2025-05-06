@@ -451,7 +451,7 @@ function find(y) {
         
           
             <li>
-              <span class='cov high'>90.9</span>
+              <span class='cov high'>92.0</span>
               <a href='#lib/ex_gather/room/server.ex'>
                 
                 
@@ -529,7 +529,7 @@ function find(y) {
         
           
             <li>
-              <span class='cov high'>98.3</span>
+              <span class='cov high'>96.7</span>
               <a href='#lib/ex_gather_web/channels/room_channel.ex'>
                 
                 
@@ -549,6 +549,19 @@ function find(y) {
                   <span class='dirname'>lib/ex_gather_web/channels/</span>
                 
                 <span class='basename'>user_socket.ex</span>
+              </a>
+            </li>
+          
+        
+          
+            <li>
+              <span class='cov high'>100.0</span>
+              <a href='#lib/ex_gather_web/components/chat_components.ex'>
+                
+                
+                  <span class='dirname'>lib/ex_gather_web/components/</span>
+                
+                <span class='basename'>chat_components.ex</span>
               </a>
             </li>
           
@@ -724,7 +737,7 @@ function find(y) {
         
           
             <li>
-              <span class='cov high'>90.9</span>
+              <span class='cov high'>91.6</span>
               <a href='#lib/ex_gather_web/packets/packet_reader.ex'>
                 
                 
@@ -1011,10 +1024,10 @@ function find(y) {
       </div>
 
       <div id='stats' class='high'>
-        <div class='percentage'>80.3</div>
-        <div class='sloc'>504</div>
-        <div class='hits'>3867</div>
-        <div class='misses'>99</div>
+        <div class='percentage'>80.7</div>
+        <div class='sloc'>520</div>
+        <div class='hits'>3945</div>
+        <div class='misses'>100</div>
       </div>
       <div id='files'>
         
@@ -1468,8 +1481,8 @@ function find(y) {
               <h2 id='lib/ex_gather/room/handler.ex'>lib/ex_gather/room/handler.ex</h2>
               <div id='stats' class='high'>
                 <div class='percentage'>100.0</div>
-                <div class='sloc'>25</div>
-                <div class='hits'>78</div>
+                <div class='sloc'>29</div>
+                <div class='hits'>82</div>
                 <div class='misses'>0</div>
               </div>
               <table id='source'>
@@ -2308,6 +2321,158 @@ function find(y) {
                     
                         <tr>
                           <td class='line'>103</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>104</td>
+                          <td class='hits'></td>
+                          <td class='source'>  #</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>105</td>
+                          <td class='hits'></td>
+                          <td class='source'>  # Handle Chat Message</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>106</td>
+                          <td class='hits'></td>
+                          <td class='source'>  #</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>107</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>108</td>
+                          <td class='hits'></td>
+                          <td class='source'>  @whisper 2</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>109</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def handle_chat(%Player{} = sender, %Player{} = dest, @whisper, msg) do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>110</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    packet = Packets.ChatMsg.build(sender.id, @whisper, msg)</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>111</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    send(dest.socket_pid, {:push, &quot;player_chat&quot;, packet})</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>112</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>113</td>
+                          <td class='hits'></td>
+                          <td class='source'>    :ok</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>114</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>115</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>116</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def handle_chat(%Player{} = sender, _dest, type, msg) do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>117</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    packet = Packets.ChatMsg.build(sender.id, type, msg)</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>118</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    send(sender.socket_pid, {:broadcast, &quot;player_chat&quot;, packet})</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>119</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>120</td>
+                          <td class='hits'></td>
+                          <td class='source'>    :ok</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>121</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>122</td>
                           <td class='hits'></td>
                           <td class='source'>end</td>
                         </tr>
@@ -3831,9 +3996,9 @@ function find(y) {
             <div class='file'>
               <h2 id='lib/ex_gather/room/server.ex'>lib/ex_gather/room/server.ex</h2>
               <div id='stats' class='high'>
-                <div class='percentage'>90.9</div>
-                <div class='sloc'>22</div>
-                <div class='hits'>54</div>
+                <div class='percentage'>92.0</div>
+                <div class='sloc'>25</div>
+                <div class='hits'>62</div>
                 <div class='misses'>2</div>
               </div>
               <table id='source'>
@@ -4000,7 +4165,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>19</td>
-                          <td class='hits'>10</td>
+                          <td class='hits'>12</td>
                           <td class='source'>  def init(_args) do</td>
                         </tr>
                       
@@ -4217,21 +4382,29 @@ function find(y) {
                         <tr>
                           <td class='line'>46</td>
                           <td class='hits'></td>
-                          <td class='source'>  def handle_cast({:exrtc_offer, id, rtc_pid, offer}, state) do</td>
+                          <td class='source'>  def handle_cast({:player_chat, id, dest_id, type, msg}, state) do</td>
                         </tr>
                     
                   
                     
                         <tr class='hit'>
                           <td class='line'>47</td>
-                          <td class='hits'>7</td>
+                          <td class='hits'>2</td>
                           <td class='source'>    sender = state.players[id]</td>
                         </tr>
                       
                   
                     
-                        <tr>
+                        <tr class='hit'>
                           <td class='line'>48</td>
+                          <td class='hits'>2</td>
+                          <td class='source'>    dest = state.players[dest_id]</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>49</td>
                           <td class='hits'></td>
                           <td class='source'></td>
                         </tr>
@@ -4239,17 +4412,9 @@ function find(y) {
                   
                     
                         <tr class='hit'>
-                          <td class='line'>49</td>
-                          <td class='hits'>7</td>
-                          <td class='source'>    {:ok, players} = Handler.handle_rtc_offer(sender, rtc_pid, offer, state.players)</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr class='hit'>
                           <td class='line'>50</td>
-                          <td class='hits'>7</td>
-                          <td class='source'>    {:noreply, put_in(state.players, players)}</td>
+                          <td class='hits'>2</td>
+                          <td class='source'>    :ok = Handler.handle_chat(sender, dest, type, msg)</td>
                         </tr>
                       
                   
@@ -4257,7 +4422,7 @@ function find(y) {
                         <tr>
                           <td class='line'>51</td>
                           <td class='hits'></td>
-                          <td class='source'>  end</td>
+                          <td class='source'></td>
                         </tr>
                     
                   
@@ -4265,7 +4430,7 @@ function find(y) {
                         <tr>
                           <td class='line'>52</td>
                           <td class='hits'></td>
-                          <td class='source'></td>
+                          <td class='source'>    {:noreply, state}</td>
                         </tr>
                     
                   
@@ -4273,13 +4438,85 @@ function find(y) {
                         <tr>
                           <td class='line'>53</td>
                           <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>54</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>55</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def handle_cast({:exrtc_offer, id, rtc_pid, offer}, state) do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>56</td>
+                          <td class='hits'>7</td>
+                          <td class='source'>    sender = state.players[id]</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>57</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>58</td>
+                          <td class='hits'>7</td>
+                          <td class='source'>    {:ok, players} = Handler.handle_rtc_offer(sender, rtc_pid, offer, state.players)</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>59</td>
+                          <td class='hits'>7</td>
+                          <td class='source'>    {:noreply, put_in(state.players, players)}</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>60</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>61</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>62</td>
+                          <td class='hits'></td>
                           <td class='source'>  def handle_cast({:exrtc_ice, id, ice_candidate}, state) do</td>
                         </tr>
                     
                   
                     
                         <tr class='hit'>
-                          <td class='line'>54</td>
+                          <td class='line'>63</td>
                           <td class='hits'>1</td>
                           <td class='source'>    player = state.players[id]</td>
                         </tr>
@@ -4287,7 +4524,7 @@ function find(y) {
                   
                     
                         <tr class='hit'>
-                          <td class='line'>55</td>
+                          <td class='line'>64</td>
                           <td class='hits'>1</td>
                           <td class='source'>    :ok = Handler.handle_rtc_ice(player, ice_candidate)</td>
                         </tr>
@@ -4295,7 +4532,7 @@ function find(y) {
                   
                     
                         <tr>
-                          <td class='line'>56</td>
+                          <td class='line'>65</td>
                           <td class='hits'></td>
                           <td class='source'></td>
                         </tr>
@@ -4303,7 +4540,7 @@ function find(y) {
                   
                     
                         <tr>
-                          <td class='line'>57</td>
+                          <td class='line'>66</td>
                           <td class='hits'></td>
                           <td class='source'>    {:noreply, state}</td>
                         </tr>
@@ -4311,7 +4548,7 @@ function find(y) {
                   
                     
                         <tr>
-                          <td class='line'>58</td>
+                          <td class='line'>67</td>
                           <td class='hits'></td>
                           <td class='source'>  end</td>
                         </tr>
@@ -4319,7 +4556,7 @@ function find(y) {
                   
                     
                         <tr>
-                          <td class='line'>59</td>
+                          <td class='line'>68</td>
                           <td class='hits'></td>
                           <td class='source'></td>
                         </tr>
@@ -4327,7 +4564,7 @@ function find(y) {
                   
                     
                         <tr>
-                          <td class='line'>60</td>
+                          <td class='line'>69</td>
                           <td class='hits'></td>
                           <td class='source'>  def handle_cast({:exrtc_send_rtp, id, client_track_id, packet}, state) do</td>
                         </tr>
@@ -4335,7 +4572,7 @@ function find(y) {
                   
                     
                         <tr class='hit'>
-                          <td class='line'>61</td>
+                          <td class='line'>70</td>
                           <td class='hits'>2</td>
                           <td class='source'>    sender = state.players[id]</td>
                         </tr>
@@ -4343,7 +4580,7 @@ function find(y) {
                   
                     
                         <tr class='hit'>
-                          <td class='line'>62</td>
+                          <td class='line'>71</td>
                           <td class='hits'>2</td>
                           <td class='source'>    :ok = Handler.handle_rtc_send_rtp(sender, client_track_id, packet, state.players)</td>
                         </tr>
@@ -4351,7 +4588,7 @@ function find(y) {
                   
                     
                         <tr>
-                          <td class='line'>63</td>
+                          <td class='line'>72</td>
                           <td class='hits'></td>
                           <td class='source'></td>
                         </tr>
@@ -4359,7 +4596,7 @@ function find(y) {
                   
                     
                         <tr>
-                          <td class='line'>64</td>
+                          <td class='line'>73</td>
                           <td class='hits'></td>
                           <td class='source'>    {:noreply, state}</td>
                         </tr>
@@ -4367,7 +4604,7 @@ function find(y) {
                   
                     
                         <tr>
-                          <td class='line'>65</td>
+                          <td class='line'>74</td>
                           <td class='hits'></td>
                           <td class='source'>  end</td>
                         </tr>
@@ -4375,7 +4612,7 @@ function find(y) {
                   
                     
                         <tr>
-                          <td class='line'>66</td>
+                          <td class='line'>75</td>
                           <td class='hits'></td>
                           <td class='source'>end</td>
                         </tr>
@@ -4392,7 +4629,7 @@ function find(y) {
               <div id='stats' class='high'>
                 <div class='percentage'>100.0</div>
                 <div class='sloc'>23</div>
-                <div class='hits'>795</div>
+                <div class='hits'>827</div>
                 <div class='misses'>0</div>
               </div>
               <table id='source'>
@@ -4439,7 +4676,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>4</td>
-                          <td class='hits'>676</td>
+                          <td class='hits'>708</td>
                           <td class='source'>  schema &quot;users&quot; do</td>
                         </tr>
                       
@@ -6841,10 +7078,10 @@ function find(y) {
             <div class='file'>
               <h2 id='lib/ex_gather_web/channels/room_channel.ex'>lib/ex_gather_web/channels/room_channel.ex</h2>
               <div id='stats' class='high'>
-                <div class='percentage'>98.3</div>
-                <div class='sloc'>61</div>
+                <div class='percentage'>96.7</div>
+                <div class='sloc'>62</div>
                 <div class='hits'>161</div>
-                <div class='misses'>1</div>
+                <div class='misses'>2</div>
               </div>
               <table id='source'>
                 <thead>
@@ -7107,15 +7344,15 @@ function find(y) {
                         <tr>
                           <td class='line'>31</td>
                           <td class='hits'></td>
-                          <td class='source'>  def handle_info({:ex_webrtc, _from, msg}, socket) do</td>
+                          <td class='source'>  def handle_info({:broadcast, event, packet}, socket) do</td>
                         </tr>
                     
                   
                     
-                        <tr class='hit'>
+                        <tr class='miss'>
                           <td class='line'>32</td>
-                          <td class='hits'>3</td>
-                          <td class='source'>    handle_exrtc(msg, socket)</td>
+                          <td class='hits'>0</td>
+                          <td class='source'>    broadcast_from(socket, event, {:binary, packet})</td>
                         </tr>
                       
                   
@@ -7123,7 +7360,7 @@ function find(y) {
                         <tr>
                           <td class='line'>33</td>
                           <td class='hits'></td>
-                          <td class='source'>  end</td>
+                          <td class='source'>    {:noreply, socket}</td>
                         </tr>
                     
                   
@@ -7131,39 +7368,39 @@ function find(y) {
                         <tr>
                           <td class='line'>34</td>
                           <td class='hits'></td>
-                          <td class='source'></td>
-                        </tr>
-                    
-                  
-                    
-                        <tr class='miss'>
-                          <td class='line'>35</td>
-                          <td class='hits'>0</td>
-                          <td class='source'>  def handle_info({:DOWN, _pid, :process, _ppid, :normal}, socket) do</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr>
-                          <td class='line'>36</td>
-                          <td class='hits'></td>
-                          <td class='source'>    {:noreply, socket}</td>
-                        </tr>
-                    
-                  
-                    
-                        <tr>
-                          <td class='line'>37</td>
-                          <td class='hits'></td>
                           <td class='source'>  end</td>
                         </tr>
                     
                   
                     
                         <tr>
-                          <td class='line'>38</td>
+                          <td class='line'>35</td>
                           <td class='hits'></td>
                           <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>36</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def handle_info({:ex_webrtc, _from, msg}, socket) do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>37</td>
+                          <td class='hits'>3</td>
+                          <td class='source'>    handle_exrtc(msg, socket)</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>38</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
                         </tr>
                     
                   
@@ -7171,31 +7408,31 @@ function find(y) {
                         <tr>
                           <td class='line'>39</td>
                           <td class='hits'></td>
-                          <td class='source'>  defp handle_exrtc({:ice_candidate, candidate}, socket) do</td>
+                          <td class='source'></td>
                         </tr>
                     
                   
                     
-                        <tr class='hit'>
+                        <tr class='miss'>
                           <td class='line'>40</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    packet = Packets.WebrtcIceCandidate.build(candidate)</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>41</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    push(socket, &quot;exrtc_ice&quot;, {:binary, packet})</td>
+                          <td class='hits'>0</td>
+                          <td class='source'>  def handle_info({:DOWN, _pid, :process, _ppid, :normal}, socket) do</td>
                         </tr>
                       
                   
                     
                         <tr>
+                          <td class='line'>41</td>
+                          <td class='hits'></td>
+                          <td class='source'>    {:noreply, socket}</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
                           <td class='line'>42</td>
                           <td class='hits'></td>
-                          <td class='source'></td>
+                          <td class='source'>  end</td>
                         </tr>
                     
                   
@@ -7203,7 +7440,7 @@ function find(y) {
                         <tr>
                           <td class='line'>43</td>
                           <td class='hits'></td>
-                          <td class='source'>    {:noreply, socket}</td>
+                          <td class='source'></td>
                         </tr>
                     
                   
@@ -7211,61 +7448,37 @@ function find(y) {
                         <tr>
                           <td class='line'>44</td>
                           <td class='hits'></td>
-                          <td class='source'>  end</td>
+                          <td class='source'>  defp handle_exrtc({:ice_candidate, candidate}, socket) do</td>
                         </tr>
                     
                   
                     
-                        <tr>
+                        <tr class='hit'>
                           <td class='line'>45</td>
-                          <td class='hits'></td>
-                          <td class='source'></td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    packet = Packets.WebrtcIceCandidate.build(candidate)</td>
                         </tr>
-                    
+                      
                   
                     
-                        <tr>
+                        <tr class='hit'>
                           <td class='line'>46</td>
-                          <td class='hits'></td>
-                          <td class='source'>  defp handle_exrtc({:rtp, client_track_id, nil, packet}, socket) do</td>
-                        </tr>
-                    
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>47</td>
                           <td class='hits'>1</td>
-                          <td class='source'>    sender = socket.assigns.player</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>48</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    room_server = socket.assigns.room_server</td>
+                          <td class='source'>    push(socket, &quot;exrtc_ice&quot;, {:binary, packet})</td>
                         </tr>
                       
                   
                     
                         <tr>
-                          <td class='line'>49</td>
+                          <td class='line'>47</td>
                           <td class='hits'></td>
                           <td class='source'></td>
                         </tr>
                     
                   
                     
-                        <tr class='hit'>
-                          <td class='line'>50</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    Room.Server.cast(room_server, {:exrtc_send_rtp, sender.id, client_track_id, packet})</td>
-                        </tr>
-                      
-                  
-                    
                         <tr>
-                          <td class='line'>51</td>
+                          <td class='line'>48</td>
                           <td class='hits'></td>
                           <td class='source'>    {:noreply, socket}</td>
                         </tr>
@@ -7273,7 +7486,7 @@ function find(y) {
                   
                     
                         <tr>
-                          <td class='line'>52</td>
+                          <td class='line'>49</td>
                           <td class='hits'></td>
                           <td class='source'>  end</td>
                         </tr>
@@ -7281,7 +7494,39 @@ function find(y) {
                   
                     
                         <tr>
+                          <td class='line'>50</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>51</td>
+                          <td class='hits'></td>
+                          <td class='source'>  defp handle_exrtc({:rtp, client_track_id, nil, packet}, socket) do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>52</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    sender = socket.assigns.player</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
                           <td class='line'>53</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    room_server = socket.assigns.room_server</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>54</td>
                           <td class='hits'></td>
                           <td class='source'></td>
                         </tr>
@@ -7289,25 +7534,17 @@ function find(y) {
                   
                     
                         <tr class='hit'>
-                          <td class='line'>54</td>
+                          <td class='line'>55</td>
                           <td class='hits'>1</td>
-                          <td class='source'>  defp handle_exrtc(_msg, socket), do: {:noreply, socket}</td>
+                          <td class='source'>    Room.Server.cast(room_server, {:exrtc_send_rtp, sender.id, client_track_id, packet})</td>
                         </tr>
                       
                   
                     
                         <tr>
-                          <td class='line'>55</td>
-                          <td class='hits'></td>
-                          <td class='source'></td>
-                        </tr>
-                    
-                  
-                    
-                        <tr>
                           <td class='line'>56</td>
                           <td class='hits'></td>
-                          <td class='source'>  @impl true</td>
+                          <td class='source'>    {:noreply, socket}</td>
                         </tr>
                     
                   
@@ -7315,23 +7552,23 @@ function find(y) {
                         <tr>
                           <td class='line'>57</td>
                           <td class='hits'></td>
-                          <td class='source'>  def handle_in(&quot;player_move&quot;, {:binary, packet}, socket) do</td>
+                          <td class='source'>  end</td>
                         </tr>
                     
                   
                     
-                        <tr class='hit'>
+                        <tr>
                           <td class='line'>58</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    player = socket.assigns.player</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
                         </tr>
-                      
+                    
                   
                     
                         <tr class='hit'>
                           <td class='line'>59</td>
                           <td class='hits'>1</td>
-                          <td class='source'>    room_server = socket.assigns.room_server</td>
+                          <td class='source'>  defp handle_exrtc(_msg, socket), do: {:noreply, socket}</td>
                         </tr>
                       
                   
@@ -7344,34 +7581,34 @@ function find(y) {
                     
                   
                     
-                        <tr class='hit'>
+                        <tr>
                           <td class='line'>61</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    movement = Packets.PlayerMove.parse(packet)</td>
+                          <td class='hits'></td>
+                          <td class='source'>  @impl true</td>
                         </tr>
-                      
+                    
                   
                     
                         <tr>
                           <td class='line'>62</td>
                           <td class='hits'></td>
-                          <td class='source'></td>
-                        </tr>
-                    
-                  
-                    
-                        <tr>
-                          <td class='line'>63</td>
-                          <td class='hits'></td>
-                          <td class='source'>    # Broadcast to all other players in the room</td>
+                          <td class='source'>  def handle_in(&quot;player_move&quot;, {:binary, packet}, socket) do</td>
                         </tr>
                     
                   
                     
                         <tr class='hit'>
+                          <td class='line'>63</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    player = socket.assigns.player</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
                           <td class='line'>64</td>
                           <td class='hits'>1</td>
-                          <td class='source'>    broadcast_from!(</td>
+                          <td class='source'>    room_server = socket.assigns.room_server</td>
                         </tr>
                       
                   
@@ -7379,101 +7616,29 @@ function find(y) {
                         <tr>
                           <td class='line'>65</td>
                           <td class='hits'></td>
-                          <td class='source'>      socket,</td>
-                        </tr>
-                    
-                  
-                    
-                        <tr>
-                          <td class='line'>66</td>
-                          <td class='hits'></td>
-                          <td class='source'>      &quot;player_moved&quot;,</td>
+                          <td class='source'></td>
                         </tr>
                     
                   
                     
                         <tr class='hit'>
-                          <td class='line'>67</td>
+                          <td class='line'>66</td>
                           <td class='hits'>1</td>
-                          <td class='source'>      {:binary, Packets.PlayerMoved.build(player.id, movement)}</td>
+                          <td class='source'>    movement = Packets.PlayerMove.parse(packet)</td>
                         </tr>
                       
+                  
+                    
+                        <tr>
+                          <td class='line'>67</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
                   
                     
                         <tr>
                           <td class='line'>68</td>
-                          <td class='hits'></td>
-                          <td class='source'>    )</td>
-                        </tr>
-                    
-                  
-                    
-                        <tr>
-                          <td class='line'>69</td>
-                          <td class='hits'></td>
-                          <td class='source'></td>
-                        </tr>
-                    
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>70</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    Room.Server.cast(room_server, {:update_player, player.id, movement})</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr>
-                          <td class='line'>71</td>
-                          <td class='hits'></td>
-                          <td class='source'>    {:noreply, assign(socket, :player, player)}</td>
-                        </tr>
-                    
-                  
-                    
-                        <tr>
-                          <td class='line'>72</td>
-                          <td class='hits'></td>
-                          <td class='source'>  end</td>
-                        </tr>
-                    
-                  
-                    
-                        <tr>
-                          <td class='line'>73</td>
-                          <td class='hits'></td>
-                          <td class='source'></td>
-                        </tr>
-                    
-                  
-                    
-                        <tr>
-                          <td class='line'>74</td>
-                          <td class='hits'></td>
-                          <td class='source'>  def handle_in(&quot;player_chat&quot;, {:binary, packet}, socket) do</td>
-                        </tr>
-                    
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>75</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    player = socket.assigns.player</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr>
-                          <td class='line'>76</td>
-                          <td class='hits'></td>
-                          <td class='source'></td>
-                        </tr>
-                    
-                  
-                    
-                        <tr>
-                          <td class='line'>77</td>
                           <td class='hits'></td>
                           <td class='source'>    # Broadcast to all other players in the room</td>
                         </tr>
@@ -7481,23 +7646,47 @@ function find(y) {
                   
                     
                         <tr class='hit'>
-                          <td class='line'>78</td>
+                          <td class='line'>69</td>
                           <td class='hits'>1</td>
-                          <td class='source'>    %{type: type, msg: msg} = Packets.ChatMsg.parse(packet)</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>79</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    packet = Packets.ChatMsg.build(player.id, type, msg)</td>
+                          <td class='source'>    broadcast_from!(</td>
                         </tr>
                       
                   
                     
                         <tr>
-                          <td class='line'>80</td>
+                          <td class='line'>70</td>
+                          <td class='hits'></td>
+                          <td class='source'>      socket,</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>71</td>
+                          <td class='hits'></td>
+                          <td class='source'>      &quot;player_moved&quot;,</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>72</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>      {:binary, Packets.PlayerMoved.build(player.id, movement)}</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>73</td>
+                          <td class='hits'></td>
+                          <td class='source'>    )</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>74</td>
                           <td class='hits'></td>
                           <td class='source'></td>
                         </tr>
@@ -7505,9 +7694,57 @@ function find(y) {
                   
                     
                         <tr class='hit'>
+                          <td class='line'>75</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    Room.Server.cast(room_server, {:update_player, player.id, movement})</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>76</td>
+                          <td class='hits'></td>
+                          <td class='source'>    {:noreply, assign(socket, :player, player)}</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>77</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>78</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>79</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def handle_in(&quot;player_chat&quot;, {:binary, packet}, socket) do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>80</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    room_server = socket.assigns.room_server</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
                           <td class='line'>81</td>
                           <td class='hits'>1</td>
-                          <td class='source'>    broadcast_from!(socket, &quot;player_chat&quot;, {:binary, packet})</td>
+                          <td class='source'>    player = socket.assigns.player</td>
                         </tr>
                       
                   
@@ -7523,17 +7760,17 @@ function find(y) {
                         <tr class='hit'>
                           <td class='line'>83</td>
                           <td class='hits'>1</td>
-                          <td class='source'>    {:reply, :ok, socket}</td>
+                          <td class='source'>    %{type: type, msg: msg, dest: dest} = Packets.ChatMsg.parse(packet)</td>
                         </tr>
                       
                   
                     
-                        <tr>
+                        <tr class='hit'>
                           <td class='line'>84</td>
-                          <td class='hits'></td>
-                          <td class='source'>  end</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    Room.Server.cast(room_server, {:player_chat, player.id, dest, type, msg})</td>
                         </tr>
-                    
+                      
                   
                     
                         <tr>
@@ -7544,8 +7781,32 @@ function find(y) {
                     
                   
                     
-                        <tr>
+                        <tr class='hit'>
                           <td class='line'>86</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    {:reply, :ok, socket}</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>87</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>88</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>89</td>
                           <td class='hits'></td>
                           <td class='source'>  def handle_in(&quot;exrtc_offer&quot;, {:binary, packet}, socket) do</td>
                         </tr>
@@ -7553,7 +7814,7 @@ function find(y) {
                   
                     
                         <tr class='hit'>
-                          <td class='line'>87</td>
+                          <td class='line'>90</td>
                           <td class='hits'>1</td>
                           <td class='source'>    player = socket.assigns.player</td>
                         </tr>
@@ -7561,7 +7822,7 @@ function find(y) {
                   
                     
                         <tr class='hit'>
-                          <td class='line'>88</td>
+                          <td class='line'>91</td>
                           <td class='hits'>1</td>
                           <td class='source'>    room_server = socket.assigns.room_server</td>
                         </tr>
@@ -7569,33 +7830,9 @@ function find(y) {
                   
                     
                         <tr class='hit'>
-                          <td class='line'>89</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    offer = Packets.WebrtcOffer.parse(packet)</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr>
-                          <td class='line'>90</td>
-                          <td class='hits'></td>
-                          <td class='source'></td>
-                        </tr>
-                    
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>91</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    {:ok, rtc_pid} = Room.RTC.start_peer()</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr class='hit'>
                           <td class='line'>92</td>
                           <td class='hits'>1</td>
-                          <td class='source'>    Room.Server.cast(room_server, {:exrtc_offer, player.id, rtc_pid, offer})</td>
+                          <td class='source'>    offer = Packets.WebrtcOffer.parse(packet)</td>
                         </tr>
                       
                   
@@ -7611,17 +7848,17 @@ function find(y) {
                         <tr class='hit'>
                           <td class='line'>94</td>
                           <td class='hits'>1</td>
-                          <td class='source'>    {:reply, :ok, socket}</td>
+                          <td class='source'>    {:ok, rtc_pid} = Room.RTC.start_peer()</td>
                         </tr>
                       
                   
                     
-                        <tr>
+                        <tr class='hit'>
                           <td class='line'>95</td>
-                          <td class='hits'></td>
-                          <td class='source'>  end</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    Room.Server.cast(room_server, {:exrtc_offer, player.id, rtc_pid, offer})</td>
                         </tr>
-                    
+                      
                   
                     
                         <tr>
@@ -7632,8 +7869,32 @@ function find(y) {
                     
                   
                     
-                        <tr>
+                        <tr class='hit'>
                           <td class='line'>97</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    {:reply, :ok, socket}</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>98</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>99</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>100</td>
                           <td class='hits'></td>
                           <td class='source'>  def handle_in(&quot;exrtc_ice&quot;, {:binary, packet}, socket) do</td>
                         </tr>
@@ -7641,7 +7902,7 @@ function find(y) {
                   
                     
                         <tr class='hit'>
-                          <td class='line'>98</td>
+                          <td class='line'>101</td>
                           <td class='hits'>1</td>
                           <td class='source'>    player = socket.assigns.player</td>
                         </tr>
@@ -7649,33 +7910,9 @@ function find(y) {
                   
                     
                         <tr class='hit'>
-                          <td class='line'>99</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    room_server = socket.assigns.room_server</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr>
-                          <td class='line'>100</td>
-                          <td class='hits'></td>
-                          <td class='source'></td>
-                        </tr>
-                    
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>101</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    candidate = Packets.WebrtcIceCandidate.parse(packet)</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr class='hit'>
                           <td class='line'>102</td>
                           <td class='hits'>1</td>
-                          <td class='source'>    Room.Server.cast(room_server, {:exrtc_ice, player.id, candidate})</td>
+                          <td class='source'>    room_server = socket.assigns.room_server</td>
                         </tr>
                       
                   
@@ -7691,17 +7928,17 @@ function find(y) {
                         <tr class='hit'>
                           <td class='line'>104</td>
                           <td class='hits'>1</td>
-                          <td class='source'>    {:reply, :ok, socket}</td>
+                          <td class='source'>    candidate = Packets.WebrtcIceCandidate.parse(packet)</td>
                         </tr>
                       
                   
                     
-                        <tr>
+                        <tr class='hit'>
                           <td class='line'>105</td>
-                          <td class='hits'></td>
-                          <td class='source'>  end</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    Room.Server.cast(room_server, {:exrtc_ice, player.id, candidate})</td>
                         </tr>
-                    
+                      
                   
                     
                         <tr>
@@ -7712,8 +7949,32 @@ function find(y) {
                     
                   
                     
-                        <tr>
+                        <tr class='hit'>
                           <td class='line'>107</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    {:reply, :ok, socket}</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>108</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>109</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>110</td>
                           <td class='hits'></td>
                           <td class='source'>  def handle_in(&quot;exrtc_toggle_stream&quot;, {:binary, packet}, socket) do</td>
                         </tr>
@@ -7721,7 +7982,7 @@ function find(y) {
                   
                     
                         <tr class='hit'>
-                          <td class='line'>108</td>
+                          <td class='line'>111</td>
                           <td class='hits'>1</td>
                           <td class='source'>    sender = socket.assigns.player</td>
                         </tr>
@@ -7729,33 +7990,9 @@ function find(y) {
                   
                     
                         <tr class='hit'>
-                          <td class='line'>109</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    room_server = socket.assigns.room_server</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr>
-                          <td class='line'>110</td>
-                          <td class='hits'></td>
-                          <td class='source'></td>
-                        </tr>
-                    
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>111</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    params = Packets.WebrtcToggleStream.parse(packet)</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr class='hit'>
                           <td class='line'>112</td>
                           <td class='hits'>1</td>
-                          <td class='source'>    Room.Server.cast(room_server, {:update_player, sender.id, params})</td>
+                          <td class='source'>    room_server = socket.assigns.room_server</td>
                         </tr>
                       
                   
@@ -7771,13 +8008,37 @@ function find(y) {
                         <tr class='hit'>
                           <td class='line'>114</td>
                           <td class='hits'>1</td>
+                          <td class='source'>    params = Packets.WebrtcToggleStream.parse(packet)</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>115</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    Room.Server.cast(room_server, {:update_player, sender.id, params})</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>116</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>117</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    packet =</td>
                         </tr>
                       
                   
                     
                         <tr>
-                          <td class='line'>115</td>
+                          <td class='line'>118</td>
                           <td class='hits'></td>
                           <td class='source'>      Packets.WebrtcToggleStream.build(</td>
                         </tr>
@@ -7785,7 +8046,7 @@ function find(y) {
                   
                     
                         <tr class='hit'>
-                          <td class='line'>116</td>
+                          <td class='line'>119</td>
                           <td class='hits'>1</td>
                           <td class='source'>        sender.id,</td>
                         </tr>
@@ -7793,7 +8054,7 @@ function find(y) {
                   
                     
                         <tr class='hit'>
-                          <td class='line'>117</td>
+                          <td class='line'>120</td>
                           <td class='hits'>1</td>
                           <td class='source'>        params.rtc_audio_enabled,</td>
                         </tr>
@@ -7801,7 +8062,7 @@ function find(y) {
                   
                     
                         <tr class='hit'>
-                          <td class='line'>118</td>
+                          <td class='line'>121</td>
                           <td class='hits'>1</td>
                           <td class='source'>        params.rtc_camera_enabled</td>
                         </tr>
@@ -7809,7 +8070,7 @@ function find(y) {
                   
                     
                         <tr>
-                          <td class='line'>119</td>
+                          <td class='line'>122</td>
                           <td class='hits'></td>
                           <td class='source'>      )</td>
                         </tr>
@@ -7817,7 +8078,7 @@ function find(y) {
                   
                     
                         <tr>
-                          <td class='line'>120</td>
+                          <td class='line'>123</td>
                           <td class='hits'></td>
                           <td class='source'></td>
                         </tr>
@@ -7825,35 +8086,11 @@ function find(y) {
                   
                     
                         <tr class='hit'>
-                          <td class='line'>121</td>
+                          <td class='line'>124</td>
                           <td class='hits'>1</td>
                           <td class='source'>    broadcast_from!(socket, &quot;exrtc_toggle_stream&quot;, {:binary, packet})</td>
                         </tr>
                       
-                  
-                    
-                        <tr>
-                          <td class='line'>122</td>
-                          <td class='hits'></td>
-                          <td class='source'></td>
-                        </tr>
-                    
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>123</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    {:reply, :ok, socket}</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr>
-                          <td class='line'>124</td>
-                          <td class='hits'></td>
-                          <td class='source'>  end</td>
-                        </tr>
-                    
                   
                     
                         <tr>
@@ -7864,72 +8101,8 @@ function find(y) {
                     
                   
                     
-                        <tr>
+                        <tr class='hit'>
                           <td class='line'>126</td>
-                          <td class='hits'></td>
-                          <td class='source'>  def handle_in(&quot;exrtc_ready&quot;, _params, socket) do</td>
-                        </tr>
-                    
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>127</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    sender = socket.assigns.player</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>128</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    room_server = socket.assigns.room_server</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr>
-                          <td class='line'>129</td>
-                          <td class='hits'></td>
-                          <td class='source'></td>
-                        </tr>
-                    
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>130</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    Room.Server.cast(room_server, {:update_player, sender.id, %{rtc_ready: true}})</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>131</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    packet = Packets.WebrtcReady.build(sender.id)</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>132</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    broadcast_from!(socket, &quot;exrtc_ready&quot;, {:binary, packet})</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr>
-                          <td class='line'>133</td>
-                          <td class='hits'></td>
-                          <td class='source'></td>
-                        </tr>
-                    
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>134</td>
                           <td class='hits'>1</td>
                           <td class='source'>    {:reply, :ok, socket}</td>
                         </tr>
@@ -7937,11 +8110,75 @@ function find(y) {
                   
                     
                         <tr>
-                          <td class='line'>135</td>
+                          <td class='line'>127</td>
                           <td class='hits'></td>
                           <td class='source'>  end</td>
                         </tr>
                     
+                  
+                    
+                        <tr>
+                          <td class='line'>128</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>129</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def handle_in(&quot;exrtc_ready&quot;, _params, socket) do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>130</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    sender = socket.assigns.player</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>131</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    room_server = socket.assigns.room_server</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>132</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>133</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    Room.Server.cast(room_server, {:update_player, sender.id, %{rtc_ready: true}})</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>134</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    packet = Packets.WebrtcReady.build(sender.id)</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>135</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    broadcast_from!(socket, &quot;exrtc_ready&quot;, {:binary, packet})</td>
+                        </tr>
+                      
                   
                     
                         <tr>
@@ -7952,96 +8189,16 @@ function find(y) {
                     
                   
                     
-                        <tr>
+                        <tr class='hit'>
                           <td class='line'>137</td>
-                          <td class='hits'></td>
-                          <td class='source'>  @impl true</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    {:reply, :ok, socket}</td>
                         </tr>
-                    
+                      
                   
                     
                         <tr>
                           <td class='line'>138</td>
-                          <td class='hits'></td>
-                          <td class='source'>  def terminate(_reason, socket) do</td>
-                        </tr>
-                    
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>139</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    player = socket.assigns.player</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>140</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    room_server = socket.assigns.room_server</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>141</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    :ok = Room.Server.call(room_server, {:leave, player.id})</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr>
-                          <td class='line'>142</td>
-                          <td class='hits'></td>
-                          <td class='source'></td>
-                        </tr>
-                    
-                  
-                    
-                        <tr>
-                          <td class='line'>143</td>
-                          <td class='hits'></td>
-                          <td class='source'>    # Automatically called on disconnect</td>
-                        </tr>
-                    
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>144</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    packet = Packets.PlayerLeft.build(player.id)</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>145</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>    broadcast_from!(socket, &quot;player_left&quot;, {:binary, packet})</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr>
-                          <td class='line'>146</td>
-                          <td class='hits'></td>
-                          <td class='source'></td>
-                        </tr>
-                    
-                  
-                    
-                        <tr>
-                          <td class='line'>147</td>
-                          <td class='hits'></td>
-                          <td class='source'>    :ok</td>
-                        </tr>
-                    
-                  
-                    
-                        <tr>
-                          <td class='line'>148</td>
                           <td class='hits'></td>
                           <td class='source'>  end</td>
                         </tr>
@@ -8049,7 +8206,111 @@ function find(y) {
                   
                     
                         <tr>
+                          <td class='line'>139</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>140</td>
+                          <td class='hits'></td>
+                          <td class='source'>  @impl true</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>141</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def terminate(_reason, socket) do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>142</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    player = socket.assigns.player</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>143</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    room_server = socket.assigns.room_server</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>144</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    :ok = Room.Server.call(room_server, {:leave, player.id})</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>145</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>146</td>
+                          <td class='hits'></td>
+                          <td class='source'>    # Automatically called on disconnect</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>147</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    packet = Packets.PlayerLeft.build(player.id)</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>148</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    broadcast_from!(socket, &quot;player_left&quot;, {:binary, packet})</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
                           <td class='line'>149</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>150</td>
+                          <td class='hits'></td>
+                          <td class='source'>    :ok</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>151</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>152</td>
                           <td class='hits'></td>
                           <td class='source'>end</td>
                         </tr>
@@ -8557,11 +8818,650 @@ function find(y) {
         
           
             <div class='file'>
+              <h2 id='lib/ex_gather_web/components/chat_components.ex'>lib/ex_gather_web/components/chat_components.ex</h2>
+              <div id='stats' class='high'>
+                <div class='percentage'>100.0</div>
+                <div class='sloc'>5</div>
+                <div class='hits'>5</div>
+                <div class='misses'>0</div>
+              </div>
+              <table id='source'>
+                <thead>
+                  <tr>
+                    <th>Line</th>
+                    <th>Hits</th>
+                    <th>Source</th>
+                  </tr>
+                <tbody>
+                  
+                    
+                        <tr>
+                          <td class='line'>0</td>
+                          <td class='hits'></td>
+                          <td class='source'>defmodule ExGatherWeb.ChatComponents do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>1</td>
+                          <td class='hits'></td>
+                          <td class='source'>  use Phoenix.Component</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>2</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>3</td>
+                          <td class='hits'></td>
+                          <td class='source'>  import ExGatherWeb.CoreComponents, only: [icon: 1]</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>4</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>5</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def chat_header(assigns) do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>6</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    ~H&quot;&quot;&quot;</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>7</td>
+                          <td class='hits'></td>
+                          <td class='source'>    &lt;div class=&quot;bg-gray-800 text-white p-4 flex justify-between items-center&quot;&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>8</td>
+                          <td class='hits'></td>
+                          <td class='source'>      &lt;h2 class=&quot;text-lg font-semibold&quot;&gt;Chat&lt;/h2&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>9</td>
+                          <td class='hits'></td>
+                          <td class='source'>      &lt;button class=&quot;text-gray-300 hover:text-white&quot; id=&quot;chat-close-btn&quot;&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>10</td>
+                          <td class='hits'></td>
+                          <td class='source'>        &lt;svg class=&quot;w-6 h-6&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; viewBox=&quot;0 0 24 24&quot;&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>11</td>
+                          <td class='hits'></td>
+                          <td class='source'>          &lt;path</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>12</td>
+                          <td class='hits'></td>
+                          <td class='source'>            stroke-linecap=&quot;round&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>13</td>
+                          <td class='hits'></td>
+                          <td class='source'>            stroke-linejoin=&quot;round&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>14</td>
+                          <td class='hits'></td>
+                          <td class='source'>            stroke-width=&quot;2&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>15</td>
+                          <td class='hits'></td>
+                          <td class='source'>            d=&quot;M6 18L18 6M6 6l12 12&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>16</td>
+                          <td class='hits'></td>
+                          <td class='source'>          /&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>17</td>
+                          <td class='hits'></td>
+                          <td class='source'>        &lt;/svg&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>18</td>
+                          <td class='hits'></td>
+                          <td class='source'>      &lt;/button&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>19</td>
+                          <td class='hits'></td>
+                          <td class='source'>    &lt;/div&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>20</td>
+                          <td class='hits'></td>
+                          <td class='source'>    &quot;&quot;&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>21</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>22</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>23</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def chat_dm_sidebar(assigns) do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>24</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    ~H&quot;&quot;&quot;</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>25</td>
+                          <td class='hits'></td>
+                          <td class='source'>    &lt;div class=&quot;w-14 bg-gray-800 border-r border-gray-700 flex flex-col items-center py-3 space-y-3 overflow-y-auto sm:w-16&quot;&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>26</td>
+                          <td class='hits'></td>
+                          <td class='source'>      &lt;div class=&quot;flex flex-col space-y-2&quot; id=&quot;chat-dest-container&quot;&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>27</td>
+                          <td class='hits'></td>
+                          <td class='source'>        &lt;a class=&quot;relative chat-dm&quot; data-dest=&quot;-1&quot;&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>28</td>
+                          <td class='hits'></td>
+                          <td class='source'>          &lt;div class=&quot;w-8 h-8 rounded-full bg-gray-700 flex-shrink-0 chat-dest-active&quot;&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>29</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>            &lt;.icon name=&quot;hero-megaphone&quot; /&gt;</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>30</td>
+                          <td class='hits'></td>
+                          <td class='source'>          &lt;/div&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>31</td>
+                          <td class='hits'></td>
+                          <td class='source'>        &lt;/a&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>32</td>
+                          <td class='hits'></td>
+                          <td class='source'>      &lt;/div&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>33</td>
+                          <td class='hits'></td>
+                          <td class='source'>    &lt;/div&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>34</td>
+                          <td class='hits'></td>
+                          <td class='source'>    &quot;&quot;&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>35</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>36</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>37</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def chat_messages_container(assigns) do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>38</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    ~H&quot;&quot;&quot;</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>39</td>
+                          <td class='hits'></td>
+                          <td class='source'>    &lt;div class=&quot;flex-1 overflow-y-auto p-4 space-y-4 bg-gray-900&quot; id=&quot;chat-container&quot;&gt;&lt;/div&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>40</td>
+                          <td class='hits'></td>
+                          <td class='source'>    &quot;&quot;&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>41</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>42</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>43</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def chat_input_container(assigns) do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>44</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    ~H&quot;&quot;&quot;</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>45</td>
+                          <td class='hits'></td>
+                          <td class='source'>    &lt;div class=&quot;p-4 bg-gray-800&quot;&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>46</td>
+                          <td class='hits'></td>
+                          <td class='source'>      &lt;div class=&quot;flex space-x-2&quot;&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>47</td>
+                          <td class='hits'></td>
+                          <td class='source'>        &lt;!-- Message Type Selector --&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>48</td>
+                          <td class='hits'></td>
+                          <td class='source'>        &lt;select</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>49</td>
+                          <td class='hits'></td>
+                          <td class='source'>          id=&quot;chat-type&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>50</td>
+                          <td class='hits'></td>
+                          <td class='source'>          class=&quot;p-2 rounded-lg border border-gray-700 bg-gray-900 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>51</td>
+                          <td class='hits'></td>
+                          <td class='source'>        &gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>52</td>
+                          <td class='hits'></td>
+                          <td class='source'>          &lt;option value=&quot;0&quot;&gt;Say&lt;/option&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>53</td>
+                          <td class='hits'></td>
+                          <td class='source'>          &lt;option value=&quot;1&quot;&gt;Megaphone&lt;/option&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>54</td>
+                          <td class='hits'></td>
+                          <td class='source'>        &lt;/select&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>55</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>56</td>
+                          <td class='hits'></td>
+                          <td class='source'>        &lt;input</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>57</td>
+                          <td class='hits'></td>
+                          <td class='source'>          id=&quot;chat-input&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>58</td>
+                          <td class='hits'></td>
+                          <td class='source'>          type=&quot;text&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>59</td>
+                          <td class='hits'></td>
+                          <td class='source'>          placeholder=&quot;Type...&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>60</td>
+                          <td class='hits'></td>
+                          <td class='source'>          class=&quot;flex-1 p-2 rounded-lg border border-gray-700 bg-gray-900 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-0&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>61</td>
+                          <td class='hits'></td>
+                          <td class='source'>        /&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>62</td>
+                          <td class='hits'></td>
+                          <td class='source'>        &lt;button class=&quot;bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700&quot; id=&quot;chat-send-btn&quot;&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>63</td>
+                          <td class='hits'></td>
+                          <td class='source'>          &lt;svg class=&quot;w-5 h-5&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; viewBox=&quot;0 0 24 24&quot;&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>64</td>
+                          <td class='hits'></td>
+                          <td class='source'>            &lt;path</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>65</td>
+                          <td class='hits'></td>
+                          <td class='source'>              stroke-linecap=&quot;round&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>66</td>
+                          <td class='hits'></td>
+                          <td class='source'>              stroke-linejoin=&quot;round&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>67</td>
+                          <td class='hits'></td>
+                          <td class='source'>              stroke-width=&quot;2&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>68</td>
+                          <td class='hits'></td>
+                          <td class='source'>              d=&quot;M12 19l9 2-9-18-9 18 9-2zm0 0v-8&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>69</td>
+                          <td class='hits'></td>
+                          <td class='source'>            /&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>70</td>
+                          <td class='hits'></td>
+                          <td class='source'>          &lt;/svg&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>71</td>
+                          <td class='hits'></td>
+                          <td class='source'>        &lt;/button&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>72</td>
+                          <td class='hits'></td>
+                          <td class='source'>      &lt;/div&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>73</td>
+                          <td class='hits'></td>
+                          <td class='source'>    &lt;/div&gt;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>74</td>
+                          <td class='hits'></td>
+                          <td class='source'>    &quot;&quot;&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>75</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>76</td>
+                          <td class='hits'></td>
+                          <td class='source'>end</td>
+                        </tr>
+                    
+                  
+                </tbody>
+              </table>
+            </div>
+          
+        
+          
+            <div class='file'>
               <h2 id='lib/ex_gather_web/components/core_components.ex'>lib/ex_gather_web/components/core_components.ex</h2>
               <div id='stats' class='low'>
                 <div class='percentage'>45.5</div>
                 <div class='sloc'>158</div>
-                <div class='hits'>749</div>
+                <div class='hits'>751</div>
                 <div class='misses'>86</div>
               </div>
               <table id='source'>
@@ -13328,7 +14228,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>594</td>
-                          <td class='hits'>40</td>
+                          <td class='hits'>41</td>
                           <td class='source'>    ~H&quot;&quot;&quot;</td>
                         </tr>
                       
@@ -13336,7 +14236,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>595</td>
-                          <td class='hits'>40</td>
+                          <td class='hits'>41</td>
                           <td class='source'>    &lt;span class={[@name, @class]} /&gt;</td>
                         </tr>
                       
@@ -15538,13 +16438,29 @@ function find(y) {
                         <tr>
                           <td class='line'>3</td>
                           <td class='hits'></td>
-                          <td class='source'>  embed_templates &quot;page_html/*&quot;</td>
+                          <td class='source'>  import ExGatherWeb.ChatComponents</td>
                         </tr>
                     
                   
                     
                         <tr>
                           <td class='line'>4</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>5</td>
+                          <td class='hits'></td>
+                          <td class='source'>  embed_templates &quot;page_html/*&quot;</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>6</td>
                           <td class='hits'></td>
                           <td class='source'>end</td>
                         </tr>
@@ -16636,8 +17552,8 @@ function find(y) {
               <h2 id='lib/ex_gather_web/packets/chat_msg.ex'>lib/ex_gather_web/packets/chat_msg.ex</h2>
               <div id='stats' class='high'>
                 <div class='percentage'>100.0</div>
-                <div class='sloc'>4</div>
-                <div class='hits'>5</div>
+                <div class='sloc'>5</div>
+                <div class='hits'>8</div>
                 <div class='misses'>0</div>
               </div>
               <table id='source'>
@@ -16693,7 +17609,7 @@ function find(y) {
                         <tr>
                           <td class='line'>5</td>
                           <td class='hits'></td>
-                          <td class='source'>  defstruct [:type, :msg]</td>
+                          <td class='source'>  defstruct [:type, :msg, :dest]</td>
                         </tr>
                     
                   
@@ -16764,7 +17680,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>14</td>
-                          <td class='hits'>2</td>
+                          <td class='hits'>4</td>
                           <td class='source'>    |&gt; PacketWriter.string(msg)</td>
                         </tr>
                       
@@ -16805,13 +17721,21 @@ function find(y) {
                         <tr class='hit'>
                           <td class='line'>19</td>
                           <td class='hits'>1</td>
+                          <td class='source'>    {dest, packet} = PacketReader.int64(packet)</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>20</td>
+                          <td class='hits'>1</td>
                           <td class='source'>    {msg, _packet} = PacketReader.string(packet)</td>
                         </tr>
                       
                   
                     
                         <tr>
-                          <td class='line'>20</td>
+                          <td class='line'>21</td>
                           <td class='hits'></td>
                           <td class='source'></td>
                         </tr>
@@ -16819,15 +17743,15 @@ function find(y) {
                   
                     
                         <tr class='hit'>
-                          <td class='line'>21</td>
+                          <td class='line'>22</td>
                           <td class='hits'>1</td>
-                          <td class='source'>    struct(__MODULE__, %{type: type, msg: msg})</td>
+                          <td class='source'>    struct(__MODULE__, %{type: type, msg: msg, dest: dest})</td>
                         </tr>
                       
                   
                     
                         <tr>
-                          <td class='line'>22</td>
+                          <td class='line'>23</td>
                           <td class='hits'></td>
                           <td class='source'>  end</td>
                         </tr>
@@ -16835,7 +17759,7 @@ function find(y) {
                   
                     
                         <tr>
-                          <td class='line'>23</td>
+                          <td class='line'>24</td>
                           <td class='hits'></td>
                           <td class='source'>end</td>
                         </tr>
@@ -16850,9 +17774,9 @@ function find(y) {
             <div class='file'>
               <h2 id='lib/ex_gather_web/packets/packet_reader.ex'>lib/ex_gather_web/packets/packet_reader.ex</h2>
               <div id='stats' class='high'>
-                <div class='percentage'>90.9</div>
-                <div class='sloc'>11</div>
-                <div class='hits'>38</div>
+                <div class='percentage'>91.6</div>
+                <div class='sloc'>12</div>
+                <div class='hits'>39</div>
                 <div class='misses'>1</div>
               </div>
               <table id='source'>
@@ -17068,7 +17992,7 @@ function find(y) {
                         <tr>
                           <td class='line'>25</td>
                           <td class='hits'></td>
-                          <td class='source'>  @spec bool(binary()) :: {boolean(), binary()}</td>
+                          <td class='source'>  @spec int64(binary()) :: {integer(), binary()}</td>
                         </tr>
                     
                   
@@ -17076,15 +18000,15 @@ function find(y) {
                         <tr>
                           <td class='line'>26</td>
                           <td class='hits'></td>
-                          <td class='source'>  def bool(packet) do</td>
+                          <td class='source'>  def int64(packet) do</td>
                         </tr>
                     
                   
                     
                         <tr class='hit'>
                           <td class='line'>27</td>
-                          <td class='hits'>2</td>
-                          <td class='source'>    &lt;&lt;value::little-unsigned-integer-size(8), rest::binary&gt;&gt; = packet</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    &lt;&lt;value::little-signed-integer-size(64), rest::binary&gt;&gt; = packet</td>
                         </tr>
                       
                   
@@ -17092,49 +18016,49 @@ function find(y) {
                         <tr>
                           <td class='line'>28</td>
                           <td class='hits'></td>
+                          <td class='source'>    {value, rest}</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>29</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>30</td>
+                          <td class='hits'></td>
                           <td class='source'></td>
                         </tr>
                     
                   
                     
-                        <tr class='hit'>
-                          <td class='line'>29</td>
-                          <td class='hits'>2</td>
-                          <td class='source'>    case value do</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>30</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>      0 -&gt; {false, rest}</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr class='hit'>
+                        <tr>
                           <td class='line'>31</td>
-                          <td class='hits'>1</td>
-                          <td class='source'>      1 -&gt; {true, rest}</td>
+                          <td class='hits'></td>
+                          <td class='source'>  @spec bool(binary()) :: {boolean(), binary()}</td>
                         </tr>
-                      
+                    
                   
                     
                         <tr>
                           <td class='line'>32</td>
                           <td class='hits'></td>
-                          <td class='source'>    end</td>
+                          <td class='source'>  def bool(packet) do</td>
                         </tr>
                     
                   
                     
-                        <tr>
+                        <tr class='hit'>
                           <td class='line'>33</td>
-                          <td class='hits'></td>
-                          <td class='source'>  end</td>
+                          <td class='hits'>2</td>
+                          <td class='source'>    &lt;&lt;value::little-unsigned-integer-size(8), rest::binary&gt;&gt; = packet</td>
                         </tr>
-                    
+                      
                   
                     
                         <tr>
@@ -17145,26 +18069,26 @@ function find(y) {
                     
                   
                     
-                        <tr>
+                        <tr class='hit'>
                           <td class='line'>35</td>
-                          <td class='hits'></td>
-                          <td class='source'>  @spec string(binary()) :: {String.t(), binary()} | {nil, binary()}</td>
+                          <td class='hits'>2</td>
+                          <td class='source'>    case value do</td>
                         </tr>
-                    
+                      
                   
                     
-                        <tr>
+                        <tr class='hit'>
                           <td class='line'>36</td>
-                          <td class='hits'></td>
-                          <td class='source'>  def string(packet) do</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>      0 -&gt; {false, rest}</td>
                         </tr>
-                    
+                      
                   
                     
                         <tr class='hit'>
                           <td class='line'>37</td>
-                          <td class='hits'>8</td>
-                          <td class='source'>    &lt;&lt;length::little-unsigned-integer-size(32), rest::bytes&gt;&gt; = packet</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>      1 -&gt; {true, rest}</td>
                         </tr>
                       
                   
@@ -17172,61 +18096,13 @@ function find(y) {
                         <tr>
                           <td class='line'>38</td>
                           <td class='hits'></td>
-                          <td class='source'></td>
-                        </tr>
-                    
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>39</td>
-                          <td class='hits'>8</td>
-                          <td class='source'>    if length &gt; 0 do</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr class='hit'>
-                          <td class='line'>40</td>
-                          <td class='hits'>8</td>
-                          <td class='source'>      &lt;&lt;value::bytes-size(length), rest::bytes&gt;&gt; = rest</td>
-                        </tr>
-                      
-                  
-                    
-                        <tr>
-                          <td class='line'>41</td>
-                          <td class='hits'></td>
-                          <td class='source'>      {value, rest}</td>
-                        </tr>
-                    
-                  
-                    
-                        <tr>
-                          <td class='line'>42</td>
-                          <td class='hits'></td>
-                          <td class='source'>    else</td>
-                        </tr>
-                    
-                  
-                    
-                        <tr>
-                          <td class='line'>43</td>
-                          <td class='hits'></td>
-                          <td class='source'>      {nil, rest}</td>
-                        </tr>
-                    
-                  
-                    
-                        <tr>
-                          <td class='line'>44</td>
-                          <td class='hits'></td>
                           <td class='source'>    end</td>
                         </tr>
                     
                   
                     
                         <tr>
-                          <td class='line'>45</td>
+                          <td class='line'>39</td>
                           <td class='hits'></td>
                           <td class='source'>  end</td>
                         </tr>
@@ -17234,7 +18110,103 @@ function find(y) {
                   
                     
                         <tr>
+                          <td class='line'>40</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>41</td>
+                          <td class='hits'></td>
+                          <td class='source'>  @spec string(binary()) :: {String.t(), binary()} | {nil, binary()}</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>42</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def string(packet) do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>43</td>
+                          <td class='hits'>8</td>
+                          <td class='source'>    &lt;&lt;length::little-unsigned-integer-size(32), rest::bytes&gt;&gt; = packet</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>44</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>45</td>
+                          <td class='hits'>8</td>
+                          <td class='source'>    if length &gt; 0 do</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
                           <td class='line'>46</td>
+                          <td class='hits'>8</td>
+                          <td class='source'>      &lt;&lt;value::bytes-size(length), rest::bytes&gt;&gt; = rest</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>47</td>
+                          <td class='hits'></td>
+                          <td class='source'>      {value, rest}</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>48</td>
+                          <td class='hits'></td>
+                          <td class='source'>    else</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>49</td>
+                          <td class='hits'></td>
+                          <td class='source'>      {nil, rest}</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>50</td>
+                          <td class='hits'></td>
+                          <td class='source'>    end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>51</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>52</td>
                           <td class='hits'></td>
                           <td class='source'>end</td>
                         </tr>
@@ -17250,8 +18222,8 @@ function find(y) {
               <h2 id='lib/ex_gather_web/packets/packet_writer.ex'>lib/ex_gather_web/packets/packet_writer.ex</h2>
               <div id='stats' class='high'>
                 <div class='percentage'>100.0</div>
-                <div class='sloc'>11</div>
-                <div class='hits'>727</div>
+                <div class='sloc'>12</div>
+                <div class='hits'>738</div>
                 <div class='misses'>0</div>
               </div>
               <table id='source'>
@@ -17290,7 +18262,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>3</td>
-                          <td class='hits'>76</td>
+                          <td class='hits'>78</td>
                           <td class='source'>    &lt;&lt;&gt;&gt;</td>
                         </tr>
                       
@@ -17315,7 +18287,7 @@ function find(y) {
                         <tr>
                           <td class='line'>6</td>
                           <td class='hits'></td>
-                          <td class='source'>  @spec uint64(binary(), integer()) :: binary()</td>
+                          <td class='source'>  @spec int64(binary(), integer()) :: binary()</td>
                         </tr>
                     
                   
@@ -17323,15 +18295,15 @@ function find(y) {
                         <tr>
                           <td class='line'>7</td>
                           <td class='hits'></td>
-                          <td class='source'>  def uint64(packet, value) do</td>
+                          <td class='source'>  def int64(packet, value) do</td>
                         </tr>
                     
                   
                     
                         <tr class='hit'>
                           <td class='line'>8</td>
-                          <td class='hits'>49</td>
-                          <td class='source'>    &lt;&lt;packet::bytes, value::little-unsigned-integer-size(64)&gt;&gt;</td>
+                          <td class='hits'>1</td>
+                          <td class='source'>    &lt;&lt;packet::bytes, value::little-signed-integer-size(64)&gt;&gt;</td>
                         </tr>
                       
                   
@@ -17355,7 +18327,7 @@ function find(y) {
                         <tr>
                           <td class='line'>11</td>
                           <td class='hits'></td>
-                          <td class='source'>  @spec uint16(binary(), integer()) :: binary()</td>
+                          <td class='source'>  @spec uint64(binary(), integer()) :: binary()</td>
                         </tr>
                     
                   
@@ -17363,15 +18335,15 @@ function find(y) {
                         <tr>
                           <td class='line'>12</td>
                           <td class='hits'></td>
-                          <td class='source'>  def uint16(packet, value) do</td>
+                          <td class='source'>  def uint64(packet, value) do</td>
                         </tr>
                     
                   
                     
                         <tr class='hit'>
                           <td class='line'>13</td>
-                          <td class='hits'>3</td>
-                          <td class='source'>    &lt;&lt;packet::bytes, value::little-unsigned-integer-size(16)&gt;&gt;</td>
+                          <td class='hits'>51</td>
+                          <td class='source'>    &lt;&lt;packet::bytes, value::little-unsigned-integer-size(64)&gt;&gt;</td>
                         </tr>
                       
                   
@@ -17395,7 +18367,7 @@ function find(y) {
                         <tr>
                           <td class='line'>16</td>
                           <td class='hits'></td>
-                          <td class='source'>  @spec uint8(binary(), integer()) :: binary()</td>
+                          <td class='source'>  @spec uint16(binary(), integer()) :: binary()</td>
                         </tr>
                     
                   
@@ -17403,15 +18375,15 @@ function find(y) {
                         <tr>
                           <td class='line'>17</td>
                           <td class='hits'></td>
-                          <td class='source'>  def uint8(packet, value) do</td>
+                          <td class='source'>  def uint16(packet, value) do</td>
                         </tr>
                     
                   
                     
                         <tr class='hit'>
                           <td class='line'>18</td>
-                          <td class='hits'>139</td>
-                          <td class='source'>    &lt;&lt;packet::bytes, value::little-unsigned-integer-size(8)&gt;&gt;</td>
+                          <td class='hits'>3</td>
+                          <td class='source'>    &lt;&lt;packet::bytes, value::little-unsigned-integer-size(16)&gt;&gt;</td>
                         </tr>
                       
                   
@@ -17435,7 +18407,7 @@ function find(y) {
                         <tr>
                           <td class='line'>21</td>
                           <td class='hits'></td>
-                          <td class='source'>  @spec int32(binary(), integer()) :: binary()</td>
+                          <td class='source'>  @spec uint8(binary(), integer()) :: binary()</td>
                         </tr>
                     
                   
@@ -17443,15 +18415,15 @@ function find(y) {
                         <tr>
                           <td class='line'>22</td>
                           <td class='hits'></td>
-                          <td class='source'>  def int32(packet, value) do</td>
+                          <td class='source'>  def uint8(packet, value) do</td>
                         </tr>
                     
                   
                     
                         <tr class='hit'>
                           <td class='line'>23</td>
-                          <td class='hits'>82</td>
-                          <td class='source'>    &lt;&lt;packet::bytes, value::little-integer-size(32)&gt;&gt;</td>
+                          <td class='hits'>141</td>
+                          <td class='source'>    &lt;&lt;packet::bytes, value::little-unsigned-integer-size(8)&gt;&gt;</td>
                         </tr>
                       
                   
@@ -17475,23 +18447,23 @@ function find(y) {
                         <tr>
                           <td class='line'>26</td>
                           <td class='hits'></td>
-                          <td class='source'>  @spec bool(binary(), boolean()) :: binary()</td>
+                          <td class='source'>  @spec int32(binary(), integer()) :: binary()</td>
                         </tr>
                     
                   
                     
-                        <tr class='hit'>
+                        <tr>
                           <td class='line'>27</td>
-                          <td class='hits'>3</td>
-                          <td class='source'>  def bool(packet, true), do: packet &lt;&gt; &lt;&lt;1&gt;&gt;</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def int32(packet, value) do</td>
                         </tr>
-                      
+                    
                   
                     
                         <tr class='hit'>
                           <td class='line'>28</td>
-                          <td class='hits'>79</td>
-                          <td class='source'>  def bool(packet, false), do: packet &lt;&gt; &lt;&lt;0&gt;&gt;</td>
+                          <td class='hits'>82</td>
+                          <td class='source'>    &lt;&lt;packet::bytes, value::little-integer-size(32)&gt;&gt;</td>
                         </tr>
                       
                   
@@ -17499,7 +18471,7 @@ function find(y) {
                         <tr>
                           <td class='line'>29</td>
                           <td class='hits'></td>
-                          <td class='source'></td>
+                          <td class='source'>  end</td>
                         </tr>
                     
                   
@@ -17507,7 +18479,7 @@ function find(y) {
                         <tr>
                           <td class='line'>30</td>
                           <td class='hits'></td>
-                          <td class='source'>  @spec string(binary(), String.t()) :: binary()</td>
+                          <td class='source'></td>
                         </tr>
                     
                   
@@ -17515,23 +18487,23 @@ function find(y) {
                         <tr>
                           <td class='line'>31</td>
                           <td class='hits'></td>
-                          <td class='source'>  def string(packet, value) do</td>
+                          <td class='source'>  @spec bool(binary(), boolean()) :: binary()</td>
                         </tr>
                     
                   
                     
                         <tr class='hit'>
                           <td class='line'>32</td>
-                          <td class='hits'>135</td>
-                          <td class='source'>    value = if value, do: value, else: &quot;&quot;</td>
+                          <td class='hits'>3</td>
+                          <td class='source'>  def bool(packet, true), do: packet &lt;&gt; &lt;&lt;1&gt;&gt;</td>
                         </tr>
                       
                   
                     
                         <tr class='hit'>
                           <td class='line'>33</td>
-                          <td class='hits'>135</td>
-                          <td class='source'>    &lt;&lt;packet::bytes, byte_size(value)::little-unsigned-integer-size(32), value::binary&gt;&gt;</td>
+                          <td class='hits'>79</td>
+                          <td class='source'>  def bool(packet, false), do: packet &lt;&gt; &lt;&lt;0&gt;&gt;</td>
                         </tr>
                       
                   
@@ -17539,7 +18511,7 @@ function find(y) {
                         <tr>
                           <td class='line'>34</td>
                           <td class='hits'></td>
-                          <td class='source'>  end</td>
+                          <td class='source'></td>
                         </tr>
                     
                   
@@ -17547,7 +18519,7 @@ function find(y) {
                         <tr>
                           <td class='line'>35</td>
                           <td class='hits'></td>
-                          <td class='source'></td>
+                          <td class='source'>  @spec string(binary(), String.t()) :: binary()</td>
                         </tr>
                     
                   
@@ -17555,31 +18527,31 @@ function find(y) {
                         <tr>
                           <td class='line'>36</td>
                           <td class='hits'></td>
-                          <td class='source'>  def append(packet, binary) do</td>
+                          <td class='source'>  def string(packet, value) do</td>
                         </tr>
                     
                   
                     
                         <tr class='hit'>
                           <td class='line'>37</td>
-                          <td class='hits'>13</td>
-                          <td class='source'>    &lt;&lt;packet::bytes, binary::bytes&gt;&gt;</td>
+                          <td class='hits'>137</td>
+                          <td class='source'>    value = if value, do: value, else: &quot;&quot;</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>38</td>
+                          <td class='hits'>137</td>
+                          <td class='source'>    &lt;&lt;packet::bytes, byte_size(value)::little-unsigned-integer-size(32), value::binary&gt;&gt;</td>
                         </tr>
                       
                   
                     
                         <tr>
-                          <td class='line'>38</td>
-                          <td class='hits'></td>
-                          <td class='source'>  end</td>
-                        </tr>
-                    
-                  
-                    
-                        <tr>
                           <td class='line'>39</td>
                           <td class='hits'></td>
-                          <td class='source'></td>
+                          <td class='source'>  end</td>
                         </tr>
                     
                   
@@ -17587,21 +18559,29 @@ function find(y) {
                         <tr>
                           <td class='line'>40</td>
                           <td class='hits'></td>
-                          <td class='source'>  def reduce(packet, enum, fun) do</td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>41</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def append(packet, binary) do</td>
                         </tr>
                     
                   
                     
                         <tr class='hit'>
-                          <td class='line'>41</td>
+                          <td class='line'>42</td>
                           <td class='hits'>13</td>
-                          <td class='source'>    Enum.reduce(enum, packet, fun)</td>
+                          <td class='source'>    &lt;&lt;packet::bytes, binary::bytes&gt;&gt;</td>
                         </tr>
                       
                   
                     
                         <tr>
-                          <td class='line'>42</td>
+                          <td class='line'>43</td>
                           <td class='hits'></td>
                           <td class='source'>  end</td>
                         </tr>
@@ -17609,7 +18589,39 @@ function find(y) {
                   
                     
                         <tr>
-                          <td class='line'>43</td>
+                          <td class='line'>44</td>
+                          <td class='hits'></td>
+                          <td class='source'></td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>45</td>
+                          <td class='hits'></td>
+                          <td class='source'>  def reduce(packet, enum, fun) do</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr class='hit'>
+                          <td class='line'>46</td>
+                          <td class='hits'>13</td>
+                          <td class='source'>    Enum.reduce(enum, packet, fun)</td>
+                        </tr>
+                      
+                  
+                    
+                        <tr>
+                          <td class='line'>47</td>
+                          <td class='hits'></td>
+                          <td class='source'>  end</td>
+                        </tr>
+                    
+                  
+                    
+                        <tr>
+                          <td class='line'>48</td>
                           <td class='hits'></td>
                           <td class='source'>end</td>
                         </tr>
@@ -20786,7 +21798,7 @@ function find(y) {
               <div id='stats' class='high'>
                 <div class='percentage'>100.0</div>
                 <div class='sloc'>4</div>
-                <div class='hits'>136</div>
+                <div class='hits'>142</div>
                 <div class='misses'>0</div>
               </div>
               <table id='source'>
@@ -21057,7 +22069,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>32</td>
-                          <td class='hits'>25</td>
+                          <td class='hits'>27</td>
                           <td class='source'>    ExGather.DataCase.setup_sandbox(tags)</td>
                         </tr>
                       
@@ -21121,7 +22133,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>40</td>
-                          <td class='hits'>54</td>
+                          <td class='hits'>56</td>
                           <td class='source'>    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(ExGather.Repo, shared: not tags[:async])</td>
                         </tr>
                       
@@ -21129,7 +22141,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>41</td>
-                          <td class='hits'>54</td>
+                          <td class='hits'>56</td>
                           <td class='source'>    on_exit(fn -&gt; Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)</td>
                         </tr>
                       
@@ -21840,7 +22852,7 @@ function find(y) {
               <div id='stats' class='high'>
                 <div class='percentage'>100.0</div>
                 <div class='sloc'>3</div>
-                <div class='hits'>87</div>
+                <div class='hits'>93</div>
                 <div class='misses'>0</div>
               </div>
               <table id='source'>
@@ -21887,7 +22899,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>4</td>
-                          <td class='hits'>29</td>
+                          <td class='hits'>31</td>
                           <td class='source'>    %ExGather.Schemas.User{</td>
                         </tr>
                       
@@ -21895,7 +22907,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>5</td>
-                          <td class='hits'>29</td>
+                          <td class='hits'>31</td>
                           <td class='source'>      username: sequence(:username, &amp;&quot;USER#{&amp;1}&quot;),</td>
                         </tr>
                       
@@ -21903,7 +22915,7 @@ function find(y) {
                     
                         <tr class='hit'>
                           <td class='line'>6</td>
-                          <td class='hits'>29</td>
+                          <td class='hits'>31</td>
                           <td class='source'>      email: sequence(:email, &amp;&quot;user#{&amp;1}@example.com&quot;),</td>
                         </tr>
                       

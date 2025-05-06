@@ -18,15 +18,15 @@ export default class ChatBubbleController {
     // Create text first to measure it
     const text = this.scene.add.text(0, 0, this.message, {
       fontFamily: 'Arial',
-      fontSize: '16px',
+      fontSize: '14px',
       color: '#000000',
       wordWrap: { width: 200 },
       padding: { x: 10, y: 5 }
     }).setOrigin(0.5, 1);
 
     // Calculate bubble dimensions
-    const padding = 8;
-    const bubbleWidth = Math.max(text.width, 60) + padding * 2;
+    const padding = 4;
+    const bubbleWidth = Math.max(text.width, 60) + (padding - 8) * 2;
     const bubbleHeight = text.height + padding * 2;
 
     // Create bubble background

@@ -63,17 +63,22 @@ export default class GameScene extends Phaser.Scene {
     this.socketManager.channel.on("room_state", data => {
       const packet = new RoomStatePacket(data);
       this.actorsManager.init(packet.parse());
+      this.chatManager.init();
       this.rtcManager = new ExRTCManager(this);
     });
 
     this.socketManager.channel.on("player_join", data => {
-      const packet = new PlayerPacket(data);
-      this.actorsManager.spawn(packet.parse());
+      const packet = new PlayerPacket(data).parse();
+      this.actorsManager.spawn(packet);
+      this.chatManager.addDest(packet.id);
     });
 
     this.socketManager.channel.on("player_left", data => {
       const packet = new PlayerLeftPacket(data);
-      this.actorsManager.remove(packet.parse());
+      const id = packet.parse();
+
+      this.actorsManager.remove(id);
+      this.chatManager.removeDest(id);
     });
 
     this.socketManager.socket.onClose((event) => {
@@ -90,7 +95,7 @@ export default class GameScene extends Phaser.Scene {
     this.socketManager.channel.on("player_chat", data => {
       const packet = new ChatMsgPacket();
       const { player_id, type, msg } = packet.parse(data);
-      this.chatManager.receiveMessage(player_id, type, msg);
+      this.chatManager.handleMessage(player_id, type, msg);
     });
 
     // WebRTC peer negotiation

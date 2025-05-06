@@ -19,13 +19,13 @@ export default class ActorTagController {
       padding: { x: 10, y: 5 }
     });
 
-    this.name.setOrigin(0.5, 1 + 0.2);
+    this.name.setOrigin(0.5, 1 + 0.15);
 
     this.container = this.scene.add.container(0, 0);
     this.container.setDepth(2000 - 1);
 
     // Create a rounded rectangle background
-    const textWidth = this.name.width + 10;
+    const textWidth = this.name.width + 8;
     const textHeight = this.name.height + 6;
     this.background = this.scene.add.graphics();
     this.background.fillStyle(0x000000, 0.7);

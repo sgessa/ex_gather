@@ -14,6 +14,7 @@ export default class ActorController {
     this.state = actor.state;
     this.x = actor.x;
     this.y = actor.y;
+    this.isActor = true;
 
     this.audioEnabled = actor.rtcAudioEnabled;
     this.cameraEnabled = actor.rtcCameraEnabled;

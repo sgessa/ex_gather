@@ -260,10 +260,9 @@ defmodule ExGather.Rooms.ServerTest do
 
       sender_id = 1
       msg_type = 0
-      dest_id = -1
       msg = "Hello, world"
 
-      {:noreply, _state} = cast({:player_chat, sender_id, dest_id, msg_type, msg}, state)
+      {:noreply, _state} = cast({:player_chat, sender_id, nil, msg_type, msg}, state)
 
       packet = Packets.ChatMsg.build(sender_id, msg_type, msg)
       assert_receive {:broadcast, "player_chat", ^packet}

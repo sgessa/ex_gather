@@ -42,14 +42,6 @@ export default class PacketWriter {
     return this;
   }
 
-  // Appends a 64-bit signed integer (little-endian)
-  int64(value) {
-    this.ensureCapacity(8);
-    this.view.setBigInt64(this.length, BigInt(value), true);
-    this.length += 8;
-    return this;
-  }
-
   bool(value) {
     this.ensureCapacity(1);
     this.view.setUint8(this.length, value ? 1 : 0);

@@ -81,8 +81,8 @@ defmodule ExGatherWeb.RoomChannel do
     room_server = socket.assigns.room_server
     player = socket.assigns.player
 
-    %{type: type, msg: msg, dest: dest} = Packets.ChatMsg.parse(packet)
-    Room.Server.cast(room_server, {:player_chat, player.id, dest, type, msg})
+    %{type: type, msg: msg, rcpt: rcpt} = Packets.ChatMsg.parse(packet)
+    Room.Server.cast(room_server, {:player_chat, player.id, rcpt, type, msg})
 
     {:reply, :ok, socket}
   end

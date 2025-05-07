@@ -44,11 +44,11 @@ defmodule ExGather.Room.Server do
     {:noreply, put_in(state.players[id], player)}
   end
 
-  def handle_cast({:player_chat, id, dest_id, type, msg}, state) do
+  def handle_cast({:player_chat, id, rcpt_id, type, msg}, state) do
     sender = state.players[id]
-    dest = state.players[dest_id]
+    rcpt = state.players[rcpt_id]
 
-    :ok = Handler.handle_chat(sender, dest, type, msg)
+    :ok = Handler.handle_chat(sender, rcpt, type, msg)
 
     {:noreply, state}
   end

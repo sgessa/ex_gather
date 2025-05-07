@@ -122,6 +122,28 @@ defmodule ExGatherWeb.RoomChannelTest do
       ref = push(socket, "player_chat", {:binary, packet})
       assert_reply ref, :ok
     end
+
+    test "whispers player chat message", %{socket: socket} do
+      player_id = @player.id
+      msg_type = 2
+      dest_id = 2
+      message = "Hello, world!"
+
+      packet =
+        PacketWriter.build()
+        |> PacketWriter.uint8(msg_type)
+        |> PacketWriter.uint64(dest_id)
+        |> PacketWriter.string(message)
+
+      expect(
+        Room.Server.cast(:"room:lobby", {:player_chat, ^player_id, ^dest_id, ^msg_type, ^message})
+      ) do
+        :ok
+      end
+
+      ref = push(socket, "player_chat", {:binary, packet})
+      assert_reply ref, :ok
+    end
   end
 
   describe "exrtc_offer" do

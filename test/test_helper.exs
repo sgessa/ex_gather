@@ -1,4 +1,3 @@
-Mimic.copy(Kernel)
 Mimic.copy(ExGather.Room.RTC)
 Mimic.copy(ExGather.Room.Server)
 Mimic.copy(ExWebRTC.PeerConnection)

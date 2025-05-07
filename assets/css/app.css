@@ -117,5 +117,9 @@
 }
 
 .chat-dest-active {
-  border: 3px solid green;
+  border: 3px solid rgb(20, 150, 20) !important;
+}
+
+.chat-dest-unread {
+  border: 3px solid #bd2020;
 }

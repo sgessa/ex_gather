@@ -92,6 +92,9 @@ export default class ChatManager {
 
     document.querySelector('.chat-dest-active').classList.remove('chat-dest-active');
     document.querySelector(`.chat-dm[data-dest='${dest}'] div`).classList.add('chat-dest-active');
+    document.querySelector(`.chat-dm[data-dest='${dest}'] div`).classList.remove('chat-dest-unread');
+
+
 
     if (this.currentDest == PUBLIC_DEST) {
       document.querySelector("#chat-type").classList.remove("hidden");
@@ -132,6 +135,11 @@ export default class ChatManager {
         break;
       case CHAT_TYPE.WHISPER:
         this.createMessage(sender, sender.id, chatMessage);
+
+        if (this.currentDest != sender.id) {
+          document.querySelector(`.chat-dm[data-dest='${sender.id}'] div`).classList.add('chat-dest-unread');
+        }
+
         break;
     }
   }

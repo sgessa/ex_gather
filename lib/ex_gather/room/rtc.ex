@@ -39,8 +39,6 @@ defmodule ExGather.Room.RTC do
         video_codecs: @video_codecs
       )
 
-    Process.monitor(pc)
-
     {:ok, pc}
   end
 

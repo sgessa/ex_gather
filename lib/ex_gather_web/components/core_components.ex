@@ -286,6 +286,7 @@ defmodule ExGatherWeb.CoreComponents do
   attr :prompt, :string, default: nil, doc: "the prompt for select inputs"
   attr :options, :list, doc: "the options to pass to Phoenix.HTML.Form.options_for_select/2"
   attr :multiple, :boolean, default: false, doc: "the multiple flag for select inputs"
+  attr :class, :string, default: ""
 
   attr :rest, :global,
     include: ~w(accept autocomplete capture cols disabled form list max maxlength min minlength
@@ -329,16 +330,16 @@ defmodule ExGatherWeb.CoreComponents do
   end
 
   def input(%{type: "select"} = assigns) do
+    default_class =
+      "mt-2 block w-full rounded-md border border-gray-300 bg-grey900 text-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
+
+    class = if (c = assigns[:class]) != "", do: c, else: default_class
+    assigns = assign(assigns, :class, class)
+
     ~H"""
     <div>
       <.label for={@id}>{@label}</.label>
-      <select
-        id={@id}
-        name={@name}
-        class="mt-2 block w-full rounded-md border border-gray-300 bg-grey900 text-white shadow-sm focus:border-zinc-400 focus:ring-0 sm:text-sm"
-        multiple={@multiple}
-        {@rest}
-      >
+      <select id={@id} name={@name} class={@class} multiple={@multiple} {@rest}>
         <option :if={@prompt} value="">{@prompt}</option>
         {Phoenix.HTML.Form.options_for_select(@options, @value)}
       </select>

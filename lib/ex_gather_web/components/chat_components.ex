@@ -1,7 +1,7 @@
 defmodule ExGatherWeb.ChatComponents do
   use Phoenix.Component
 
-  import ExGatherWeb.CoreComponents, only: [icon: 1]
+  import ExGatherWeb.CoreComponents, only: [icon: 1, input: 1]
 
   def chat_header(assigns) do
     ~H"""
@@ -46,13 +46,14 @@ defmodule ExGatherWeb.ChatComponents do
     <div class="p-4 bg-gray-800">
       <div class="flex space-x-2">
         <!-- Message Type Selector -->
-        <select
-          id="chat-type"
+        <.input
+          name="chat-type"
+          type="select"
           class="p-2 rounded-lg border border-gray-700 bg-gray-900 text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="0">Say</option>
-          <option value="1">Megaphone</option>
-        </select>
+          id="chat-type"
+          options={[{"Say", 0}, {"Megaphone", 1}]}
+          value="0"
+        />
 
         <input
           id="chat-input"

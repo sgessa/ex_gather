@@ -52,10 +52,9 @@ defmodule ExGatherWeb.RoomChannelTest do
       {:ok, @player, [@player2]}
     end
 
-    {:ok, _, socket} =
-      ExGatherWeb.UserSocket
-      |> socket("user_id", %{player: player_info})
-      |> subscribe_and_join(ExGatherWeb.RoomChannel, "room:lobby")
+    token = Phoenix.Token.sign(ExGatherWeb.Endpoint, "user", %{id: 1, username: "test"})
+    {:ok, socket} = Phoenix.ChannelTest.connect(ExGatherWeb.UserSocket, %{"token" => token})
+    {:ok, _payload, socket} = subscribe_and_join(socket, "room:lobby")
 
     %{socket: socket}
   end
@@ -70,6 +69,11 @@ defmodule ExGatherWeb.RoomChannelTest do
 
       packet = Packets.Player.build(@player)
       assert_broadcast "player_join", {:binary, ^packet}
+    end
+
+    test "error - invalid token" do
+      :error =
+        Phoenix.ChannelTest.connect(ExGatherWeb.UserSocket, %{"token" => "invalid-token"})
     end
   end
 
@@ -152,7 +156,7 @@ defmodule ExGatherWeb.RoomChannelTest do
       offer = %ExWebRTC.SessionDescription{type: :offer, sdp: "long sdp string"}
       packet = PacketWriter.build() |> PacketWriter.string(offer.sdp)
 
-      expect(Room.RTC.start_peer(), do: {:ok, "rtc_pid"})
+      expect(ExWebRTC.PeerConnection.start_link(_codecs), do: {:ok, "rtc_pid"})
 
       expect(Room.Server.cast(:"room:lobby", {:exrtc_offer, ^player_id, "rtc_pid", ^offer})) do
         {:ok, @player}
@@ -242,6 +246,11 @@ defmodule ExGatherWeb.RoomChannelTest do
     test "handle push message", %{socket: socket} do
       send(socket.channel_pid, {:push, "hello", "Hello World!"})
       assert_push "hello", {:binary, "Hello World!"}
+    end
+
+    test "handle broadcast message", %{socket: socket} do
+      send(socket.channel_pid, {:broadcast, "hello", "Hello World!"})
+      assert_broadcast "hello", {:binary, "Hello World!"}
     end
 
     test "handle ex_webrtc RTP nessage", %{socket: socket} do

@@ -5,17 +5,13 @@ defmodule ExGather.Room.Server do
 
   defstruct players: %{}
 
-  def start_link(opts) do
-    GenServer.start_link(__MODULE__, [], opts)
-  end
+  # coveralls-ignore-start
 
-  def call(pid, msg) do
-    GenServer.call(pid, msg)
-  end
+  def start_link(opts), do: GenServer.start_link(__MODULE__, [], opts)
+  def call(pid, msg), do: GenServer.call(pid, msg)
+  def cast(pid, msg), do: GenServer.cast(pid, msg)
 
-  def cast(pid, msg) do
-    GenServer.cast(pid, msg)
-  end
+  # coveralls-ignore-stop
 
   def init(_args) do
     {:ok, %__MODULE__{}}

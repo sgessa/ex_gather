@@ -38,10 +38,6 @@ defmodule ExGatherWeb.RoomChannel do
     handle_exrtc(msg, socket)
   end
 
-  def handle_info({:DOWN, _pid, :process, _ppid, :normal}, socket) do
-    {:noreply, socket}
-  end
-
   defp handle_exrtc({:ice_candidate, candidate}, socket) do
     packet = Packets.WebrtcIceCandidate.build(candidate)
     push(socket, "exrtc_ice", {:binary, packet})

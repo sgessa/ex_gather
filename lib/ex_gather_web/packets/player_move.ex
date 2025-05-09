@@ -1,5 +1,6 @@
 defmodule ExGatherWeb.Packets.PlayerMove do
   alias ExGatherWeb.PacketReader
+  alias ExGather.Room.Player
 
   def parse(packet) do
     {x, packet} = PacketReader.int32(packet)
@@ -11,9 +12,9 @@ defmodule ExGatherWeb.Packets.PlayerMove do
     %{
       x: x,
       y: y,
-      dir_x: dir_x,
-      dir_y: dir_y,
-      state: state
+      dir_x: Player.Direction.cast!(dir_x),
+      dir_y: Player.Direction.cast!(dir_y),
+      state: Player.State.cast!(state)
     }
   end
 end

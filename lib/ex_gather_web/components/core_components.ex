@@ -1,3 +1,5 @@
+# coveralls-ignore-start
+
 defmodule ExGatherWeb.CoreComponents do
   @moduledoc """
   Provides core UI components.
@@ -740,3 +742,5 @@ defmodule ExGatherWeb.CoreComponents do
     for {^field, {msg, opts}} <- errors, do: translate_error({msg, opts})
   end
 end
+
+# coveralls-ignore-stop

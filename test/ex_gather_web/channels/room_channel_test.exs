@@ -84,18 +84,21 @@ defmodule ExGatherWeb.RoomChannelTest do
       movement = %{
         x: @player.x,
         y: @player.y,
-        dir_x: 0,
-        dir_y: 2,
-        state: 0
+        # 0
+        dir_x: :left,
+        # 2
+        dir_y: :up,
+        # 0
+        state: :idle
       }
 
       packet =
         PacketWriter.build()
         |> PacketWriter.int32(movement.x)
         |> PacketWriter.int32(movement.y)
-        |> PacketWriter.uint8(movement.dir_x)
-        |> PacketWriter.uint8(movement.dir_y)
-        |> PacketWriter.uint8(movement.state)
+        |> PacketWriter.uint8(0)
+        |> PacketWriter.uint8(2)
+        |> PacketWriter.uint8(0)
 
       expect(Room.Server.cast(:"room:lobby", {:update_player, ^player_id, ^movement}), do: :ok)
 

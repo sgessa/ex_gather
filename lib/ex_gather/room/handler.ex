@@ -110,6 +110,7 @@ defmodule ExGather.Room.Handler do
   def handle_chat(%Player{} = sender, %Player{} = dest, @whisper, msg) do
     packet = Packets.ChatMsg.build(sender.id, @whisper, msg)
     send(dest.socket_pid, {:push, "player_chat", packet})
+
     :ok
   end
 

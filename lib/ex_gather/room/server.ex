@@ -5,9 +5,13 @@ defmodule ExGather.Room.Server do
 
   defstruct players: %{}
 
-  def start_link(opts) do
-    GenServer.start_link(__MODULE__, [], opts)
-  end
+  # coveralls-ignore-start
+
+  def start_link(opts), do: GenServer.start_link(__MODULE__, [], opts)
+  def call(pid, msg), do: GenServer.call(pid, msg)
+  def cast(pid, msg), do: GenServer.cast(pid, msg)
+
+  # coveralls-ignore-stop
 
   def init(_args) do
     {:ok, %__MODULE__{}}
@@ -17,7 +21,8 @@ defmodule ExGather.Room.Server do
     {:ok, %{id: id} = player} = Handler.retain(player, from_pid)
 
     state = put_in(state.players[id], player)
-    {:reply, {:ok, player, state.players}, state}
+    players = Map.values(state.players)
+    {:reply, {:ok, player, players}, state}
   end
 
   def handle_call({:leave, player_id}, _from, state) do
@@ -31,17 +36,15 @@ defmodule ExGather.Room.Server do
   end
 
   def handle_cast({:update_player, id, attrs}, state) do
-    attrs = Useful.atomize_map_keys(attrs)
     player = Map.merge(state.players[id], attrs)
-
     {:noreply, put_in(state.players[id], player)}
   end
 
-  def handle_cast({:player_chat, id, dest_id, type, msg}, state) do
+  def handle_cast({:player_chat, id, rcpt_id, type, msg}, state) do
     sender = state.players[id]
-    dest = state.players[dest_id]
+    rcpt = state.players[rcpt_id]
 
-    :ok = Handler.handle_chat(sender, dest, type, msg)
+    :ok = Handler.handle_chat(sender, rcpt, type, msg)
 
     {:noreply, state}
   end

@@ -1,11 +1,16 @@
 import PacketWriter from './packet_writer';
 import PacketReader from './packet_reader';
+import { CHAT_TYPE } from '../const/chat_const';
 
 export default class ChatMsgPacket {
-  build(type, dest, msg) {
+  build(type, rcpt, msg) {
     let writer = new PacketWriter();
     writer.uint8(type);
-    writer.uint8(dest);
+
+    if (type === CHAT_TYPE.WHISPER) {
+      writer.uint64(rcpt);
+    }
+
     writer.string(msg);
 
     return writer.build();

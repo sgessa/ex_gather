@@ -1,7 +1,9 @@
 defmodule ExGatherWeb.Packets.ChatMsg do
   @moduledoc """
-  This module handles the chat message packets.
+  This module defines the chat message packet.
   """
+
+  defstruct [:type, :msg, :rcpt]
 
   alias ExGatherWeb.PacketReader
   alias ExGatherWeb.PacketWriter
@@ -15,9 +17,17 @@ defmodule ExGatherWeb.Packets.ChatMsg do
 
   def parse(packet) do
     {type, packet} = PacketReader.uint8(packet)
-    {dest, packet} = PacketReader.uint8(packet)
+    {rcpt, packet} = parse_recipient(type, packet)
     {msg, _packet} = PacketReader.string(packet)
 
-    %{"type" => type, "msg" => msg, "dest" => dest}
+    struct(__MODULE__, %{type: type, msg: msg, rcpt: rcpt})
+  end
+
+  defp parse_recipient(2, packet) do
+    PacketReader.uint64(packet)
+  end
+
+  defp parse_recipient(_type, packet) do
+    {nil, packet}
   end
 end

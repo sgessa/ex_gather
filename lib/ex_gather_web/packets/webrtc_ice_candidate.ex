@@ -16,11 +16,12 @@ defmodule ExGatherWeb.Packets.WebrtcIceCandidate do
     {sdp_mid, packet} = PacketReader.string(packet)
     {username_fragment, _packet} = PacketReader.string(packet)
 
-    %{
-      "candidate" => candidate,
-      "sdpMLineIndex" => sdp_m_line_index,
-      "sdpMid" => sdp_mid,
-      "usernameFragment" => username_fragment
-    }
+    struct(
+      ExWebRTC.ICECandidate,
+      candidate: candidate,
+      sdp_m_line_index: sdp_m_line_index,
+      sdp_mid: sdp_mid,
+      username_fragment: username_fragment
+    )
   end
 end

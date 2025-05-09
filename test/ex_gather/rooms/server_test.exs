@@ -57,8 +57,8 @@ defmodule ExGather.Rooms.ServerTest do
       assert video_track.id
       assert audio_track.id
 
-      assert Map.get(players, retained.id) == retained
-      assert state.players == players
+      assert Enum.member?(players, retained) == true
+      assert state.players == Enum.into(players, %{}, fn player -> {player.id, player} end)
     end
   end
 
@@ -85,7 +85,7 @@ defmodule ExGather.Rooms.ServerTest do
     end
 
     test "ok", %{server_state: state} do
-      assert {:noreply, state} = cast({:update_player, 1, %{"rtc_ready" => true}}, state)
+      assert {:noreply, state} = cast({:update_player, 1, %{rtc_ready: true}}, state)
       assert state.players[1].rtc_ready
     end
   end
@@ -247,6 +247,43 @@ defmodule ExGather.Rooms.ServerTest do
       expect_exrtc_send_rtp(receiver_rtc_pid, @audio_track_id, "rtp-packet")
 
       {:noreply, _state} = cast({:exrtc_send_rtp, @player_id, "audio-id", "rtp-packet"}, state)
+    end
+  end
+
+  describe "player_chat" do
+    test "ok - public chat", %{server_state: state} do
+      state =
+        put_in(state.players, %{
+          1 => %Player{id: 1, socket_pid: self()},
+          2 => %Player{id: 2, socket_pid: nil}
+        })
+
+      sender_id = 1
+      msg_type = 0
+      msg = "Hello, world"
+
+      {:noreply, _state} = cast({:player_chat, sender_id, nil, msg_type, msg}, state)
+
+      packet = Packets.ChatMsg.build(sender_id, msg_type, msg)
+      assert_receive {:broadcast, "player_chat", ^packet}
+    end
+
+    test "ok - whisper", %{server_state: state} do
+      state =
+        put_in(state.players, %{
+          1 => %Player{id: 1, socket_pid: nil},
+          2 => %Player{id: 2, socket_pid: self()}
+        })
+
+      sender_id = 1
+      msg_type = 2
+      dest_id = 2
+      msg = "Hello, world"
+
+      {:noreply, _state} = cast({:player_chat, sender_id, dest_id, msg_type, msg}, state)
+
+      packet = Packets.ChatMsg.build(sender_id, msg_type, msg)
+      assert_receive {:push, "player_chat", ^packet}
     end
   end
 end

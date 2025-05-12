@@ -11,6 +11,8 @@ defmodule ExGather.Schemas.User do
     field :current_password, :string, virtual: true, redact: true
     field :repeat_password, :string, virtual: true, redact: true
 
+    many_to_many :workspaces, ExGather.Schemas.Workspace, join_through: "user_workspaces"
+
     timestamps(type: :utc_datetime)
   end
 

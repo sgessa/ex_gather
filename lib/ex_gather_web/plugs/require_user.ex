@@ -12,6 +12,7 @@ defmodule ExGatherWeb.Plugs.RequireUser do
          {:ok, user} <- Users.authenticate_user!(token) do
       conn
       |> assign(:current_user, user)
+      |> put_workspace(user)
     else
       _ ->
         conn
@@ -20,5 +21,25 @@ defmodule ExGatherWeb.Plugs.RequireUser do
         |> Phoenix.Controller.redirect(to: ~p"/users/login")
         |> halt()
     end
+  end
+
+  defp put_workspace(conn, user) do
+    workspace =
+      cond do
+        id = get_session(conn, :workspace_id) ->
+          Enum.find(user.workspaces, &("#{&1.id}" == "#{id}"))
+
+        workspace = List.first(user.workspaces) ->
+          workspace
+
+        true ->
+          nil
+      end
+
+    workspace_id = if w = workspace, do: w.id, else: nil
+
+    conn
+    |> put_session(:workspace_id, workspace_id)
+    |> assign(:current_workspace, workspace)
   end
 end

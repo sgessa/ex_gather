@@ -2,6 +2,8 @@ defmodule ExGather.Users.Context do
   alias ExGather.Schemas.User
   alias ExGather.Repo
 
+  @preload_fields [:workspaces]
+
   def create(params) do
     %User{}
     |> User.create_changeset(params)
@@ -18,5 +20,5 @@ defmodule ExGather.Users.Context do
     do: user |> User.update_changeset(params)
 
   def get!(id),
-    do: Repo.get!(User, id)
+    do: Repo.get(User, id) |> Repo.preload(@preload_fields)
 end

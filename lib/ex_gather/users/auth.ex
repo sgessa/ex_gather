@@ -4,10 +4,10 @@ defmodule ExGather.Users.Auth do
   alias ExGather.Repo
 
   def authenticate!(token) when is_binary(token) do
-    case Phoenix.Token.verify(ExGatherWeb.Endpoint, "user", token, max_age: 300) do
-      {:ok, user} ->
-        {:ok, Users.get_user!(user.id)}
-
+    with {:ok, user} <- Phoenix.Token.verify(ExGatherWeb.Endpoint, "user", token, max_age: 300),
+         %User{} = user <- Users.get_user!(user.id) do
+      {:ok, user}
+    else
       _ ->
         {:error, :unauthenticated}
     end

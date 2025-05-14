@@ -1,0 +1,19 @@
+<div class="mx-auto max-w-sm bg-gray-900 text-white">
+  <.header class="text-center">
+    Edit your workspace
+  </.header>
+
+  <.simple_form :let={f} for={@changeset} as={:workspace} action={~p"/workspaces/#{@workspace}"}>
+    <.error :if={@changeset.action}>
+      Oops, something went wrong! Please check the errors below.
+    </.error>
+
+    <.input field={f[:name]} type="text" label="Name" required />
+
+    <:actions>
+      <.button phx-disable-with="Updating..." class="w-full">
+        Update <span aria-hidden="true">→</span>
+      </.button>
+    </:actions>
+  </.simple_form>
+</div>

@@ -8,4 +8,18 @@ defmodule ExGather.Factory do
       hashed_password: Bcrypt.hash_pwd_salt("Password123")
     }
   end
+
+  def workspace_factory do
+    %ExGather.Schemas.Workspace{
+      name: "Workspace",
+      uid: "WORKSPACE"
+    }
+  end
+
+  def user_workspaces_factory do
+    %ExGather.Schemas.UserWorkspaces{
+      user_id: 1,
+      workspace_id: 1
+    }
+  end
 end

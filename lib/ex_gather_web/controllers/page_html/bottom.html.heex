@@ -1,5 +1,16 @@
 <div class="bottom-bar bg-white relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-between">
   <div class="flex justify-start gap-4 px-4 sm:px-6 lg:px-8">
+    <%= if @current_workspace do %>
+      <a
+        href={~p"/workspaces"}
+        class="text-[0.8125rem] leading-6 text-zinc-900"
+        title="Workspace"
+        id="workspace-btn"
+      >
+        {@current_workspace.name}
+      </a>
+    <% end %>
+
     <a
       href="#"
       class="text-[0.8125rem] leading-6 text-zinc-900 hidden"

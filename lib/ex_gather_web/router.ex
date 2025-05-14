@@ -43,6 +43,9 @@ defmodule ExGatherWeb.Router do
     put "/users/settings", UserController, :update
     delete "/users/logout", AuthController, :delete
 
+    resources "/workspaces", WorkspaceController, except: [:show, :delete]
+    get "/workspaces/:id/switch", WorkspaceController, :switch
+
     get "/", PageController, :home
   end
 

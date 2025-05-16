@@ -32,6 +32,9 @@ defmodule ExGather.Users do
 
   defdelegate join_workspace(user, workspace), to: Workspaces, as: :join
 
+  defdelegate get_workspace_invite_url(workspace), to: Workspaces, as: :invite
+  defdelegate get_workspace_by_token(token), to: Workspaces, as: :get_by_token
+
   #
   # Auth
   #

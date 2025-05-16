@@ -45,6 +45,8 @@ defmodule ExGatherWeb.Router do
 
     resources "/workspaces", WorkspaceController, except: [:show, :delete]
     get "/workspaces/:id/switch", WorkspaceController, :switch
+    get "/workspaces/:id/invite", WorkspaceController, :invite
+    get "/workspaces/:token/join", WorkspaceController, :join
 
     get "/", PageController, :home
   end

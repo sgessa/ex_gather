@@ -44,9 +44,32 @@ defmodule ExGatherWeb.WorkspaceController do
     end
   end
 
+  def invite(conn, %{"id" => id}) do
+    workspace = Users.get_workspace(conn.assigns.current_user, id)
+    {:ok, url} = Users.get_workspace_invite_url(workspace)
+
+    render(conn, :index, invite_url: url)
+  end
+
   def switch(conn, %{"id" => id}) do
     conn
     |> put_session(:workspace_id, id)
     |> redirect(to: ~p"/")
+  end
+
+  def join(conn, %{"token" => token}) do
+    user = conn.assigns.current_user
+
+    with {:ok, workspace} <- Users.get_workspace_by_token(token),
+         {:ok, _join} <- Users.join_workspace(user, workspace) do
+      conn
+      |> put_flash(:info, "You've joined #{workspace.name} workspace")
+      |> redirect(to: ~p"/workspaces")
+    else
+      _ ->
+        conn
+        |> put_flash(:error, "Workspace invite is expired")
+        |> redirect(to: ~p"/workspaces")
+    end
   end
 end

@@ -57,4 +57,30 @@ defmodule ExGatherWeb.WorkspaceControllerTest do
       assert redirected_to(conn) == ~p"/"
     end
   end
+
+  describe "invite" do
+    test "ok", %{conn: conn} do
+      conn = conn |> get(~p"/workspaces/1/invite")
+
+      assert html_response(conn, 200) =~ "/join"
+    end
+  end
+
+  describe "join" do
+    test "ok", %{conn: conn} do
+      workspace = insert(:workspace, %{uid: "TOKEN-WRKSP"})
+      {:ok, token_url} = ExGather.Users.get_workspace_invite_url(workspace)
+      conn = conn |> get(token_url)
+
+      assert redirected_to(conn) == ~p"/workspaces"
+      assert conn.assigns.flash["info"] =~ "You've joined"
+    end
+
+    test "error", %{conn: conn} do
+      conn = conn |> get(~p"/workspaces/INVALID_TOKEN/join")
+
+      assert redirected_to(conn) == ~p"/workspaces"
+      assert conn.assigns.flash["error"] =~ "Workspace invite is expired"
+    end
+  end
 end

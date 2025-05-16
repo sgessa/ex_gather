@@ -74,11 +74,14 @@
       </tbody>
     </table>
   </div>
-  
-<!-- Empty State -->
+
   <%= if Enum.empty?(@current_user.workspaces) do %>
     <div class="text-center py-6">
       <p class="text-white">No workspaces found. Create one to get started!</p>
     </div>
   <% end %>
 </section>
+
+<%= if Map.has_key?(assigns, :invite_url) do %>
+  <.invite url={@invite_url} />
+<% end %>

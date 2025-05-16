@@ -10,10 +10,12 @@ defmodule ExGatherWeb.AuthController do
   def create(conn, %{"user" => auth_params}) do
     case Users.sign_in_user(auth_params) do
       {:ok, user, token} ->
+        redirect_url = get_session(conn, :redirect_url) || ~p"/"
+
         conn
         |> put_session(:user_id, user.id)
         |> put_session(:token, token)
-        |> redirect(to: ~p"/")
+        |> redirect(to: redirect_url)
 
       _error ->
         conn

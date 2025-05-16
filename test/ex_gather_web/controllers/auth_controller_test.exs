@@ -2,7 +2,8 @@ defmodule ExGatherWeb.AuthControllerTest do
   use ExGatherWeb.ConnCase
 
   setup do
-    %{conn: build_conn()}
+    conn = build_conn() |> Phoenix.ConnTest.init_test_session(%{})
+    %{conn: conn}
   end
 
   describe "new" do
@@ -27,6 +28,20 @@ defmodule ExGatherWeb.AuthControllerTest do
         })
 
       assert redirected_to(conn) == ~p"/"
+      assert get_session(conn, :user_id) == user.id
+    end
+
+    test "ok - with redirect url", %{conn: conn} do
+      user = insert(:user)
+
+      conn =
+        conn
+        |> put_session(:redirect_url, "/workspaces")
+        |> post(~p"/users/login", %{
+          "user" => %{"email" => user.email, "password" => "Password123"}
+        })
+
+      assert redirected_to(conn) == ~p"/workspaces"
       assert get_session(conn, :user_id) == user.id
     end
 

@@ -50,6 +50,12 @@ config :logger, :console,
   metadata: [:request_id],
   level: :info
 
+# Configures Fernetex signing key
+config :ex_gather, :fernetex_key, "yuWpeSz0rTaZK7goLzrXPTIbI7GzIfJVn5tmjxgYaOg="
+
+config :ex_gather,
+  full_domain: System.get_env("FULL_DOMAIN") || "http://localhost:4000"
+
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 

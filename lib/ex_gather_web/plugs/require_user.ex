@@ -18,6 +18,7 @@ defmodule ExGatherWeb.Plugs.RequireUser do
         conn
         |> delete_session(:token)
         |> delete_session(:user_id)
+        |> put_session(:redirect_url, conn.request_path)
         |> Phoenix.Controller.redirect(to: ~p"/users/login")
         |> halt()
     end

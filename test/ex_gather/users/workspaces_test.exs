@@ -67,5 +67,43 @@ defmodule ExGather.Users.WorkspacesTest do
       user = Repo.reload(user) |> Repo.preload([:workspaces])
       assert [%Workspace{name: "JOIN"}] = user.workspaces
     end
+
+    test "error - already joined", %{user: user} do
+      workspace = insert(:workspace, %{name: "JOIN", uid: "JOIN"})
+      assert {:ok, _join} = Users.join_workspace(user, workspace)
+
+      assert {:error, _changeset} = Users.join_workspace(user, workspace)
+    end
+  end
+
+  describe "invite" do
+    test "ok" do
+      workspace = insert(:workspace, %{name: "JOIN", uid: "JOIN"})
+
+      assert {:ok, url} = Users.get_workspace_invite_url(workspace)
+
+      assert url =~ "http://localhost:4000/workspaces/"
+      assert url =~ "/join"
+    end
+  end
+
+  describe "get_by_token" do
+    test "ok" do
+      workspace = insert(:workspace, %{name: "JOIN", uid: "JOIN"})
+      assert {:ok, url} = Users.get_workspace_invite_url(workspace)
+
+      # Extract token from url
+      token =
+        url
+        |> String.replace("http://localhost:4000/workspaces/", "")
+        |> String.replace("/join", "")
+
+      assert {:ok, token_workspace} = Users.get_workspace_by_token(token)
+      assert workspace.id == token_workspace.id
+    end
+
+    test "error" do
+      assert {:error, :expired} = Users.get_workspace_by_token("invalid token")
+    end
   end
 end

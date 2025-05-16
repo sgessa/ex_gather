@@ -17,4 +17,8 @@
   <body class="bg-gray-900">
     {@inner_content}
   </body>
+
+  <%= if Map.has_key?(assigns, :current_user) do %>
+    <.bottom_bar current_user={@current_user} current_workspace={@current_workspace} />
+  <% end %>
 </html>
